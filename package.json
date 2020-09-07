@@ -1,0 +1,36 @@
+{
+  "name": "@anderjason/web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:anderjason/web.git"
+  },
+  "author": "Jason Anderson",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf dist && rm -rf test",
+    "test": "tsc -p tsconfig.test.json && node test/index.test && rm -rf test"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "@anderjason/geometry": "^1.0.0",
+    "@anderjason/observable": "^1.0.0",
+    "@anderjason/tests": "^1.0.0",
+    "@anderjason/time": "^1.0.0",
+    "@anderjason/util": "^1.0.0",
+    "skytree": "^7.0.0",
+    "stylis": "^4.0.2",
+    "typescript": "^4.0.2"
+  },
+  "devDependencies": {},
+  "bugs": {
+    "url": "https://github.com/anderjason/web/issues"
+  },
+  "homepage": "https://github.com/anderjason/web#readme"
+}

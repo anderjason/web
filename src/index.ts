@@ -9,6 +9,7 @@ import { NetworkUtil } from "./NetworkUtil";
 import { ScreenSize } from "./ScreenSize";
 import { ScrollWatcher } from "./ScrollWatcher";
 import { TextInputBinding } from "./TextInputBinding";
+import { UndoManager } from "./UndoManager";
 
 export {
   CanvasUtil,
@@ -22,4 +23,5 @@ export {
   ScreenSize,
   ScrollWatcher,
   TextInputBinding,
+  UndoManager,
 };

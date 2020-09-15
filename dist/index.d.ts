@@ -9,4 +9,5 @@ import { NetworkUtil } from "./NetworkUtil";
 import { ScreenSize } from "./ScreenSize";
 import { ScrollWatcher } from "./ScrollWatcher";
 import { TextInputBinding } from "./TextInputBinding";
-export { CanvasUtil, CheckboxBinding, DynamicStyleElement, ElementStyle, KeyboardWatcher, LocationUtil, ManagedElement, NetworkUtil, ScreenSize, ScrollWatcher, TextInputBinding, };
+import { UndoManager } from "./UndoManager";
+export { CanvasUtil, CheckboxBinding, DynamicStyleElement, ElementStyle, KeyboardWatcher, LocationUtil, ManagedElement, NetworkUtil, ScreenSize, ScrollWatcher, TextInputBinding, UndoManager, };

@@ -1,4 +1,5 @@
 import { Test } from "@anderjason/tests";
+import "./UndoManager/index.test";
 
 Test.runAll()
   .then(() => {

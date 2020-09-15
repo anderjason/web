@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TextInputBinding = exports.ScrollWatcher = exports.ScreenSize = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardWatcher = exports.ElementStyle = exports.DynamicStyleElement = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoManager = exports.TextInputBinding = exports.ScrollWatcher = exports.ScreenSize = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardWatcher = exports.ElementStyle = exports.DynamicStyleElement = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -23,4 +23,6 @@ const ScrollWatcher_1 = require("./ScrollWatcher");
 Object.defineProperty(exports, "ScrollWatcher", { enumerable: true, get: function () { return ScrollWatcher_1.ScrollWatcher; } });
 const TextInputBinding_1 = require("./TextInputBinding");
 Object.defineProperty(exports, "TextInputBinding", { enumerable: true, get: function () { return TextInputBinding_1.TextInputBinding; } });
+const UndoManager_1 = require("./UndoManager");
+Object.defineProperty(exports, "UndoManager", { enumerable: true, get: function () { return UndoManager_1.UndoManager; } });
 //# sourceMappingURL=index.js.map

@@ -4,14 +4,12 @@ import { KeyboardWatcher } from "..";
 
 export type KeyCombination = string[];
 
-export interface KeyboardShortcutDefinition {
+export interface KeyboardShortcutProps {
   keyCombinations: KeyCombination[];
   onPress: () => void;
 }
 
-export class KeyboardShortcut extends ManagedObject<
-  KeyboardShortcutDefinition
-> {
+export class KeyboardShortcut extends ManagedObject<KeyboardShortcutProps> {
   static givenKey(key: string, onPress: () => void): KeyboardShortcut {
     const keyCombination: KeyCombination = [key];
     return KeyboardShortcut.givenKeyCombination(keyCombination, onPress);
@@ -39,7 +37,7 @@ export class KeyboardShortcut extends ManagedObject<
 
   private _activeKeyCombination: KeyCombination;
 
-  constructor(props: KeyboardShortcutDefinition) {
+  constructor(props: KeyboardShortcutProps) {
     super(props);
 
     // any key with a single character should be lowercase

@@ -1,7 +1,7 @@
 import { ManagedObject } from "skytree";
 import { Observable } from "@anderjason/observable";
 
-export interface CheckboxBindingDefinition {
+export interface CheckboxBindingProps {
   inputElement: HTMLElement;
 
   initialValue?: boolean;
@@ -10,13 +10,13 @@ export interface CheckboxBindingDefinition {
 
 const allowAll = () => false;
 
-export class CheckboxBinding extends ManagedObject<CheckboxBindingDefinition> {
+export class CheckboxBinding extends ManagedObject<CheckboxBindingProps> {
   readonly isChecked: Observable<boolean>;
   readonly inputElement: HTMLInputElement;
 
   private _previousValue: boolean;
 
-  constructor(props: CheckboxBindingDefinition) {
+  constructor(props: CheckboxBindingProps) {
     super(props);
 
     if (props.inputElement == null) {

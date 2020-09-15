@@ -1,7 +1,7 @@
 import { ManagedObject } from "skytree";
 import { Observable } from "@anderjason/observable";
 
-export interface TextInputBindingDefinition {
+export interface TextInputBindingProps {
   inputElement: HTMLElement;
 
   initialValue?: string;
@@ -10,9 +10,7 @@ export interface TextInputBindingDefinition {
 
 const allowAll = () => false;
 
-export class TextInputBinding extends ManagedObject<
-  TextInputBindingDefinition
-> {
+export class TextInputBinding extends ManagedObject<TextInputBindingProps> {
   readonly text: Observable<string>;
 
   private _shouldPreventChange: (newValue: string) => boolean;
@@ -20,7 +18,7 @@ export class TextInputBinding extends ManagedObject<
   private _caretPosition: number;
   private _inputElement: HTMLInputElement | HTMLTextAreaElement;
 
-  constructor(props: TextInputBindingDefinition) {
+  constructor(props: TextInputBindingProps) {
     super(props);
 
     if (props.inputElement == null) {

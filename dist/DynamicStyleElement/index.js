@@ -39,7 +39,7 @@ class DynamicStyleElement extends skytree_1.ManagedObject {
     get managedElement() {
         return this._managedElement;
     }
-    initManagedObject() {
+    onActivate() {
         this._managedElement = this.addManagedObject(ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,

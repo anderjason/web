@@ -64,7 +64,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends ManagedObject {
     return this._managedElement;
   }
 
-  initManagedObject() {
+  onActivate() {
     this._managedElement = this.addManagedObject(
       ManagedElement.givenDefinition({
         tagName: this.tagName,

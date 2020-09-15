@@ -21,7 +21,7 @@ export declare class DynamicStyleElement<T extends HTMLElement> extends ManagedO
     get element(): T | undefined;
     get style(): CSSStyleDeclaration;
     get managedElement(): ManagedElement<T> | undefined;
-    initManagedObject(): void;
+    onActivate(): void;
     addManagedEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): Receipt;
     addModifier(modifierName: string): void;
     removeModifier(modifierName: string): void;

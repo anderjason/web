@@ -1,13 +1,18 @@
 import { ManagedObject } from "skytree";
-import { Observable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Point2 } from "@anderjason/geometry";
-export declare class ScrollWatcher extends ManagedObject {
-    static ofEmpty(): ScrollWatcher;
-    static givenElement(element: HTMLElement): ScrollWatcher;
-    static givenObservableElement(element: Observable<HTMLElement>): ScrollWatcher;
-    readonly position: Observable<Point2>;
-    readonly element: Observable<HTMLElement>;
+export interface InternalScrollWatcherProps {
+    element: HTMLElement;
+    position: Observable<Point2>;
+}
+export interface ScrollWatcherProps {
+    element?: HTMLElement | Observable<HTMLElement>;
+}
+export declare class ScrollWatcher extends ManagedObject<ScrollWatcherProps> {
+    private _position;
+    readonly position: ReadOnlyObservable<Point2>;
+    private _element;
     private _activeWatcher;
-    private constructor();
-    initManagedObject(): void;
+    constructor(props: ScrollWatcherProps);
+    onActivate(): void;
 }

@@ -1,18 +1,17 @@
 import { ManagedObject } from "skytree";
 import { Observable } from "@anderjason/observable";
 export interface TextInputBindingDefinition {
-    input: HTMLElement;
+    inputElement: HTMLElement;
     initialValue?: string;
     shouldPreventChange?: (newValue: string) => boolean;
 }
-export declare class TextInputBinding extends ManagedObject {
-    static givenDefinition(definition: TextInputBindingDefinition): TextInputBinding;
+export declare class TextInputBinding extends ManagedObject<TextInputBindingDefinition> {
     readonly text: Observable<string>;
-    readonly input: HTMLInputElement | HTMLTextAreaElement;
     private _shouldPreventChange;
     private _previousValue;
     private _caretPosition;
-    private constructor();
-    initManagedObject(): void;
+    private _inputElement;
+    constructor(props: TextInputBindingDefinition);
+    onActivate(): void;
     private undoChange;
 }

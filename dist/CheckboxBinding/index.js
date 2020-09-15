@@ -5,42 +5,36 @@ const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const allowAll = () => false;
 class CheckboxBinding extends skytree_1.ManagedObject {
-    constructor(definition) {
-        super();
-        if (definition.input == null) {
-            throw new Error("Input is required");
+    constructor(props) {
+        super(props);
+        if (props.inputElement == null) {
+            throw new Error("Input element is required");
         }
-        const nodeName = definition.input.nodeName.toLowerCase();
+        const nodeName = props.inputElement.nodeName.toLowerCase();
         if (nodeName !== "input") {
             throw new Error(`Expected an input element, but got '${nodeName}'`);
         }
-        this.input = definition.input;
-        if (this.input.type !== "checkbox") {
+        this.inputElement = props.inputElement;
+        if (this.inputElement.type !== "checkbox") {
             throw new Error(`Expected an input with type "checkbox"`);
         }
-        this.isChecked = observable_1.Observable.givenValue(definition.initialValue || false, observable_1.Observable.isStrictEqual);
-        this._shouldPreventChange = definition.shouldPreventChange || allowAll;
+        this.isChecked = observable_1.Observable.givenValue(props.initialValue || false, observable_1.Observable.isStrictEqual);
     }
-    static givenDefinition(definition) {
-        return new CheckboxBinding(definition);
-    }
-    initManagedObject() {
-        this._previousValue = this.input.checked;
-        this.input.addEventListener("input", (e) => {
-            const newValue = this.input.checked;
-            if (this._shouldPreventChange(newValue)) {
-                this.undoChange();
+    onActivate() {
+        this._previousValue = this.inputElement.checked;
+        this.inputElement.addEventListener("input", (e) => {
+            const newValue = this.inputElement.checked;
+            const shouldPreventChange = this.props.shouldPreventChange || allowAll;
+            if (shouldPreventChange(newValue)) {
+                this.inputElement.checked = this._previousValue;
                 return;
             }
             this.isChecked.setValue(newValue);
             this._previousValue = newValue;
         });
-        this.addReceipt(this.isChecked.didChange.subscribe((value) => {
-            this.input.checked = value;
+        this.cancelOnDeactivate(this.isChecked.didChange.subscribe((value) => {
+            this.inputElement.checked = value;
         }, true));
-    }
-    undoChange() {
-        this.input.checked = this._previousValue;
     }
 }
 exports.CheckboxBinding = CheckboxBinding;

@@ -1,8 +1,8 @@
 import { ReadOnlyObservable } from "@anderjason/observable";
 import { Size2 } from "@anderjason/geometry";
-export declare class DeviceCapabilities {
+export declare class ScreenSize {
     private static _instance;
-    static get instance(): DeviceCapabilities;
+    static get instance(): ScreenSize;
     private _measureScrollbarLater;
     private _availableSize;
     readonly availableSize: ReadOnlyObservable<Size2>;

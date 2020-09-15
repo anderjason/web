@@ -5,30 +5,27 @@ const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const allowAll = () => false;
 class TextInputBinding extends skytree_1.ManagedObject {
-    constructor(definition) {
-        super();
-        if (definition.input == null) {
+    constructor(props) {
+        super(props);
+        if (props.inputElement == null) {
             throw new Error("Input is required");
         }
-        const nodeName = definition.input.nodeName.toLowerCase();
+        const nodeName = props.inputElement.nodeName.toLowerCase();
         if (nodeName !== "input" && nodeName !== "textarea") {
             throw new Error(`Expected an input or textarea element, but got '${nodeName}'`);
         }
-        this.input = definition.input;
-        this.text = observable_1.Observable.givenValue(definition.initialValue || "", observable_1.Observable.isStrictEqual);
-        this._shouldPreventChange = definition.shouldPreventChange || allowAll;
+        this._inputElement = props.inputElement;
+        this.text = observable_1.Observable.givenValue(props.initialValue || "", observable_1.Observable.isStrictEqual);
+        this._shouldPreventChange = props.shouldPreventChange || allowAll;
     }
-    static givenDefinition(definition) {
-        return new TextInputBinding(definition);
-    }
-    initManagedObject() {
-        this._previousValue = this.input.value;
-        this._caretPosition = this.input.selectionStart;
-        this.input.addEventListener("keydown", (e) => {
-            this._caretPosition = this.input.selectionStart;
+    onActivate() {
+        this._previousValue = this._inputElement.value;
+        this._caretPosition = this._inputElement.selectionStart;
+        this._inputElement.addEventListener("keydown", (e) => {
+            this._caretPosition = this._inputElement.selectionStart;
         });
-        this.input.addEventListener("input", (e) => {
-            const newValue = this.input.value;
+        this._inputElement.addEventListener("input", (e) => {
+            const newValue = this._inputElement.value;
             if (this._shouldPreventChange(newValue)) {
                 this.undoChange();
                 return;
@@ -36,13 +33,13 @@ class TextInputBinding extends skytree_1.ManagedObject {
             this.text.setValue(newValue);
             this._previousValue = newValue;
         });
-        this.addReceipt(this.text.didChange.subscribe((value) => {
-            this.input.value = value;
+        this.cancelOnDeactivate(this.text.didChange.subscribe((value) => {
+            this._inputElement.value = value;
         }, true));
     }
     undoChange() {
-        this.input.value = this._previousValue;
-        this.input.setSelectionRange(this._caretPosition, this._caretPosition);
+        this._inputElement.value = this._previousValue;
+        this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
     }
 }
 exports.TextInputBinding = TextInputBinding;

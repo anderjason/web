@@ -6,7 +6,7 @@ const observable_1 = require("@anderjason/observable");
 const ManagedElement_1 = require("../ManagedElement");
 class DynamicStyleElement extends skytree_1.ManagedObject {
     constructor(definition) {
-        super();
+        super({});
         this._modifiers = new Set();
         if (definition.parentElement == null) {
             this.parentElement = observable_1.Observable.ofEmpty();

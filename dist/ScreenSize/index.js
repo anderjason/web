@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeviceCapabilities = void 0;
+exports.ScreenSize = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const geometry_1 = require("@anderjason/geometry");
-class DeviceCapabilities {
+class ScreenSize {
     constructor() {
         this._availableSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this.availableSize = observable_1.ReadOnlyObservable.givenObservable(this._availableSize);
         this._scrollbarSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this.scrollbarSize = observable_1.ReadOnlyObservable.givenObservable(this._scrollbarSize);
-        this._measureScrollbarLater = time_1.RateLimitedFunction.givenDefinition({
+        this._measureScrollbarLater = new time_1.Debounce({
             fn: async () => {
                 this.measureScrollbar();
             },
             duration: time_1.Duration.givenMilliseconds(250),
-            mode: "both",
         });
         window.addEventListener("resize", () => {
             this.recalculateSize();
@@ -29,7 +28,7 @@ class DeviceCapabilities {
     }
     static get instance() {
         if (this._instance == null) {
-            this._instance = new DeviceCapabilities();
+            this._instance = new ScreenSize();
         }
         return this._instance;
     }
@@ -51,5 +50,5 @@ class DeviceCapabilities {
         this._measureScrollbarLater.invoke();
     }
 }
-exports.DeviceCapabilities = DeviceCapabilities;
+exports.ScreenSize = ScreenSize;
 //# sourceMappingURL=index.js.map

@@ -1,19 +1,19 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
-import { Duration, RateLimitedFunction } from "@anderjason/time";
+import { Duration, Debounce } from "@anderjason/time";
 import { Size2 } from "@anderjason/geometry";
 
-export class DeviceCapabilities {
-  private static _instance: DeviceCapabilities;
+export class ScreenSize {
+  private static _instance: ScreenSize;
 
-  static get instance(): DeviceCapabilities {
+  static get instance(): ScreenSize {
     if (this._instance == null) {
-      this._instance = new DeviceCapabilities();
+      this._instance = new ScreenSize();
     }
 
     return this._instance;
   }
 
-  private _measureScrollbarLater: RateLimitedFunction<void>;
+  private _measureScrollbarLater: Debounce;
 
   private _availableSize = Observable.ofEmpty<Size2>(Size2.isEqual);
   readonly availableSize = ReadOnlyObservable.givenObservable(
@@ -26,12 +26,11 @@ export class DeviceCapabilities {
   );
 
   private constructor() {
-    this._measureScrollbarLater = RateLimitedFunction.givenDefinition({
+    this._measureScrollbarLater = new Debounce({
       fn: async () => {
         this.measureScrollbar();
       },
       duration: Duration.givenMilliseconds(250),
-      mode: "both",
     });
 
     window.addEventListener("resize", () => {

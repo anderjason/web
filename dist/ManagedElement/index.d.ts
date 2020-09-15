@@ -14,6 +14,6 @@ export declare class ManagedElement<T extends HTMLElement> extends ManagedObject
     private _transitionOut?;
     private constructor();
     get style(): CSSStyleDeclaration;
-    initManagedObject(): void;
+    onActivate(): void;
     addManagedEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): Receipt;
 }

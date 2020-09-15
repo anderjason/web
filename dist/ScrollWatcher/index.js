@@ -5,55 +5,50 @@ const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
 const geometry_2 = require("@anderjason/geometry");
-class ActiveScrollWatcher extends skytree_1.ManagedObject {
-    constructor(element, position) {
-        super();
-        this._element = element;
-        this._position = position;
-    }
-    initManagedObject() {
+class InternalScrollWatcher extends skytree_1.ManagedObject {
+    onActivate() {
         const mutablePoint = geometry_2.MutablePoint2.ofZero();
         const onScroll = () => {
-            mutablePoint.x = this._element.scrollLeft;
-            mutablePoint.y = this._element.scrollTop;
-            if (this._position.value == null) {
-                this._position.setValue(mutablePoint);
+            mutablePoint.x = this.props.element.scrollLeft;
+            mutablePoint.y = this.props.element.scrollTop;
+            if (this.props.position.value == null) {
+                this.props.position.setValue(mutablePoint);
             }
             else {
-                this._position.didChange.emit(mutablePoint);
+                this.props.position.didChange.emit(mutablePoint);
             }
         };
-        this._element.addEventListener("scroll", onScroll);
+        this.props.element.addEventListener("scroll", onScroll);
         onScroll();
-        this.addReceipt(observable_1.Receipt.givenCancelFunction(() => {
-            this._element.removeEventListener("scroll", onScroll);
-            this._position.setValue(undefined);
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
+            this.props.element.removeEventListener("scroll", onScroll);
+            this.props.position.setValue(undefined);
         }));
     }
 }
 class ScrollWatcher extends skytree_1.ManagedObject {
-    constructor(element) {
-        super();
-        this.position = observable_1.Observable.ofEmpty(geometry_1.Point2.isEqual);
-        this.element = element;
+    constructor(props) {
+        super(props);
+        this._position = observable_1.Observable.ofEmpty(geometry_1.Point2.isEqual);
+        this.position = observable_1.ReadOnlyObservable.givenObservable(this._position);
+        if (observable_1.Observable.isObservable(props.element)) {
+            this._element = props.element;
+        }
+        else {
+            this._element = observable_1.Observable.givenValue(props.element);
+        }
     }
-    static ofEmpty() {
-        return new ScrollWatcher(observable_1.Observable.ofEmpty());
-    }
-    static givenElement(element) {
-        return new ScrollWatcher(observable_1.Observable.givenValue(element));
-    }
-    static givenObservableElement(element) {
-        return new ScrollWatcher(element);
-    }
-    initManagedObject() {
-        this.addReceipt(this.element.didChange.subscribe((element) => {
+    onActivate() {
+        this.cancelOnDeactivate(this._element.didChange.subscribe((element) => {
             if (this._activeWatcher != null) {
                 this.removeManagedObject(this._activeWatcher);
                 this._activeWatcher = undefined;
             }
             if (element != null) {
-                this._activeWatcher = this.addManagedObject(new ActiveScrollWatcher(element, this.position));
+                this._activeWatcher = this.addManagedObject(new InternalScrollWatcher({
+                    element,
+                    position: this._position,
+                }));
             }
         }, true));
     }

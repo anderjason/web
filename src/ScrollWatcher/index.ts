@@ -1,74 +1,68 @@
 import { ManagedObject } from "skytree";
-import { Observable, Receipt } from "@anderjason/observable";
+import {
+  Observable,
+  ReadOnlyObservable,
+  Receipt,
+} from "@anderjason/observable";
 import { Point2 } from "@anderjason/geometry";
 import { MutablePoint2 } from "@anderjason/geometry";
 
-class ActiveScrollWatcher extends ManagedObject {
-  private _element: HTMLElement;
-  private _position: Observable<Point2>;
+export interface InternalScrollWatcherProps {
+  element: HTMLElement;
+  position: Observable<Point2>;
+}
 
-  constructor(element: HTMLElement, position: Observable<Point2>) {
-    super();
-
-    this._element = element;
-    this._position = position;
-  }
-
-  initManagedObject() {
+class InternalScrollWatcher extends ManagedObject<InternalScrollWatcherProps> {
+  onActivate() {
     const mutablePoint = MutablePoint2.ofZero();
 
     const onScroll = () => {
-      mutablePoint.x = this._element.scrollLeft;
-      mutablePoint.y = this._element.scrollTop;
+      mutablePoint.x = this.props.element.scrollLeft;
+      mutablePoint.y = this.props.element.scrollTop;
 
-      if (this._position.value == null) {
-        this._position.setValue(mutablePoint);
+      if (this.props.position.value == null) {
+        this.props.position.setValue(mutablePoint);
       } else {
-        this._position.didChange.emit(mutablePoint);
+        this.props.position.didChange.emit(mutablePoint);
       }
     };
 
-    this._element.addEventListener("scroll", onScroll);
+    this.props.element.addEventListener("scroll", onScroll);
     onScroll();
 
-    this.addReceipt(
-      Receipt.givenCancelFunction(() => {
-        this._element.removeEventListener("scroll", onScroll);
-        this._position.setValue(undefined);
+    this.cancelOnDeactivate(
+      new Receipt(() => {
+        this.props.element.removeEventListener("scroll", onScroll);
+        this.props.position.setValue(undefined);
       })
     );
   }
 }
 
-export class ScrollWatcher extends ManagedObject {
-  static ofEmpty(): ScrollWatcher {
-    return new ScrollWatcher(Observable.ofEmpty<HTMLElement>());
+export interface ScrollWatcherProps {
+  element?: HTMLElement | Observable<HTMLElement>;
+}
+
+export class ScrollWatcher extends ManagedObject<ScrollWatcherProps> {
+  private _position = Observable.ofEmpty<Point2>(Point2.isEqual);
+  readonly position = ReadOnlyObservable.givenObservable(this._position);
+
+  private _element: Observable<HTMLElement>;
+  private _activeWatcher: InternalScrollWatcher | undefined;
+
+  constructor(props: ScrollWatcherProps) {
+    super(props);
+
+    if (Observable.isObservable(props.element)) {
+      this._element = props.element;
+    } else {
+      this._element = Observable.givenValue(props.element);
+    }
   }
 
-  static givenElement(element: HTMLElement): ScrollWatcher {
-    return new ScrollWatcher(Observable.givenValue(element));
-  }
-
-  static givenObservableElement(
-    element: Observable<HTMLElement>
-  ): ScrollWatcher {
-    return new ScrollWatcher(element);
-  }
-
-  readonly position = Observable.ofEmpty<Point2>(Point2.isEqual);
-  readonly element: Observable<HTMLElement>;
-
-  private _activeWatcher: ActiveScrollWatcher | undefined;
-
-  private constructor(element: Observable<HTMLElement>) {
-    super();
-
-    this.element = element;
-  }
-
-  initManagedObject() {
-    this.addReceipt(
-      this.element.didChange.subscribe((element) => {
+  onActivate() {
+    this.cancelOnDeactivate(
+      this._element.didChange.subscribe((element) => {
         if (this._activeWatcher != null) {
           this.removeManagedObject(this._activeWatcher);
           this._activeWatcher = undefined;
@@ -76,7 +70,10 @@ export class ScrollWatcher extends ManagedObject {
 
         if (element != null) {
           this._activeWatcher = this.addManagedObject(
-            new ActiveScrollWatcher(element, this.position)
+            new InternalScrollWatcher({
+              element,
+              position: this._position,
+            })
           );
         }
       }, true)

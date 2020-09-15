@@ -30,7 +30,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends ManagedObject {
   private _transitionOut?: () => Promise<void>;
 
   private constructor(definition: DynamicStyleElementDefinition<any>) {
-    super();
+    super({});
 
     if (definition.parentElement == null) {
       this.parentElement = Observable.ofEmpty();

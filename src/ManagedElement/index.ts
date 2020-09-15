@@ -25,7 +25,7 @@ export class ManagedElement<T extends HTMLElement> extends ManagedObject {
   private _transitionOut?: () => Promise<void>;
 
   private constructor(definition: ManagedElementDefinition<any>) {
-    super();
+    super({});
 
     this.element = document.createElement(definition.tagName);
     this._transitionOut = definition.transitionOut;
@@ -54,8 +54,8 @@ export class ManagedElement<T extends HTMLElement> extends ManagedObject {
     return this.element.style;
   }
 
-  initManagedObject() {
-    this.addReceipt(
+  onActivate() {
+    this.cancelOnDeactivate(
       this.parentElement.didChange.subscribe((parentElement) => {
         if (this.element.parentElement === parentElement) {
           return;
@@ -81,8 +81,8 @@ export class ManagedElement<T extends HTMLElement> extends ManagedObject {
       classesChangedReceipt.cancel();
     };
 
-    this.addReceipt(
-      Receipt.givenCancelFunction(() => {
+    this.cancelOnDeactivate(
+      new Receipt(() => {
         if (this._transitionOut == null) {
           cleanup();
         } else {
@@ -121,8 +121,8 @@ export class ManagedElement<T extends HTMLElement> extends ManagedObject {
   ): Receipt {
     this.element.addEventListener(type, listener, options);
 
-    return this.addReceipt(
-      Receipt.givenCancelFunction(() => {
+    return this.cancelOnDeactivate(
+      new Receipt(() => {
         this.element.removeEventListener(type, listener, options);
       })
     );

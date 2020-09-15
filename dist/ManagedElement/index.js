@@ -5,7 +5,7 @@ const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 class ManagedElement extends skytree_1.ManagedObject {
     constructor(definition) {
-        super();
+        super({});
         this.element = document.createElement(definition.tagName);
         this._transitionOut = definition.transitionOut;
         if (definition.classNames == null) {
@@ -33,8 +33,8 @@ class ManagedElement extends skytree_1.ManagedObject {
     get style() {
         return this.element.style;
     }
-    initManagedObject() {
-        this.addReceipt(this.parentElement.didChange.subscribe((parentElement) => {
+    onActivate() {
+        this.cancelOnDeactivate(this.parentElement.didChange.subscribe((parentElement) => {
             if (this.element.parentElement === parentElement) {
                 return;
             }
@@ -52,7 +52,7 @@ class ManagedElement extends skytree_1.ManagedObject {
             }
             classesChangedReceipt.cancel();
         };
-        this.addReceipt(observable_1.Receipt.givenCancelFunction(() => {
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
             if (this._transitionOut == null) {
                 cleanup();
             }
@@ -83,7 +83,7 @@ class ManagedElement extends skytree_1.ManagedObject {
     }
     addManagedEventListener(type, listener, options) {
         this.element.addEventListener(type, listener, options);
-        return this.addReceipt(observable_1.Receipt.givenCancelFunction(() => {
+        return this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this.element.removeEventListener(type, listener, options);
         }));
     }

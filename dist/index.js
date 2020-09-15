@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoManager = exports.TextInputBinding = exports.ScrollWatcher = exports.ScreenSize = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardWatcher = exports.ElementStyle = exports.DynamicStyleElement = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoManager = exports.TextInputBinding = exports.ScrollWatcher = exports.ScreenSize = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardShortcut = exports.KeyboardWatcher = exports.ElementStyle = exports.DynamicStyleElement = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -11,6 +11,8 @@ const ElementStyle_1 = require("./ElementStyle");
 Object.defineProperty(exports, "ElementStyle", { enumerable: true, get: function () { return ElementStyle_1.ElementStyle; } });
 const KeyboardWatcher_1 = require("./KeyboardWatcher");
 Object.defineProperty(exports, "KeyboardWatcher", { enumerable: true, get: function () { return KeyboardWatcher_1.KeyboardWatcher; } });
+const KeyboardShortcut_1 = require("./KeyboardShortcut");
+Object.defineProperty(exports, "KeyboardShortcut", { enumerable: true, get: function () { return KeyboardShortcut_1.KeyboardShortcut; } });
 const LocationUtil_1 = require("./LocationUtil");
 Object.defineProperty(exports, "LocationUtil", { enumerable: true, get: function () { return LocationUtil_1.LocationUtil; } });
 const ManagedElement_1 = require("./ManagedElement");

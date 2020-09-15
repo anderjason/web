@@ -3,6 +3,7 @@ import { CheckboxBinding } from "./CheckboxBinding";
 import { DynamicStyleElement } from "./DynamicStyleElement";
 import { ElementStyle } from "./ElementStyle";
 import { KeyboardWatcher } from "./KeyboardWatcher";
+import { KeyboardShortcut } from "./KeyboardShortcut";
 import { LocationUtil } from "./LocationUtil";
 import { ManagedElement } from "./ManagedElement";
 import { NetworkUtil } from "./NetworkUtil";
@@ -17,6 +18,7 @@ export {
   DynamicStyleElement,
   ElementStyle,
   KeyboardWatcher,
+  KeyboardShortcut,
   LocationUtil,
   ManagedElement,
   NetworkUtil,

@@ -1,6 +1,6 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { ManagedObject } from "skytree";
-import { KeyboardWatcher } from "..";
+import { KeyboardWatcher } from "../KeyboardWatcher";
 
 export type KeyCombination = string[];
 

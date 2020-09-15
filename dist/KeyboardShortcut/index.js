@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KeyboardShortcut = void 0;
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
-const __1 = require("..");
+const KeyboardWatcher_1 = require("../KeyboardWatcher");
 class KeyboardShortcut extends skytree_1.ManagedObject {
     constructor(props) {
         super(props);
@@ -35,10 +35,10 @@ class KeyboardShortcut extends skytree_1.ManagedObject {
                 }
             });
         });
-        this.cancelOnDeactivate(__1.KeyboardWatcher.instance.keys.didChange.subscribe(() => {
+        this.cancelOnDeactivate(KeyboardWatcher_1.KeyboardWatcher.instance.keys.didChange.subscribe(() => {
             this._activeKeyCombination = keyCombinations.find((keyCombination) => {
                 return keyCombination.every((key) => {
-                    return __1.KeyboardWatcher.instance.keys.hasValue(key);
+                    return KeyboardWatcher_1.KeyboardWatcher.instance.keys.hasValue(key);
                 });
             });
             this._isPressed.setValue(this._activeKeyCombination != null);

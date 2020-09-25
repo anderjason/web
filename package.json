@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -19,7 +19,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "@anderjason/geometry": "^1.1.0",
+    "@anderjason/geometry": "git+https://github.com/anderjason/geometry.git#dev",
     "@anderjason/observable": "^2.0.0",
     "@anderjason/tests": "^1.0.0",
     "@anderjason/time": "^2.0.0",

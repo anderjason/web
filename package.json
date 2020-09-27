@@ -25,7 +25,7 @@
     "@anderjason/time": "^2.0.1",
     "@anderjason/util": "^1.0.0",
     "fontfaceobserver": "^2.1.0",
-    "skytree": "^8.1.0",
+    "skytree": "git+https://github.com/anderjason/skytree.git#dev",
     "stylis": "^4.0.3"
   },
   "devDependencies": {

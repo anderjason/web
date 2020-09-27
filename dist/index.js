@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoManager = exports.Transform = exports.TextInputBinding = exports.ScrollWatcher = exports.ScreenSize = exports.Preload = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardShortcut = exports.KeyboardWatcher = exports.EveryFrame = exports.ElementStyle = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoManager = exports.Transform = exports.TextInputBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScreenSize = exports.Preload = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardShortcut = exports.KeyboardWatcher = exports.EveryFrame = exports.ElementStyle = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -29,6 +29,8 @@ const ScreenSize_1 = require("./ScreenSize");
 Object.defineProperty(exports, "ScreenSize", { enumerable: true, get: function () { return ScreenSize_1.ScreenSize; } });
 const ScrollWatcher_1 = require("./ScrollWatcher");
 Object.defineProperty(exports, "ScrollWatcher", { enumerable: true, get: function () { return ScrollWatcher_1.ScrollWatcher; } });
+const SequentialChoice_1 = require("./SequentialChoice");
+Object.defineProperty(exports, "SequentialChoice", { enumerable: true, get: function () { return SequentialChoice_1.SequentialChoice; } });
 const TextInputBinding_1 = require("./TextInputBinding");
 Object.defineProperty(exports, "TextInputBinding", { enumerable: true, get: function () { return TextInputBinding_1.TextInputBinding; } });
 const Transform_1 = require("./Transform");

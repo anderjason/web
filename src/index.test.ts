@@ -1,4 +1,7 @@
 import { Test } from "@anderjason/tests";
+import "./Corners/index.test";
+import "./SequentialChoice/index.test";
+import "./Transform/index.test";
 import "./UndoManager/index.test";
 
 Test.runAll()

@@ -12,6 +12,7 @@ import { NetworkUtil } from "./NetworkUtil";
 import { Preload } from "./Preload";
 import { ScreenSize } from "./ScreenSize";
 import { ScrollWatcher } from "./ScrollWatcher";
+import { SequentialChoice } from "./SequentialChoice";
 import { TextInputBinding } from "./TextInputBinding";
 import { Transform } from "./Transform";
 import { UndoManager } from "./UndoManager";
@@ -31,6 +32,7 @@ export {
   Preload,
   ScreenSize,
   ScrollWatcher,
+  SequentialChoice,
   TextInputBinding,
   Transform,
   UndoManager,

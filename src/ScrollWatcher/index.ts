@@ -5,7 +5,6 @@ import {
   Receipt,
 } from "@anderjason/observable";
 import { Point2 } from "@anderjason/geometry";
-import { MutablePoint2 } from "@anderjason/geometry";
 
 export interface InternalScrollWatcherProps {
   element: HTMLElement;
@@ -14,17 +13,13 @@ export interface InternalScrollWatcherProps {
 
 class InternalScrollWatcher extends ManagedObject<InternalScrollWatcherProps> {
   onActivate() {
-    const mutablePoint = MutablePoint2.ofZero();
-
     const onScroll = () => {
-      mutablePoint.x = this.props.element.scrollLeft;
-      mutablePoint.y = this.props.element.scrollTop;
-
-      if (this.props.position.value == null) {
-        this.props.position.setValue(mutablePoint);
-      } else {
-        this.props.position.didChange.emit(mutablePoint);
-      }
+      this.props.position.setValue(
+        Point2.givenXY(
+          this.props.element.scrollLeft,
+          this.props.element.scrollTop
+        )
+      );
     };
 
     this.props.element.addEventListener("scroll", onScroll);

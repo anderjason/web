@@ -4,19 +4,10 @@ exports.ScrollWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
-const geometry_2 = require("@anderjason/geometry");
 class InternalScrollWatcher extends skytree_1.ManagedObject {
     onActivate() {
-        const mutablePoint = geometry_2.MutablePoint2.ofZero();
         const onScroll = () => {
-            mutablePoint.x = this.props.element.scrollLeft;
-            mutablePoint.y = this.props.element.scrollTop;
-            if (this.props.position.value == null) {
-                this.props.position.setValue(mutablePoint);
-            }
-            else {
-                this.props.position.didChange.emit(mutablePoint);
-            }
+            this.props.position.setValue(geometry_1.Point2.givenXY(this.props.element.scrollLeft, this.props.element.scrollTop));
         };
         this.props.element.addEventListener("scroll", onScroll);
         onScroll();

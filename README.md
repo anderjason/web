@@ -14,7 +14,7 @@
 
 `TODO`
 
-### DeviceCapabilities
+### Corners
 
 `TODO`
 
@@ -23,6 +23,18 @@
 `TODO`
 
 ### ElementStyle
+
+`TODO`
+
+### EveryFrame
+
+`TODO`
+
+### KeyboardShortcut
+
+`TODO`
+
+### KeyboardWatcher
 
 `TODO`
 
@@ -38,10 +50,34 @@
 
 `TODO`
 
+### Preload
+
+`TODO`
+
+### ScreenSize
+
+`TODO`
+
 ### ScrollWatcher
 
 `TODO`
 
+### SequentialChoice
+
+`TODO`
+
+### StepDelayBinding
+
+`TODO`
+
 ### TextInputBinding
+
+`TODO`
+
+### Transform
+
+`TODO`
+
+### UndoManager
 
 `TODO`

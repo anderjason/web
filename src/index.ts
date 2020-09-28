@@ -13,6 +13,7 @@ import { Preload } from "./Preload";
 import { ScreenSize } from "./ScreenSize";
 import { ScrollWatcher } from "./ScrollWatcher";
 import { SequentialChoice } from "./SequentialChoice";
+import { StepDelayBinding } from "./StepDelayBinding";
 import { TextInputBinding } from "./TextInputBinding";
 import { Transform } from "./Transform";
 import { UndoManager } from "./UndoManager";
@@ -33,6 +34,7 @@ export {
   ScreenSize,
   ScrollWatcher,
   SequentialChoice,
+  StepDelayBinding,
   TextInputBinding,
   Transform,
   UndoManager,

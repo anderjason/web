@@ -96,7 +96,7 @@ class Transform {
         if (rotate) {
             const alen = a.toDotProduct(a);
             const sig = a.toDotProduct(b);
-            const del = a.toCrossProduct(b);
+            const del = a.x * b.y - a.y * b.x;
             x = sig / alen;
             y = del / alen;
         }

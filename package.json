@@ -19,7 +19,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "@anderjason/geometry": "^2.0.0",
+    "@anderjason/geometry": "^2.0.1",
     "@anderjason/observable": "^2.0.0",
     "@anderjason/tests": "^1.0.0",
     "@anderjason/time": "^2.0.1",

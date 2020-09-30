@@ -107,16 +107,11 @@ export class Corners {
       throw new Error("transform is required");
     }
 
-    const lt3 = transform.toTransformedPoint(this.leftTop);
-    const rt3 = transform.toTransformedPoint(this.rightTop);
-    const rb3 = transform.toTransformedPoint(this.rightBottom);
-    const lb3 = transform.toTransformedPoint(this.leftBottom);
-
     return new Corners(
-      Point2.givenXY(lt3.x, lt3.y),
-      Point2.givenXY(rt3.x, rt3.y),
-      Point2.givenXY(rb3.x, rb3.y),
-      Point2.givenXY(lb3.x, lb3.y)
+      transform.toTransformedPoint(this.leftTop),
+      transform.toTransformedPoint(this.rightTop),
+      transform.toTransformedPoint(this.rightBottom),
+      transform.toTransformedPoint(this.leftBottom)
     );
   }
 }

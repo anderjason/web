@@ -1,24 +1,28 @@
 import { ManagedObject } from "skytree";
 import { Observable } from "@anderjason/observable";
 
-export interface TextInputBindingProps {
+export interface TextInputBindingProps<T> {
   inputElement: HTMLElement;
+  displayTextGivenValue: (value: T) => string;
+  valueGivenDisplayText: (displayText: string) => T;
 
-  initialValue?: string;
-  shouldPreventChange?: (newValue: string) => boolean;
+  value?: Observable<T>;
+  shouldPreventChange?: (displayText: string, value: T) => boolean;
 }
 
 const allowAll = () => false;
 
-export class TextInputBinding extends ManagedObject<TextInputBindingProps> {
-  readonly text: Observable<string>;
+export class TextInputBinding<T> extends ManagedObject<
+  TextInputBindingProps<T>
+> {
+  readonly value: Observable<T>;
 
-  private _shouldPreventChange: (newValue: string) => boolean;
-  private _previousValue: string;
+  private _shouldPreventChange: (displayText: string, value: T) => boolean;
+  private _previousValue: T;
   private _caretPosition: number;
   private _inputElement: HTMLInputElement | HTMLTextAreaElement;
 
-  constructor(props: TextInputBindingProps) {
+  constructor(props: TextInputBindingProps<T>) {
     super(props);
 
     if (props.inputElement == null) {
@@ -33,16 +37,15 @@ export class TextInputBinding extends ManagedObject<TextInputBindingProps> {
     }
 
     this._inputElement = props.inputElement as HTMLInputElement;
-    this.text = Observable.givenValue(
-      props.initialValue || "",
-      Observable.isStrictEqual
-    );
+
+    this.value =
+      this.props.value || Observable.ofEmpty(Observable.isStrictEqual);
 
     this._shouldPreventChange = props.shouldPreventChange || allowAll;
   }
 
   onActivate() {
-    this._previousValue = this._inputElement.value;
+    this._previousValue = this.props.value.value;
     this._caretPosition = this._inputElement.selectionStart;
 
     this._inputElement.addEventListener("keydown", (e) => {
@@ -50,26 +53,31 @@ export class TextInputBinding extends ManagedObject<TextInputBindingProps> {
     });
 
     this._inputElement.addEventListener("input", (e: Event) => {
-      const newValue = this._inputElement.value;
+      const displayText = this._inputElement.value;
+      const value = this.props.valueGivenDisplayText(displayText);
 
-      if (this._shouldPreventChange(newValue)) {
+      if (this._shouldPreventChange(displayText, value)) {
         this.undoChange();
         return;
       }
 
-      this.text.setValue(newValue);
-      this._previousValue = newValue;
+      this.value.setValue(value);
+      this._previousValue = value;
     });
 
     this.cancelOnDeactivate(
-      this.text.didChange.subscribe((value) => {
-        this._inputElement.value = value;
+      this.value.didChange.subscribe((value) => {
+        const displayText = this.props.displayTextGivenValue(value);
+        this._inputElement.value = displayText || "";
       }, true)
     );
   }
 
   private undoChange() {
-    this._inputElement.value = this._previousValue;
+    this._inputElement.value = this.props.displayTextGivenValue(
+      this._previousValue
+    );
+
     this._inputElement.setSelectionRange(
       this._caretPosition,
       this._caretPosition

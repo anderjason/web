@@ -27,11 +27,12 @@ function cornersGivenContainedPoints(points) {
         return isSignificantlyDifferent;
     });
     const minimum = rectanglesWithArea[0].rectangle;
-    return __1.Corners.givenCornerPoints(minimum[0], // left top
-    minimum[3], // right top
-    minimum[2], // right bottom
-    minimum[1] // left bottom
-    );
+    return __1.Corners.givenPoints([
+        minimum[0],
+        minimum[3],
+        minimum[2],
+        minimum[1],
+    ]);
 }
 exports.cornersGivenContainedPoints = cornersGivenContainedPoints;
 function getAllBoundingRectangles(points) {

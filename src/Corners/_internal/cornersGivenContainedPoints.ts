@@ -44,12 +44,12 @@ export function cornersGivenContainedPoints(points: Point2[]): Corners {
 
   const minimum = rectanglesWithArea[0].rectangle;
 
-  return Corners.givenCornerPoints(
+  return Corners.givenPoints([
     minimum[0], // left top
     minimum[3], // right top
     minimum[2], // right bottom
-    minimum[1] // left bottom
-  );
+    minimum[1], // left bottom
+  ]);
 }
 
 function getAllBoundingRectangles(points: Point2[]): Rectangle[] {

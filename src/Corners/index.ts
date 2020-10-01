@@ -16,13 +16,16 @@ export class Corners {
     return cornersGivenContainedPoints(points);
   }
 
-  static givenCornerPoints(
-    leftTop: Point2,
-    rightTop: Point2,
-    rightBottom: Point2,
-    leftBottom: Point2
-  ): Corners {
-    return new Corners(leftTop, rightTop, rightBottom, leftBottom);
+  static givenPoints(points: Point2[]): Corners {
+    if (points == null) {
+      throw new Error("Points is required");
+    }
+
+    if (points.length !== 4) {
+      throw new Error("Array must have 4 points");
+    }
+
+    return new Corners(points[0], points[1], points[2], points[3]);
   }
 
   static isEqual(a: Corners, b: Corners): boolean {
@@ -100,6 +103,10 @@ export class Corners {
     }
 
     return this._size;
+  }
+
+  toPoints(): Point2[] {
+    return [this.leftTop, this.rightTop, this.rightBottom, this.leftBottom];
   }
 
   withTransform(transform: Transform): Corners {

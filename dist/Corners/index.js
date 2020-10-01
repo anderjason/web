@@ -16,8 +16,14 @@ class Corners {
     static givenContainedPoints(points) {
         return cornersGivenContainedPoints_1.cornersGivenContainedPoints(points);
     }
-    static givenCornerPoints(leftTop, rightTop, rightBottom, leftBottom) {
-        return new Corners(leftTop, rightTop, rightBottom, leftBottom);
+    static givenPoints(points) {
+        if (points == null) {
+            throw new Error("Points is required");
+        }
+        if (points.length !== 4) {
+            throw new Error("Array must have 4 points");
+        }
+        return new Corners(points[0], points[1], points[2], points[3]);
     }
     static isEqual(a, b) {
         if (a == null && b == null) {
@@ -61,6 +67,9 @@ class Corners {
             this._size = geometry_1.Size2.givenWidthHeight(width, height);
         }
         return this._size;
+    }
+    toPoints() {
+        return [this.leftTop, this.rightTop, this.rightBottom, this.leftBottom];
     }
     withTransform(transform) {
         if (transform == null) {

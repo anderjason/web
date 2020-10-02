@@ -4,7 +4,7 @@ export declare class ImageCache extends ManagedObject<void> {
     private _data;
     private _sequenceWorker;
     onActivate(): void;
-    ensureUrlReady(url: string): Promise<void>;
-    toObservableGivenUrl(url: string): Observable<string>;
+    ensureUrlReady(url: string, priority?: number): Promise<void>;
+    toObservableGivenUrl(url: string, priority?: number): Observable<string>;
     private load;
 }

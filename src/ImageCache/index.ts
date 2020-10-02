@@ -11,9 +11,9 @@ export class ImageCache extends ManagedObject<void> {
     this._sequenceWorker = this.addManagedObject(new SequentialWorker({}));
   }
 
-  ensureUrlReady(url: string): Promise<void> {
+  ensureUrlReady(url: string, priority?: number): Promise<void> {
     return new Promise((resolve) => {
-      const observable = this.toObservableGivenUrl(url);
+      const observable = this.toObservableGivenUrl(url, priority);
       const receipt = observable.didChange.subscribe((value) => {
         if (value == null) {
           return;
@@ -27,13 +27,17 @@ export class ImageCache extends ManagedObject<void> {
     });
   }
 
-  toObservableGivenUrl(url: string): Observable<string> {
+  toObservableGivenUrl(url: string, priority?: number): Observable<string> {
     if (!this._data.has(url)) {
       this._data.set(url, Observable.ofEmpty<string>(Observable.isStrictEqual));
 
-      this._sequenceWorker.addWork(async () => {
-        await this.load(url);
-      });
+      this._sequenceWorker.addWork(
+        async () => {
+          await this.load(url);
+        },
+        undefined,
+        priority
+      );
     }
 
     return this._data.get(url);

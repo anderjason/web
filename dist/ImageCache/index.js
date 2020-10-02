@@ -13,9 +13,9 @@ class ImageCache extends skytree_1.ManagedObject {
     onActivate() {
         this._sequenceWorker = this.addManagedObject(new skytree_1.SequentialWorker({}));
     }
-    ensureUrlReady(url) {
+    ensureUrlReady(url, priority) {
         return new Promise((resolve) => {
-            const observable = this.toObservableGivenUrl(url);
+            const observable = this.toObservableGivenUrl(url, priority);
             const receipt = observable.didChange.subscribe((value) => {
                 if (value == null) {
                     return;
@@ -27,12 +27,12 @@ class ImageCache extends skytree_1.ManagedObject {
             }, true);
         });
     }
-    toObservableGivenUrl(url) {
+    toObservableGivenUrl(url, priority) {
         if (!this._data.has(url)) {
             this._data.set(url, observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual));
             this._sequenceWorker.addWork(async () => {
                 await this.load(url);
-            });
+            }, undefined, priority);
         }
         return this._data.get(url);
     }

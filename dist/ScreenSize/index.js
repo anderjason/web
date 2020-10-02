@@ -4,12 +4,15 @@ exports.ScreenSize = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const geometry_1 = require("@anderjason/geometry");
-class ScreenSize {
+const skytree_1 = require("skytree");
+class ScreenSize extends skytree_1.ManagedObject {
     constructor() {
+        super();
         this._availableSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this.availableSize = observable_1.ReadOnlyObservable.givenObservable(this._availableSize);
         this._scrollbarSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this.scrollbarSize = observable_1.ReadOnlyObservable.givenObservable(this._scrollbarSize);
+        this.isPollingEnabled = observable_1.Observable.givenValue(true, observable_1.Observable.isStrictEqual);
         this._measureScrollbarLater = new time_1.Debounce({
             fn: async () => {
                 this.measureScrollbar();
@@ -25,10 +28,21 @@ class ScreenSize {
                 this.recalculateSize();
             });
         }
+        this.addManagedObject(new skytree_1.ConditionalInitializer({
+            input: this.isPollingEnabled,
+            fn: (v) => v,
+            instance: new skytree_1.Timer({
+                fn: () => {
+                    this.recalculateSize();
+                },
+                duration: time_1.Duration.givenSeconds(0.25),
+            }),
+        }));
     }
     static get instance() {
         if (this._instance == null) {
             this._instance = new ScreenSize();
+            this._instance.activate();
         }
         return this._instance;
     }

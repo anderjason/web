@@ -1,13 +1,15 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Duration, Debounce } from "@anderjason/time";
 import { Size2 } from "@anderjason/geometry";
+import { ConditionalInitializer, ManagedObject, Timer } from "skytree";
 
-export class ScreenSize {
+export class ScreenSize extends ManagedObject<void> {
   private static _instance: ScreenSize;
 
   static get instance(): ScreenSize {
     if (this._instance == null) {
       this._instance = new ScreenSize();
+      this._instance.activate();
     }
 
     return this._instance;
@@ -25,7 +27,14 @@ export class ScreenSize {
     this._scrollbarSize
   );
 
+  readonly isPollingEnabled = Observable.givenValue(
+    true,
+    Observable.isStrictEqual
+  );
+
   private constructor() {
+    super();
+
     this._measureScrollbarLater = new Debounce({
       fn: async () => {
         this.measureScrollbar();
@@ -44,6 +53,19 @@ export class ScreenSize {
         this.recalculateSize();
       });
     }
+
+    this.addManagedObject(
+      new ConditionalInitializer({
+        input: this.isPollingEnabled,
+        fn: (v) => v,
+        instance: new Timer({
+          fn: () => {
+            this.recalculateSize();
+          },
+          duration: Duration.givenSeconds(0.25),
+        }),
+      })
+    );
   }
 
   private measureScrollbar(): void {
@@ -69,7 +91,7 @@ export class ScreenSize {
     document.body.removeChild(measureScrollbarOuter);
   }
 
-  private recalculateSize() {
+  recalculateSize() {
     this._availableSize.setValue(
       Size2.givenWidthHeight(
         Math.min(window.outerWidth, window.innerWidth),

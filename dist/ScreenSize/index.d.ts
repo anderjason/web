@@ -1,6 +1,7 @@
-import { ReadOnlyObservable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Size2 } from "@anderjason/geometry";
-export declare class ScreenSize {
+import { ManagedObject } from "skytree";
+export declare class ScreenSize extends ManagedObject<void> {
     private static _instance;
     static get instance(): ScreenSize;
     private _measureScrollbarLater;
@@ -8,7 +9,8 @@ export declare class ScreenSize {
     readonly availableSize: ReadOnlyObservable<Size2>;
     private _scrollbarSize;
     readonly scrollbarSize: ReadOnlyObservable<Size2>;
+    readonly isPollingEnabled: Observable<boolean>;
     private constructor();
     private measureScrollbar;
-    private recalculateSize;
+    recalculateSize(): void;
 }

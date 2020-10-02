@@ -35,6 +35,7 @@ class ScreenSize extends skytree_1.ManagedObject {
                 fn: () => {
                     this.recalculateSize();
                 },
+                isRepeating: true,
                 duration: time_1.Duration.givenSeconds(0.25),
             }),
         }));

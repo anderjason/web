@@ -62,6 +62,7 @@ export class ScreenSize extends ManagedObject<void> {
           fn: () => {
             this.recalculateSize();
           },
+          isRepeating: true,
           duration: Duration.givenSeconds(0.25),
         }),
       })

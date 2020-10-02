@@ -4,12 +4,12 @@ import { Corners } from "../../Corners";
 import { matrixTransformGivenCorners } from "./matrixTransformGivenCorners";
 
 Test.define("matrixTransformGivenCorners returns the expected result", () => {
-  const corners = Corners.givenCornerPoints(
+  const corners = Corners.givenPoints([
     Point2.givenXY(205, 105),
     Point2.givenXY(391, 103),
     Point2.givenXY(415, 304),
-    Point2.givenXY(190, 290)
-  );
+    Point2.givenXY(190, 290),
+  ]);
 
   const size = corners.toSize();
 

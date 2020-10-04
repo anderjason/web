@@ -18,7 +18,7 @@ export interface FontStyle {
 export class Preload extends Actor<void> {
   private static _instance: Preload;
 
-  static instance(): Preload {
+  static get instance(): Preload {
     if (this._instance == null) {
       this._instance = new Preload();
       this._instance.activate();

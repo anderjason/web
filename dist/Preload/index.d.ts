@@ -8,7 +8,7 @@ export interface FontStyle {
 }
 export declare class Preload extends Actor<void> {
     private static _instance;
-    static instance(): Preload;
+    static get instance(): Preload;
     readonly didLoadImage: TypedEvent<string>;
     readonly didLoadFont: TypedEvent<FontStyle>;
     private _isReady;

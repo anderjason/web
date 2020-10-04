@@ -19,7 +19,7 @@ class Preload extends skytree_1.Actor {
         this._loadingFontSet = new Set();
         this._requestedFontSet = new Set();
     }
-    static instance() {
+    static get instance() {
         if (this._instance == null) {
             this._instance = new Preload();
             this._instance.activate();

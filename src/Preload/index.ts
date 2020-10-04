@@ -75,7 +75,7 @@ export class Preload extends Actor<void> {
 
   toPreloadedImageUrl(imageUrl: string): Observable<string> {
     if (!this._imageDataUrlByUrl.has(imageUrl)) {
-      throw new Error("Add the image with addImage() first");
+      this.addImage(imageUrl);
     }
 
     return this._imageDataUrlByUrl.get(imageUrl);
@@ -83,7 +83,7 @@ export class Preload extends Actor<void> {
 
   ensureImageLoaded(imageUrl: string): Promise<void> {
     if (!this._imageDataUrlByUrl.has(imageUrl)) {
-      throw new Error("Add the image with addImage() first");
+      this.addImage(imageUrl);
     }
 
     return new Promise((resolve) => {

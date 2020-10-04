@@ -47,13 +47,13 @@ class Preload extends skytree_1.Actor {
     }
     toPreloadedImageUrl(imageUrl) {
         if (!this._imageDataUrlByUrl.has(imageUrl)) {
-            throw new Error("Add the image with addImage() first");
+            this.addImage(imageUrl);
         }
         return this._imageDataUrlByUrl.get(imageUrl);
     }
     ensureImageLoaded(imageUrl) {
         if (!this._imageDataUrlByUrl.has(imageUrl)) {
-            throw new Error("Add the image with addImage() first");
+            this.addImage(imageUrl);
         }
         return new Promise((resolve) => {
             const observable = this.toPreloadedImageUrl(imageUrl);

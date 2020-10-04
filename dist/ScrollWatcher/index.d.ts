@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Point2 } from "@anderjason/geometry";
 export interface InternalScrollWatcherProps {
@@ -8,7 +8,7 @@ export interface InternalScrollWatcherProps {
 export interface ScrollWatcherProps {
     element?: HTMLElement | Observable<HTMLElement>;
 }
-export declare class ScrollWatcher extends ManagedObject<ScrollWatcherProps> {
+export declare class ScrollWatcher extends Actor<ScrollWatcherProps> {
     private _position;
     readonly position: ReadOnlyObservable<Point2>;
     private _element;

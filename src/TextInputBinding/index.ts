@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable } from "@anderjason/observable";
 
 export interface TextInputBindingProps<T> {
@@ -12,9 +12,7 @@ export interface TextInputBindingProps<T> {
 
 const allowAll = () => false;
 
-export class TextInputBinding<T> extends ManagedObject<
-  TextInputBindingProps<T>
-> {
+export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
   readonly value: Observable<T>;
 
   private _shouldPreventChange: (displayText: string, value: T) => boolean;

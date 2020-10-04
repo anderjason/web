@@ -4,7 +4,7 @@ exports.KeyboardShortcut = void 0;
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
 const KeyboardWatcher_1 = require("../KeyboardWatcher");
-class KeyboardShortcut extends skytree_1.ManagedObject {
+class KeyboardShortcut extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._isPressed = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);

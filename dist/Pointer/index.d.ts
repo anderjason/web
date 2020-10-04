@@ -1,6 +1,6 @@
 import { Point2 } from "@anderjason/geometry";
 import { Observable, ReadOnlyObservable, Receipt, TypedEvent } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 export interface TouchPoints {
     first?: Point2;
     second?: Point2;
@@ -12,9 +12,9 @@ export interface TouchSupportEvent {
     namedTouchPoint: NamedTouchPoint;
     target?: Element;
 }
-export declare class PointerWatcher extends ManagedObject<void> {
+export declare class Pointer extends Actor<void> {
     private static _instance;
-    static get instance(): PointerWatcher;
+    static get instance(): Pointer;
     readonly points: Observable<TouchPoints>;
     readonly didClick: TypedEvent<TouchSupportEvent>;
     readonly didSingleClick: TypedEvent<TouchSupportEvent>;

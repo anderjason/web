@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable } from "@anderjason/observable";
 export interface TextInputBindingProps<T> {
     inputElement: HTMLElement;
@@ -7,7 +7,7 @@ export interface TextInputBindingProps<T> {
     value?: Observable<T>;
     shouldPreventChange?: (displayText: string, value: T) => boolean;
 }
-export declare class TextInputBinding<T> extends ManagedObject<TextInputBindingProps<T>> {
+export declare class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
     readonly value: Observable<T>;
     private _shouldPreventChange;
     private _previousValue;

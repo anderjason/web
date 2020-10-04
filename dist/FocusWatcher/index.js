@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FocusWatcher = void 0;
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
-class FocusWatcher extends skytree_1.ManagedObject {
+class FocusWatcher extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._output =

@@ -4,6 +4,9 @@ import {
   TypedEvent,
 } from "@anderjason/observable";
 import * as FontFaceObserver from "fontfaceobserver";
+import { Actor, SequentialWorker } from "skytree";
+import { blobGivenUrl } from "../NetworkUtil/_internal/blobGivenUrl";
+import { dataUrlGivenBlob } from "../NetworkUtil/_internal/dataUrlGivenBlob";
 
 export interface FontStyle {
   url: string;
@@ -12,8 +15,17 @@ export interface FontStyle {
   style?: "normal" | "italic";
 }
 
-export class Preload {
-  static readonly instance = new Preload();
+export class Preload extends Actor<void> {
+  private static _instance: Preload;
+
+  static instance(): Preload {
+    if (this._instance == null) {
+      this._instance = new Preload();
+      this._instance.activate();
+    }
+
+    return this._instance;
+  }
 
   readonly didLoadImage = new TypedEvent<string>();
   readonly didLoadFont = new TypedEvent<FontStyle>();
@@ -21,42 +33,37 @@ export class Preload {
   private _isReady = Observable.givenValue(true, Observable.isStrictEqual);
   readonly isReady = ReadOnlyObservable.givenObservable(this._isReady);
 
-  private _loadedImageSet = new Set<string>();
-  private _loadedFontSet = new Set<FontStyle>();
+  private _imageDataUrlByUrl = new Map<string, Observable<string>>();
+  private _sequenceWorker: SequentialWorker;
 
+  private _loadedFontSet = new Set<FontStyle>();
   private _loadingImageSet = new Set<string>();
   private _loadingFontSet = new Set<FontStyle>();
-
-  private _requestedImageSet = new Set<string>();
   private _requestedFontSet = new Set<FontStyle>();
 
-  get loadedImageSet(): Set<string> {
-    return this._loadedImageSet;
-  }
-
-  get loadedFontSet(): Set<FontStyle> {
-    return this._loadedFontSet;
-  }
-
-  get loadingImageSet(): Set<string> {
-    return this._loadingImageSet;
-  }
-
-  get loadingFontSet(): Set<FontStyle> {
-    return this._loadingFontSet;
-  }
-
-  addImage(url: string): void {
-    if (this._requestedImageSet.has(url)) {
+  addImage(url: string, priority: number = 5): void {
+    if (this._imageDataUrlByUrl.has(url)) {
       return;
     }
 
+    this._imageDataUrlByUrl.set(
+      url,
+      Observable.ofEmpty<string>(Observable.isStrictEqual)
+    );
+
+    this._loadingImageSet.add(url);
     this._isReady.setValue(false);
-    this._requestedImageSet.add(url);
-    this.loadImage(url);
+
+    this._sequenceWorker.addWork(
+      async () => {
+        await this.loadImage(url);
+      },
+      undefined,
+      priority
+    );
   }
 
-  addFont(fontStyle: FontStyle): void {
+  addFont(fontStyle: FontStyle, priority: number = 5): void {
     if (this._requestedFontSet.has(fontStyle)) {
       return;
     }
@@ -64,6 +71,34 @@ export class Preload {
     this._isReady.setValue(false);
     this._requestedFontSet.add(fontStyle);
     this.loadGoogleFont(fontStyle);
+  }
+
+  toPreloadedImageUrl(imageUrl: string): Observable<string> {
+    if (!this._imageDataUrlByUrl.has(imageUrl)) {
+      throw new Error("Add the image with addImage() first");
+    }
+
+    return this._imageDataUrlByUrl.get(imageUrl);
+  }
+
+  ensureImageLoaded(imageUrl: string): Promise<void> {
+    if (!this._imageDataUrlByUrl.has(imageUrl)) {
+      throw new Error("Add the image with addImage() first");
+    }
+
+    return new Promise((resolve) => {
+      const observable = this.toPreloadedImageUrl(imageUrl);
+      const receipt = observable.didChange.subscribe((value) => {
+        if (value == null) {
+          return;
+        }
+
+        setTimeout(() => {
+          receipt.cancel();
+          resolve();
+        }, 1);
+      }, true);
+    });
   }
 
   ensureFontLoaded(fontStyle: FontStyle): Promise<void> {
@@ -104,21 +139,13 @@ export class Preload {
     });
   }
 
-  private loadImage(url: string): void {
-    if (this._loadingImageSet.has(url) || this._loadedImageSet.has(url)) {
-      return;
-    }
+  private async loadImage(url: string): Promise<void> {
+    const blob = await blobGivenUrl(url);
+    const dataUrl = await dataUrlGivenBlob(blob);
 
-    this._loadingImageSet.add(url);
-
-    const img = document.createElement("img");
-    img.onload = () => {
-      this._loadingImageSet.delete(url);
-      this._loadedImageSet.add(url);
-      this.didLoadImage.emit(url);
-      this.checkReady();
-    };
-    img.src = url;
+    this._imageDataUrlByUrl.get(url).setValue(dataUrl);
+    this.didLoadImage.emit(url);
+    this.checkReady();
   }
 
   private loadGoogleFont(fontStyle: FontStyle): void {

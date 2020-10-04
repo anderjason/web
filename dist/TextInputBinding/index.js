@@ -4,7 +4,7 @@ exports.TextInputBinding = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const allowAll = () => false;
-class TextInputBinding extends skytree_1.ManagedObject {
+class TextInputBinding extends skytree_1.Actor {
     constructor(props) {
         super(props);
         if (props.inputElement == null) {

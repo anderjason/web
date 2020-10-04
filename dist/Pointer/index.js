@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PointerWatcher = void 0;
+exports.Pointer = void 0;
 const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
 const PendingClick_1 = require("./PendingClick");
 const TouchVisualizer_1 = require("./TouchVisualizer");
-class PointerWatcher extends skytree_1.ManagedObject {
+class Pointer extends skytree_1.Actor {
     constructor() {
         super();
         this.points = observable_1.Observable.givenValue({});
@@ -107,23 +107,23 @@ class PointerWatcher extends skytree_1.ManagedObject {
         };
     }
     static get instance() {
-        if (PointerWatcher._instance == null) {
-            PointerWatcher._instance = new PointerWatcher();
-            PointerWatcher._instance.activate();
+        if (Pointer._instance == null) {
+            Pointer._instance = new Pointer();
+            Pointer._instance.activate();
         }
         return this._instance;
     }
     onActivate() {
         if (window.location.hostname === "localhost" ||
             window.location.hostname === "192.168.1.100") {
-            this.addManagedObject(new TouchVisualizer_1.TouchVisualizer({
+            this.addActor(new TouchVisualizer_1.TouchVisualizer({
                 touchSupport: this,
             }));
         }
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this._referenceCountByTarget.clear();
         }));
-        this._pendingClick = this.addManagedObject(new PendingClick_1.PendingClick());
+        this._pendingClick = this.addActor(new PendingClick_1.PendingClick());
         this.cancelOnDeactivate(this._pendingClick.didClick.subscribe((screenPoint) => {
             this.onClick(screenPoint);
         }));
@@ -258,5 +258,5 @@ class PointerWatcher extends skytree_1.ManagedObject {
         });
     }
 }
-exports.PointerWatcher = PointerWatcher;
+exports.Pointer = Pointer;
 //# sourceMappingURL=index.js.map

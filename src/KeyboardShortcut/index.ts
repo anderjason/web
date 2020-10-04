@@ -1,5 +1,5 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { KeyboardWatcher } from "../KeyboardWatcher";
 
 export type KeyCombination = string[];
@@ -9,7 +9,7 @@ export interface KeyboardShortcutProps {
   onPress: () => void;
 }
 
-export class KeyboardShortcut extends ManagedObject<KeyboardShortcutProps> {
+export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
   static givenKey(key: string, onPress: () => void): KeyboardShortcut {
     const keyCombination: KeyCombination = [key];
     return KeyboardShortcut.givenKeyCombination(keyCombination, onPress);

@@ -1,10 +1,10 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 
 export interface EveryFrameProps {
   callback: (frameNumber: number) => void;
 }
 
-export class EveryFrame extends ManagedObject<EveryFrameProps> {
+export class EveryFrame extends Actor<EveryFrameProps> {
   onActivate() {
     let frameNumber: number = 0;
 

@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { TypedEvent, Receipt } from "@anderjason/observable";
 import { Point2 } from "@anderjason/geometry";
 import { Debounce, Duration } from "@anderjason/time";
@@ -18,7 +18,7 @@ function pointIsNearPoint(
 
 type PendingClickState = "idle" | "down" | "click" | "down2";
 
-export class PendingClick extends ManagedObject<void> {
+export class PendingClick extends Actor<void> {
   readonly didClick = new TypedEvent<Point2>();
   readonly didSingleClick = new TypedEvent<Point2>();
   readonly didDoubleClick = new TypedEvent<Point2>();

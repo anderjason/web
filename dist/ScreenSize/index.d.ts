@@ -1,7 +1,7 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Size2 } from "@anderjason/geometry";
-import { ManagedObject } from "skytree";
-export declare class ScreenSize extends ManagedObject<void> {
+import { Actor } from "skytree";
+export declare class ScreenSize extends Actor<void> {
     private static _instance;
     static get instance(): ScreenSize;
     private _measureScrollbarLater;

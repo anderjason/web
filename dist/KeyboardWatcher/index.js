@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KeyboardWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
-class KeyboardWatcher extends skytree_1.ManagedObject {
+class KeyboardWatcher extends skytree_1.Actor {
     constructor() {
         super();
         this._keys = observable_1.ObservableSet.ofEmpty();

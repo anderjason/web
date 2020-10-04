@@ -3,7 +3,7 @@ import {
   ReadOnlyObservable,
   Receipt,
 } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 
 export interface FocusWatcherProps {
   element: HTMLInputElement | HTMLTextAreaElement;
@@ -11,7 +11,7 @@ export interface FocusWatcherProps {
   output?: Observable<boolean>;
 }
 
-export class FocusWatcher extends ManagedObject<FocusWatcherProps> {
+export class FocusWatcher extends Actor<FocusWatcherProps> {
   private _output: Observable<boolean>;
   readonly output: ReadOnlyObservable<boolean>;
 

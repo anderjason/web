@@ -5,7 +5,7 @@ import {
   Receipt,
   TypedEvent,
 } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { PendingClick } from "./PendingClick";
 import { TouchVisualizer } from "./TouchVisualizer";
 
@@ -24,13 +24,13 @@ export interface TouchSupportEvent {
   target?: Element;
 }
 
-export class PointerWatcher extends ManagedObject<void> {
-  private static _instance: PointerWatcher;
+export class Pointer extends Actor<void> {
+  private static _instance: Pointer;
 
-  static get instance(): PointerWatcher {
-    if (PointerWatcher._instance == null) {
-      PointerWatcher._instance = new PointerWatcher();
-      PointerWatcher._instance.activate();
+  static get instance(): Pointer {
+    if (Pointer._instance == null) {
+      Pointer._instance = new Pointer();
+      Pointer._instance.activate();
     }
 
     return this._instance;
@@ -68,7 +68,7 @@ export class PointerWatcher extends ManagedObject<void> {
       window.location.hostname === "localhost" ||
       window.location.hostname === "192.168.1.100"
     ) {
-      this.addManagedObject(
+      this.addActor(
         new TouchVisualizer({
           touchSupport: this,
         })
@@ -81,7 +81,7 @@ export class PointerWatcher extends ManagedObject<void> {
       })
     );
 
-    this._pendingClick = this.addManagedObject(new PendingClick());
+    this._pendingClick = this.addActor(new PendingClick());
 
     this.cancelOnDeactivate(
       this._pendingClick.didClick.subscribe((screenPoint) => {

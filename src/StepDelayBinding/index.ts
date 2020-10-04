@@ -3,7 +3,7 @@ import {
   ObservableBase,
   ReadOnlyObservable,
 } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 
 export interface StepDelayBindingProps<T> {
   input: ObservableBase<T>;
@@ -12,9 +12,7 @@ export interface StepDelayBindingProps<T> {
   output?: Observable<T>;
 }
 
-export class StepDelayBinding<T> extends ManagedObject<
-  StepDelayBindingProps<T>
-> {
+export class StepDelayBinding<T> extends Actor<StepDelayBindingProps<T>> {
   private _output: Observable<T>;
   readonly output: ReadOnlyObservable<T>;
 

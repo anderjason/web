@@ -30,6 +30,14 @@
 
 `TODO`
 
+### FocusWatcher
+
+`TODO`
+
+### ImageCache
+
+`TODO`
+
 ### KeyboardShortcut
 
 `TODO`
@@ -47,6 +55,10 @@
 `TODO`
 
 ### NetworkUtil
+
+`TODO`
+
+### PanGesture
 
 `TODO`
 

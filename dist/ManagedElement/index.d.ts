@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Receipt, Observable, ObservableSet } from "@anderjason/observable";
 export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap> {
     tagName: K;
@@ -6,7 +6,7 @@ export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap>
     classNames?: string[] | ObservableSet<string>;
     transitionOut?: () => Promise<void>;
 }
-export declare class ManagedElement<T extends HTMLElement> extends ManagedObject {
+export declare class ManagedElement<T extends HTMLElement> extends Actor {
     readonly element: T;
     readonly parentElement: Observable<HTMLElement>;
     readonly classes: ObservableSet<string>;

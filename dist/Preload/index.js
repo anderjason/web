@@ -3,46 +3,70 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Preload = void 0;
 const observable_1 = require("@anderjason/observable");
 const FontFaceObserver = require("fontfaceobserver");
-class Preload {
+const skytree_1 = require("skytree");
+const blobGivenUrl_1 = require("../NetworkUtil/_internal/blobGivenUrl");
+const dataUrlGivenBlob_1 = require("../NetworkUtil/_internal/dataUrlGivenBlob");
+class Preload extends skytree_1.Actor {
     constructor() {
+        super(...arguments);
         this.didLoadImage = new observable_1.TypedEvent();
         this.didLoadFont = new observable_1.TypedEvent();
         this._isReady = observable_1.Observable.givenValue(true, observable_1.Observable.isStrictEqual);
         this.isReady = observable_1.ReadOnlyObservable.givenObservable(this._isReady);
-        this._loadedImageSet = new Set();
+        this._imageDataUrlByUrl = new Map();
         this._loadedFontSet = new Set();
         this._loadingImageSet = new Set();
         this._loadingFontSet = new Set();
-        this._requestedImageSet = new Set();
         this._requestedFontSet = new Set();
     }
-    get loadedImageSet() {
-        return this._loadedImageSet;
+    static instance() {
+        if (this._instance == null) {
+            this._instance = new Preload();
+            this._instance.activate();
+        }
+        return this._instance;
     }
-    get loadedFontSet() {
-        return this._loadedFontSet;
-    }
-    get loadingImageSet() {
-        return this._loadingImageSet;
-    }
-    get loadingFontSet() {
-        return this._loadingFontSet;
-    }
-    addImage(url) {
-        if (this._requestedImageSet.has(url)) {
+    addImage(url, priority = 5) {
+        if (this._imageDataUrlByUrl.has(url)) {
             return;
         }
+        this._imageDataUrlByUrl.set(url, observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual));
+        this._loadingImageSet.add(url);
         this._isReady.setValue(false);
-        this._requestedImageSet.add(url);
-        this.loadImage(url);
+        this._sequenceWorker.addWork(async () => {
+            await this.loadImage(url);
+        }, undefined, priority);
     }
-    addFont(fontStyle) {
+    addFont(fontStyle, priority = 5) {
         if (this._requestedFontSet.has(fontStyle)) {
             return;
         }
         this._isReady.setValue(false);
         this._requestedFontSet.add(fontStyle);
         this.loadGoogleFont(fontStyle);
+    }
+    toPreloadedImageUrl(imageUrl) {
+        if (!this._imageDataUrlByUrl.has(imageUrl)) {
+            throw new Error("Add the image with addImage() first");
+        }
+        return this._imageDataUrlByUrl.get(imageUrl);
+    }
+    ensureImageLoaded(imageUrl) {
+        if (!this._imageDataUrlByUrl.has(imageUrl)) {
+            throw new Error("Add the image with addImage() first");
+        }
+        return new Promise((resolve) => {
+            const observable = this.toPreloadedImageUrl(imageUrl);
+            const receipt = observable.didChange.subscribe((value) => {
+                if (value == null) {
+                    return;
+                }
+                setTimeout(() => {
+                    receipt.cancel();
+                    resolve();
+                }, 1);
+            }, true);
+        });
     }
     ensureFontLoaded(fontStyle) {
         if (this._loadedFontSet.has(fontStyle)) {
@@ -73,19 +97,12 @@ class Preload {
             });
         });
     }
-    loadImage(url) {
-        if (this._loadingImageSet.has(url) || this._loadedImageSet.has(url)) {
-            return;
-        }
-        this._loadingImageSet.add(url);
-        const img = document.createElement("img");
-        img.onload = () => {
-            this._loadingImageSet.delete(url);
-            this._loadedImageSet.add(url);
-            this.didLoadImage.emit(url);
-            this.checkReady();
-        };
-        img.src = url;
+    async loadImage(url) {
+        const blob = await blobGivenUrl_1.blobGivenUrl(url);
+        const dataUrl = await dataUrlGivenBlob_1.dataUrlGivenBlob(blob);
+        this._imageDataUrlByUrl.get(url).setValue(dataUrl);
+        this.didLoadImage.emit(url);
+        this.checkReady();
     }
     loadGoogleFont(fontStyle) {
         if (fontStyle == null) {
@@ -117,5 +134,4 @@ class Preload {
     }
 }
 exports.Preload = Preload;
-Preload.instance = new Preload();
 //# sourceMappingURL=index.js.map

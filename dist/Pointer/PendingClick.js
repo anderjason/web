@@ -11,7 +11,7 @@ function pointIsNearPoint(a, b, threshold = 4) {
     const distance = a.toDistance(b);
     return distance < threshold;
 }
-class PendingClick extends skytree_1.ManagedObject {
+class PendingClick extends skytree_1.Actor {
     constructor() {
         super();
         this.didClick = new observable_1.TypedEvent();

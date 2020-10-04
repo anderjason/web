@@ -4,7 +4,7 @@ exports.ScrollWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
-class InternalScrollWatcher extends skytree_1.ManagedObject {
+class InternalScrollWatcher extends skytree_1.Actor {
     onActivate() {
         const onScroll = () => {
             this.props.position.setValue(geometry_1.Point2.givenXY(this.props.element.scrollLeft, this.props.element.scrollTop));
@@ -17,7 +17,7 @@ class InternalScrollWatcher extends skytree_1.ManagedObject {
         }));
     }
 }
-class ScrollWatcher extends skytree_1.ManagedObject {
+class ScrollWatcher extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._position = observable_1.Observable.ofEmpty(geometry_1.Point2.isEqual);
@@ -32,11 +32,11 @@ class ScrollWatcher extends skytree_1.ManagedObject {
     onActivate() {
         this.cancelOnDeactivate(this._element.didChange.subscribe((element) => {
             if (this._activeWatcher != null) {
-                this.removeManagedObject(this._activeWatcher);
+                this.removeActor(this._activeWatcher);
                 this._activeWatcher = undefined;
             }
             if (element != null) {
-                this._activeWatcher = this.addManagedObject(new InternalScrollWatcher({
+                this._activeWatcher = this.addActor(new InternalScrollWatcher({
                     element,
                     position: this._position,
                 }));

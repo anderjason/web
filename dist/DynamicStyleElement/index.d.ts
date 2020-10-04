@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable, Receipt } from "@anderjason/observable";
 import { ManagedElement } from "../ManagedElement";
 export interface DynamicStyleElementDefinition<K extends keyof HTMLElementTagNameMap> {
@@ -8,7 +8,7 @@ export interface DynamicStyleElementDefinition<K extends keyof HTMLElementTagNam
     constantClassNames?: string[];
     transitionOut?: () => Promise<void>;
 }
-export declare class DynamicStyleElement<T extends HTMLElement> extends ManagedObject {
+export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     readonly parentElement: Observable<HTMLElement>;
     readonly tagName: keyof HTMLElementTagNameMap;
     static givenDefinition<K extends keyof HTMLElementTagNameMap>(definition: DynamicStyleElementDefinition<K>): DynamicStyleElement<HTMLElementTagNameMap[K]>;

@@ -4,7 +4,7 @@ exports.DynamicStyleElement = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const ManagedElement_1 = require("../ManagedElement");
-class DynamicStyleElement extends skytree_1.ManagedObject {
+class DynamicStyleElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
         this._modifiers = new Set();
@@ -40,7 +40,7 @@ class DynamicStyleElement extends skytree_1.ManagedObject {
         return this._managedElement;
     }
     onActivate() {
-        this._managedElement = this.addManagedObject(ManagedElement_1.ManagedElement.givenDefinition({
+        this._managedElement = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,
             transitionOut: this._transitionOut,

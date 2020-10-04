@@ -3,19 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TouchVisualizer = void 0;
 const skytree_1 = require("skytree");
 const ElementStyle_1 = require("../ElementStyle");
-class TouchVisualizer extends skytree_1.ManagedObject {
+class TouchVisualizer extends skytree_1.Actor {
     onActivate() {
-        const wrapper = this.addManagedObject(WrapperStyle.toManagedElement({
+        const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: document.body,
         }));
         wrapper.element.id = "TouchVisualizer";
-        const point1 = this.addManagedObject(PointStyle.toManagedElement({
+        const point1 = this.addActor(PointStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
         }));
         point1.style.backgroundColor = "red";
-        const point2 = this.addManagedObject(PointStyle.toManagedElement({
+        const point2 = this.addActor(PointStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
         }));

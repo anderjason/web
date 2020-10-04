@@ -1,9 +1,9 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { Duration, Debounce } from "@anderjason/time";
 import { Size2 } from "@anderjason/geometry";
-import { ConditionalInitializer, ManagedObject, Timer } from "skytree";
+import { ConditionalActivator, Actor, Timer } from "skytree";
 
-export class ScreenSize extends ManagedObject<void> {
+export class ScreenSize extends Actor<void> {
   private static _instance: ScreenSize;
 
   static get instance(): ScreenSize {
@@ -54,11 +54,11 @@ export class ScreenSize extends ManagedObject<void> {
       });
     }
 
-    this.addManagedObject(
-      new ConditionalInitializer({
+    this.addActor(
+      new ConditionalActivator({
         input: this.isPollingEnabled,
         fn: (v) => v,
-        instance: new Timer({
+        actor: new Timer({
           fn: () => {
             this.recalculateSize();
           },

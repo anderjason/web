@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManagedElement = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
-class ManagedElement extends skytree_1.ManagedObject {
+class ManagedElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
         this.element = document.createElement(definition.tagName);

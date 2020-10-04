@@ -5,7 +5,7 @@ const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const geometry_1 = require("@anderjason/geometry");
 const skytree_1 = require("skytree");
-class ScreenSize extends skytree_1.ManagedObject {
+class ScreenSize extends skytree_1.Actor {
     constructor() {
         super();
         this._availableSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
@@ -28,10 +28,10 @@ class ScreenSize extends skytree_1.ManagedObject {
                 this.recalculateSize();
             });
         }
-        this.addManagedObject(new skytree_1.ConditionalInitializer({
+        this.addActor(new skytree_1.ConditionalActivator({
             input: this.isPollingEnabled,
             fn: (v) => v,
-            instance: new skytree_1.Timer({
+            actor: new skytree_1.Timer({
                 fn: () => {
                     this.recalculateSize();
                 },

@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import {
   Observable,
   ReadOnlyObservable,
@@ -11,7 +11,7 @@ export interface InternalScrollWatcherProps {
   position: Observable<Point2>;
 }
 
-class InternalScrollWatcher extends ManagedObject<InternalScrollWatcherProps> {
+class InternalScrollWatcher extends Actor<InternalScrollWatcherProps> {
   onActivate() {
     const onScroll = () => {
       this.props.position.setValue(
@@ -38,7 +38,7 @@ export interface ScrollWatcherProps {
   element?: HTMLElement | Observable<HTMLElement>;
 }
 
-export class ScrollWatcher extends ManagedObject<ScrollWatcherProps> {
+export class ScrollWatcher extends Actor<ScrollWatcherProps> {
   private _position = Observable.ofEmpty<Point2>(Point2.isEqual);
   readonly position = ReadOnlyObservable.givenObservable(this._position);
 
@@ -59,12 +59,12 @@ export class ScrollWatcher extends ManagedObject<ScrollWatcherProps> {
     this.cancelOnDeactivate(
       this._element.didChange.subscribe((element) => {
         if (this._activeWatcher != null) {
-          this.removeManagedObject(this._activeWatcher);
+          this.removeActor(this._activeWatcher);
           this._activeWatcher = undefined;
         }
 
         if (element != null) {
-          this._activeWatcher = this.addManagedObject(
+          this._activeWatcher = this.addActor(
             new InternalScrollWatcher({
               element,
               position: this._position,

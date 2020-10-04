@@ -1,11 +1,11 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import {
   ObservableSet,
   ReadOnlyObservableSet,
   Receipt,
 } from "@anderjason/observable";
 
-export class KeyboardWatcher extends ManagedObject<void> {
+export class KeyboardWatcher extends Actor<void> {
   private static _instance: KeyboardWatcher;
 
   static get instance(): KeyboardWatcher {

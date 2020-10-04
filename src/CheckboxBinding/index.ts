@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable } from "@anderjason/observable";
 
 export interface CheckboxBindingProps {
@@ -10,7 +10,7 @@ export interface CheckboxBindingProps {
 
 const allowAll = () => false;
 
-export class CheckboxBinding extends ManagedObject<CheckboxBindingProps> {
+export class CheckboxBinding extends Actor<CheckboxBindingProps> {
   readonly isChecked: Observable<boolean>;
   readonly inputElement: HTMLInputElement;
 

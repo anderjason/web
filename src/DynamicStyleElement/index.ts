@@ -1,4 +1,4 @@
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Observable, Receipt } from "@anderjason/observable";
 import { ManagedElement } from "../ManagedElement";
 
@@ -13,7 +13,7 @@ export interface DynamicStyleElementDefinition<
   transitionOut?: () => Promise<void>;
 }
 
-export class DynamicStyleElement<T extends HTMLElement> extends ManagedObject {
+export class DynamicStyleElement<T extends HTMLElement> extends Actor {
   readonly parentElement: Observable<HTMLElement>;
   readonly tagName: keyof HTMLElementTagNameMap;
 
@@ -65,7 +65,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends ManagedObject {
   }
 
   onActivate() {
-    this._managedElement = this.addManagedObject(
+    this._managedElement = this.addActor(
       ManagedElement.givenDefinition({
         tagName: this.tagName,
         parentElement: this.parentElement,

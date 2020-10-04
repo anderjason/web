@@ -1,14 +1,14 @@
-import { ManagedObject } from "skytree";
-import { PointerWatcher } from ".";
+import { Actor } from "skytree";
+import { Pointer } from ".";
 import { ElementStyle } from "../ElementStyle";
 
 export interface TouchVisualizerDefinition {
-  touchSupport: PointerWatcher;
+  touchSupport: Pointer;
 }
 
-export class TouchVisualizer extends ManagedObject<TouchVisualizerDefinition> {
+export class TouchVisualizer extends Actor<TouchVisualizerDefinition> {
   onActivate() {
-    const wrapper = this.addManagedObject(
+    const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
         tagName: "div",
         parentElement: document.body,
@@ -16,7 +16,7 @@ export class TouchVisualizer extends ManagedObject<TouchVisualizerDefinition> {
     );
     wrapper.element.id = "TouchVisualizer";
 
-    const point1 = this.addManagedObject(
+    const point1 = this.addActor(
       PointStyle.toManagedElement({
         tagName: "div",
         parentElement: wrapper.element,
@@ -24,7 +24,7 @@ export class TouchVisualizer extends ManagedObject<TouchVisualizerDefinition> {
     );
     point1.style.backgroundColor = "red";
 
-    const point2 = this.addManagedObject(
+    const point2 = this.addActor(
       PointStyle.toManagedElement({
         tagName: "div",
         parentElement: wrapper.element,

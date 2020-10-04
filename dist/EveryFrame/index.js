@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EveryFrame = void 0;
 const skytree_1 = require("skytree");
-class EveryFrame extends skytree_1.ManagedObject {
+class EveryFrame extends skytree_1.Actor {
     onActivate() {
         let frameNumber = 0;
         const nextFrame = () => {

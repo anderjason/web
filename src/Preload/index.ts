@@ -34,12 +34,16 @@ export class Preload extends Actor<void> {
   readonly isReady = ReadOnlyObservable.givenObservable(this._isReady);
 
   private _imageDataUrlByUrl = new Map<string, Observable<string>>();
-  private _sequenceWorker: SequentialWorker;
+  private _sequentialWorker: SequentialWorker;
 
   private _loadedFontSet = new Set<FontStyle>();
   private _loadingImageSet = new Set<string>();
   private _loadingFontSet = new Set<FontStyle>();
   private _requestedFontSet = new Set<FontStyle>();
+
+  onActivate() {
+    this._sequentialWorker = this.addActor(new SequentialWorker({}));
+  }
 
   addImage(url: string, priority: number = 5): void {
     if (this._imageDataUrlByUrl.has(url)) {
@@ -54,7 +58,7 @@ export class Preload extends Actor<void> {
     this._loadingImageSet.add(url);
     this._isReady.setValue(false);
 
-    this._sequenceWorker.addWork(
+    this._sequentialWorker.addWork(
       async () => {
         await this.loadImage(url);
       },

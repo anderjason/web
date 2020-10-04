@@ -14,11 +14,12 @@ export declare class Preload extends Actor<void> {
     private _isReady;
     readonly isReady: ReadOnlyObservable<boolean>;
     private _imageDataUrlByUrl;
-    private _sequenceWorker;
+    private _sequentialWorker;
     private _loadedFontSet;
     private _loadingImageSet;
     private _loadingFontSet;
     private _requestedFontSet;
+    onActivate(): void;
     addImage(url: string, priority?: number): void;
     addFont(fontStyle: FontStyle, priority?: number): void;
     toPreloadedImageUrl(imageUrl: string): Observable<string>;

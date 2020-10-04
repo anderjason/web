@@ -26,6 +26,9 @@ class Preload extends skytree_1.Actor {
         }
         return this._instance;
     }
+    onActivate() {
+        this._sequentialWorker = this.addActor(new skytree_1.SequentialWorker({}));
+    }
     addImage(url, priority = 5) {
         if (this._imageDataUrlByUrl.has(url)) {
             return;
@@ -33,7 +36,7 @@ class Preload extends skytree_1.Actor {
         this._imageDataUrlByUrl.set(url, observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual));
         this._loadingImageSet.add(url);
         this._isReady.setValue(false);
-        this._sequenceWorker.addWork(async () => {
+        this._sequentialWorker.addWork(async () => {
             await this.loadImage(url);
         }, undefined, priority);
     }

@@ -1,8 +1,8 @@
 import { Actor } from "skytree";
 import { Pointer } from ".";
-export interface TouchVisualizerDefinition {
+export interface TouchVisualizerProps {
     touchSupport: Pointer;
 }
-export declare class TouchVisualizer extends Actor<TouchVisualizerDefinition> {
+export declare class TouchVisualizer extends Actor<TouchVisualizerProps> {
     onActivate(): void;
 }

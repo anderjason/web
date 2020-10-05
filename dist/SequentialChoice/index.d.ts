@@ -1,5 +1,5 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
-export interface SequentialChoiceDefinition<T> {
+export interface SequentialChoiceProps<T> {
     options: T[];
     output?: Observable<T>;
 }
@@ -11,7 +11,7 @@ export declare class SequentialChoice<T> {
     readonly previousOption: ReadOnlyObservable<T>;
     private _currentIdx;
     private props;
-    constructor(props: SequentialChoiceDefinition<T>);
+    constructor(props: SequentialChoiceProps<T>);
     private setCurrentIndex;
     selectNextOption: () => void;
     selectPreviousOption: () => void;

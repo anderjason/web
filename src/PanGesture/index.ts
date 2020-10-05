@@ -4,11 +4,11 @@ import { Pointer } from "../Pointer";
 
 export type PanGestureHandler = (delta: Vector2) => void;
 
-export interface PanGestureDefinition {
+export interface PanGestureProps {
   onPan: PanGestureHandler;
 }
 
-export class PanGesture extends Actor<PanGestureDefinition> {
+export class PanGesture extends Actor<PanGestureProps> {
   onActivate() {
     this.cancelOnDeactivate(
       Pointer.instance.points.didChange.subscribe((points, lastPoints) => {

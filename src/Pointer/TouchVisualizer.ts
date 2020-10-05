@@ -2,11 +2,11 @@ import { Actor } from "skytree";
 import { Pointer } from ".";
 import { ElementStyle } from "../ElementStyle";
 
-export interface TouchVisualizerDefinition {
+export interface TouchVisualizerProps {
   touchSupport: Pointer;
 }
 
-export class TouchVisualizer extends Actor<TouchVisualizerDefinition> {
+export class TouchVisualizer extends Actor<TouchVisualizerProps> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
@@ -54,12 +54,12 @@ export class TouchVisualizer extends Actor<TouchVisualizerDefinition> {
 
 const WrapperStyle = ElementStyle.givenDefinition({
   css: `
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
     bottom: 0;
+    left: 0;
     pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
     user-select: none;
     z-index: 1000;
   `,
@@ -67,15 +67,15 @@ const WrapperStyle = ElementStyle.givenDefinition({
 
 const PointStyle = ElementStyle.givenDefinition({
   css: `
-    position: absolute;
-    left: -17.5px;
-    top: -17.5px;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
     background: rgba(255,255,255,0.9);
+    border-radius: 50%;
     box-shadow: 0 0 0 5px rgba(255,255,255,.35);
     display: none;
+    height: 35px;
+    left: -17.5px;
+    position: absolute;
+    top: -17.5px;
+    width: 35px;
   `,
   modifiers: {
     isVisible: `

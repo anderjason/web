@@ -14,6 +14,7 @@ interface StyleToElementDefinition<K extends keyof HTMLElementTagNameMap> {
   tagName: K;
   parentElement?: HTMLElement | Observable<HTMLElement>;
 
+  transitionIn?: () => void;
   transitionOut?: () => Promise<void>;
 }
 

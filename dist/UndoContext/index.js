@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoManager = void 0;
+exports.UndoContext = void 0;
 const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
-class UndoManager {
+class UndoContext {
     constructor(initialValue, limit) {
         this._currentStep = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.currentStep = observable_1.ReadOnlyObservable.givenObservable(this._currentStep);
@@ -57,5 +57,5 @@ class UndoManager {
         this._canRedo.setValue(this._redoStack.length > 0);
     }
 }
-exports.UndoManager = UndoManager;
+exports.UndoContext = UndoContext;
 //# sourceMappingURL=index.js.map

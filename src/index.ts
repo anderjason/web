@@ -18,7 +18,7 @@ import { SequentialChoice } from "./SequentialChoice";
 import { StepDelayBinding } from "./StepDelayBinding";
 import { TextInputBinding } from "./TextInputBinding";
 import { Transform } from "./Transform";
-import { UndoManager } from "./UndoManager";
+import { UndoContext } from "./UndoContext";
 
 export {
   CanvasUtil,
@@ -41,5 +41,5 @@ export {
   StepDelayBinding,
   TextInputBinding,
   Transform,
-  UndoManager,
+  UndoContext,
 };

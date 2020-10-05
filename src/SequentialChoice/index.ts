@@ -1,6 +1,6 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 
-export interface SequentialChoiceDefinition<T> {
+export interface SequentialChoiceProps<T> {
   options: T[];
 
   output?: Observable<T>;
@@ -19,9 +19,9 @@ export class SequentialChoice<T> {
 
   private _currentIdx: number;
 
-  private props: SequentialChoiceDefinition<T>;
+  private props: SequentialChoiceProps<T>;
 
-  constructor(props: SequentialChoiceDefinition<T>) {
+  constructor(props: SequentialChoiceProps<T>) {
     this.props = props;
 
     this.currentOption =

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoManager = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScreenSize = exports.Preload = exports.Pointer = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardShortcut = exports.KeyboardWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScreenSize = exports.Preload = exports.Pointer = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardShortcut = exports.KeyboardWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -41,6 +41,6 @@ const TextInputBinding_1 = require("./TextInputBinding");
 Object.defineProperty(exports, "TextInputBinding", { enumerable: true, get: function () { return TextInputBinding_1.TextInputBinding; } });
 const Transform_1 = require("./Transform");
 Object.defineProperty(exports, "Transform", { enumerable: true, get: function () { return Transform_1.Transform; } });
-const UndoManager_1 = require("./UndoManager");
-Object.defineProperty(exports, "UndoManager", { enumerable: true, get: function () { return UndoManager_1.UndoManager; } });
+const UndoContext_1 = require("./UndoContext");
+Object.defineProperty(exports, "UndoContext", { enumerable: true, get: function () { return UndoContext_1.UndoContext; } });
 //# sourceMappingURL=index.js.map

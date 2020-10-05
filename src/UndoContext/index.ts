@@ -1,7 +1,7 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { ArrayUtil, ObjectUtil } from "@anderjason/util";
 
-export class UndoManager<T = any> {
+export class UndoContext<T = any> {
   private _currentStep = Observable.ofEmpty<T>(Observable.isStrictEqual);
   readonly currentStep = ReadOnlyObservable.givenObservable(this._currentStep);
 

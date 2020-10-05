@@ -1,5 +1,5 @@
 import { ReadOnlyObservable } from "@anderjason/observable";
-export declare class UndoManager<T = any> {
+export declare class UndoContext<T = any> {
     private _currentStep;
     readonly currentStep: ReadOnlyObservable<T>;
     private _undoStack;

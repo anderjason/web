@@ -18,5 +18,5 @@ import { SequentialChoice } from "./SequentialChoice";
 import { StepDelayBinding } from "./StepDelayBinding";
 import { TextInputBinding } from "./TextInputBinding";
 import { Transform } from "./Transform";
-import { UndoManager } from "./UndoManager";
-export { CanvasUtil, CheckboxBinding, Corners, DynamicStyleElement, ElementStyle, EveryFrame, FocusWatcher, KeyboardWatcher, KeyboardShortcut, LocationUtil, ManagedElement, NetworkUtil, Pointer, Preload, ScreenSize, ScrollWatcher, SequentialChoice, StepDelayBinding, TextInputBinding, Transform, UndoManager, };
+import { UndoContext } from "./UndoContext";
+export { CanvasUtil, CheckboxBinding, Corners, DynamicStyleElement, ElementStyle, EveryFrame, FocusWatcher, KeyboardWatcher, KeyboardShortcut, LocationUtil, ManagedElement, NetworkUtil, Pointer, Preload, ScreenSize, ScrollWatcher, SequentialChoice, StepDelayBinding, TextInputBinding, Transform, UndoContext, };

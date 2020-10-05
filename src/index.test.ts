@@ -3,7 +3,7 @@ import "./Corners/index.test";
 import "./SequentialChoice/index.test";
 import "./StepDelayBinding/index.test";
 import "./Transform/index.test";
-import "./UndoManager/index.test";
+import "./UndoContext/index.test";
 
 Test.runAll()
   .then(() => {

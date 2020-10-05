@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Corners = void 0;
 const geometry_1 = require("@anderjason/geometry");
 const cornersGivenContainedPoints_1 = require("./_internal/cornersGivenContainedPoints");
+const cornersWithAlignment_1 = require("./_internal/cornersWithAlignment");
 class Corners {
     constructor(leftTop, rightTop, rightBottom, leftBottom) {
         this.leftTop = leftTop;
@@ -76,6 +77,9 @@ class Corners {
             throw new Error("transform is required");
         }
         return new Corners(transform.toTransformedPoint(this.leftTop), transform.toTransformedPoint(this.rightTop), transform.toTransformedPoint(this.rightBottom), transform.toTransformedPoint(this.leftBottom));
+    }
+    withAlignment(alignToCorners) {
+        return cornersWithAlignment_1.cornersWithAlignment(this, alignToCorners);
     }
 }
 exports.Corners = Corners;

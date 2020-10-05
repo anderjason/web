@@ -1,4 +1,4 @@
-# web
+# @anderjason/web
 
 ## Installation
 
@@ -31,10 +31,6 @@
 `TODO`
 
 ### FocusWatcher
-
-`TODO`
-
-### ImageCache
 
 `TODO`
 
@@ -90,6 +86,6 @@
 
 `TODO`
 
-### UndoManager
+### UndoContext
 
 `TODO`

@@ -16,4 +16,5 @@ export declare class Corners {
     toSize(): Size2;
     toPoints(): Point2[];
     withTransform(transform: Transform): Corners;
+    withAlignment(alignToCorners: Corners): Corners;
 }

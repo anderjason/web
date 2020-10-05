@@ -1,6 +1,7 @@
 import { Box2, Point2, Size2 } from "@anderjason/geometry";
 import { Transform } from "../Transform";
 import { cornersGivenContainedPoints } from "./_internal/cornersGivenContainedPoints";
+import { cornersWithAlignment } from "./_internal/cornersWithAlignment";
 
 export class Corners {
   static givenBox(box: Box2): Corners {
@@ -120,5 +121,9 @@ export class Corners {
       transform.toTransformedPoint(this.rightBottom),
       transform.toTransformedPoint(this.leftBottom)
     );
+  }
+
+  withAlignment(alignToCorners: Corners): Corners {
+    return cornersWithAlignment(this, alignToCorners);
   }
 }

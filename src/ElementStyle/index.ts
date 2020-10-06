@@ -100,6 +100,7 @@ export class ElementStyle {
     return DynamicStyleElement.givenDefinition({
       tagName: definition.tagName,
       parentElement: definition.parentElement,
+      transitionIn: definition.transitionIn,
       transitionOut: definition.transitionOut,
       classNamesByModifierName,
       constantClassNames: this.toClassNames(),

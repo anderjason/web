@@ -1,5 +1,6 @@
-import { Actor } from "skytree";
+import { Actor, Timer } from "skytree";
 import { Receipt, Observable, ObservableSet } from "@anderjason/observable";
+import { Duration } from "@anderjason/time";
 
 export interface ManagedElementDefinition<
   K extends keyof HTMLElementTagNameMap
@@ -8,6 +9,7 @@ export interface ManagedElementDefinition<
 
   parentElement?: HTMLElement | Observable<HTMLElement>;
   classNames?: string[] | ObservableSet<string>;
+  transitionIn?: () => void;
   transitionOut?: () => Promise<void>;
 }
 
@@ -22,6 +24,7 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     return new ManagedElement(definition);
   }
 
+  private _transitionIn?: () => void;
   private _transitionOut?: () => Promise<void>;
 
   private constructor(definition: ManagedElementDefinition<any>) {
@@ -70,6 +73,18 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
         }
       }, true)
     );
+
+    if (this._transitionIn != null) {
+      this.addActor(
+        new Timer({
+          fn: () => {
+            this._transitionIn();
+          },
+          isRepeating: false,
+          duration: Duration.givenMilliseconds(25)
+        })
+      );
+    }
 
     let classesChangedReceipt: Receipt;
 

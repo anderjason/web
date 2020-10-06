@@ -104,6 +104,7 @@ class Preload extends skytree_1.Actor {
         const blob = await blobGivenUrl_1.blobGivenUrl(url);
         const dataUrl = await dataUrlGivenBlob_1.dataUrlGivenBlob(blob);
         this._imageDataUrlByUrl.get(url).setValue(dataUrl);
+        this._loadingImageSet.delete(url);
         this.didLoadImage.emit(url);
         this.checkReady();
     }

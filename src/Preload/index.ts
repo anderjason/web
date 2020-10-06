@@ -148,6 +148,8 @@ export class Preload extends Actor<void> {
     const dataUrl = await dataUrlGivenBlob(blob);
 
     this._imageDataUrlByUrl.get(url).setValue(dataUrl);
+
+    this._loadingImageSet.delete(url);
     this.didLoadImage.emit(url);
     this.checkReady();
   }

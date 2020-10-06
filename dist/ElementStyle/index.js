@@ -52,6 +52,7 @@ class ElementStyle {
         return DynamicStyleElement_1.DynamicStyleElement.givenDefinition({
             tagName: definition.tagName,
             parentElement: definition.parentElement,
+            transitionIn: definition.transitionIn,
             transitionOut: definition.transitionOut,
             classNamesByModifierName,
             constantClassNames: this.toClassNames(),

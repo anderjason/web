@@ -6,6 +6,7 @@ export interface DynamicStyleElementDefinition<K extends keyof HTMLElementTagNam
     parentElement?: HTMLElement | Observable<HTMLElement>;
     classNamesByModifierName?: Map<string, string[]>;
     constantClassNames?: string[];
+    transitionIn?: () => void;
     transitionOut?: () => Promise<void>;
 }
 export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
@@ -16,6 +17,7 @@ export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     private _managedElement;
     private _modifiers;
     private _constantClassNames;
+    private _transitionIn?;
     private _transitionOut?;
     private constructor();
     get element(): T | undefined;

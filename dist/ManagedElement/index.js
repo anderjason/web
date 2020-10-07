@@ -8,6 +8,7 @@ class ManagedElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
         this.element = document.createElement(definition.tagName);
+        this._transitionIn = definition.transitionIn;
         this._transitionOut = definition.transitionOut;
         if (definition.classNames == null) {
             this.classes = observable_1.ObservableSet.ofEmpty();
@@ -52,7 +53,7 @@ class ManagedElement extends skytree_1.Actor {
                     this._transitionIn();
                 },
                 isRepeating: false,
-                duration: time_1.Duration.givenMilliseconds(25)
+                duration: time_1.Duration.givenMilliseconds(10)
             }));
         }
         let classesChangedReceipt;

@@ -31,6 +31,7 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     super({});
 
     this.element = document.createElement(definition.tagName);
+    this._transitionIn = definition.transitionIn;
     this._transitionOut = definition.transitionOut;
 
     if (definition.classNames == null) {
@@ -81,7 +82,7 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
             this._transitionIn();
           },
           isRepeating: false,
-          duration: Duration.givenMilliseconds(25)
+          duration: Duration.givenMilliseconds(10)
         })
       );
     }

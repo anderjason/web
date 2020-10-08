@@ -57,7 +57,7 @@ class TextInputBinding extends skytree_1.Actor {
         this._inputElement.value = this.props.displayTextGivenValue(this._previousValue);
         this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
         this._rawInputValue.setValue(this._inputElement.value);
-        this._isEmpty.setValue(!util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+        this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
     }
 }
 exports.TextInputBinding = TextInputBinding;

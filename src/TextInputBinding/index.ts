@@ -1,5 +1,6 @@
 import { Actor } from "skytree";
-import { Observable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
+import { StringUtil } from "@anderjason/util";
 
 export interface TextInputBindingProps<T> {
   inputElement: HTMLElement;
@@ -14,6 +15,12 @@ const allowAll = () => false;
 
 export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
   readonly value: Observable<T>;
+
+  private _displayText = Observable.ofEmpty<string>(Observable.isStrictEqual);
+  readonly displayText = ReadOnlyObservable.givenObservable(this._displayText);
+
+  private _isEmpty = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  readonly isEmpty = ReadOnlyObservable.givenObservable(this._isEmpty);
 
   private _shouldPreventChange: (displayText: string, value: T) => boolean;
   private _previousValue: T;
@@ -48,6 +55,7 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
 
     this._inputElement.addEventListener("keydown", (e) => {
       this._caretPosition = this._inputElement.selectionStart;
+      this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
     });
 
     this._inputElement.addEventListener("input", (e: Event) => {
@@ -61,12 +69,15 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
 
       this.value.setValue(value);
       this._previousValue = value;
+
+      this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
     });
 
     this.cancelOnDeactivate(
       this.value.didChange.subscribe((value) => {
         const displayText = this.props.displayTextGivenValue(value);
         this._inputElement.value = displayText || "";
+        this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
       }, true)
     );
   }
@@ -80,5 +91,6 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
       this._caretPosition,
       this._caretPosition
     );
+    this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
   }
 }

@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { Observable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 export interface TextInputBindingProps<T> {
     inputElement: HTMLElement;
     displayTextGivenValue: (value: T) => string;
@@ -9,6 +9,10 @@ export interface TextInputBindingProps<T> {
 }
 export declare class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
     readonly value: Observable<T>;
+    private _displayText;
+    readonly displayText: ReadOnlyObservable<string>;
+    private _isEmpty;
+    readonly isEmpty: ReadOnlyObservable<boolean>;
     private _shouldPreventChange;
     private _previousValue;
     private _caretPosition;

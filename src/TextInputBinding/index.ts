@@ -22,6 +22,9 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
   private _isEmpty = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isEmpty = ReadOnlyObservable.givenObservable(this._isEmpty);
 
+  private _rawInputValue = Observable.ofEmpty<string>(Observable.isStrictEqual);
+  readonly rawInputText = ReadOnlyObservable.givenObservable(this._rawInputValue);
+
   private _shouldPreventChange: (displayText: string, value: T) => boolean;
   private _previousValue: T;
   private _caretPosition: number;
@@ -55,7 +58,8 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
 
     this._inputElement.addEventListener("keydown", (e) => {
       this._caretPosition = this._inputElement.selectionStart;
-      this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
+      this._rawInputValue.setValue(this._inputElement.value);
+      this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
     });
 
     this._inputElement.addEventListener("input", (e: Event) => {
@@ -70,14 +74,17 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
       this.value.setValue(value);
       this._previousValue = value;
 
-      this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
+      this._rawInputValue.setValue(this._inputElement.value);
+      this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
     });
 
     this.cancelOnDeactivate(
       this.value.didChange.subscribe((value) => {
         const displayText = this.props.displayTextGivenValue(value);
         this._inputElement.value = displayText || "";
-        this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
+
+        this._rawInputValue.setValue(this._inputElement.value);
+        this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
       }, true)
     );
   }
@@ -91,6 +98,8 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
       this._caretPosition,
       this._caretPosition
     );
+
+    this._rawInputValue.setValue(this._inputElement.value);
     this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
   }
 }

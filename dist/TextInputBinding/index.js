@@ -12,6 +12,8 @@ class TextInputBinding extends skytree_1.Actor {
         this.displayText = observable_1.ReadOnlyObservable.givenObservable(this._displayText);
         this._isEmpty = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.isEmpty = observable_1.ReadOnlyObservable.givenObservable(this._isEmpty);
+        this._rawInputValue = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this.rawInputText = observable_1.ReadOnlyObservable.givenObservable(this._rawInputValue);
         if (props.inputElement == null) {
             throw new Error("Input is required");
         }
@@ -29,7 +31,8 @@ class TextInputBinding extends skytree_1.Actor {
         this._caretPosition = this._inputElement.selectionStart;
         this._inputElement.addEventListener("keydown", (e) => {
             this._caretPosition = this._inputElement.selectionStart;
-            this._isEmpty.setValue(!util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+            this._rawInputValue.setValue(this._inputElement.value);
+            this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
         });
         this._inputElement.addEventListener("input", (e) => {
             const displayText = this._inputElement.value;
@@ -40,17 +43,20 @@ class TextInputBinding extends skytree_1.Actor {
             }
             this.value.setValue(value);
             this._previousValue = value;
-            this._isEmpty.setValue(!util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+            this._rawInputValue.setValue(this._inputElement.value);
+            this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
         });
         this.cancelOnDeactivate(this.value.didChange.subscribe((value) => {
             const displayText = this.props.displayTextGivenValue(value);
             this._inputElement.value = displayText || "";
-            this._isEmpty.setValue(!util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+            this._rawInputValue.setValue(this._inputElement.value);
+            this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
         }, true));
     }
     undoChange() {
         this._inputElement.value = this.props.displayTextGivenValue(this._previousValue);
         this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+        this._rawInputValue.setValue(this._inputElement.value);
         this._isEmpty.setValue(!util_1.StringUtil.stringIsEmpty(this._inputElement.value));
     }
 }

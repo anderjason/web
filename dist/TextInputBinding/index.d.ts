@@ -13,6 +13,8 @@ export declare class TextInputBinding<T> extends Actor<TextInputBindingProps<T>>
     readonly displayText: ReadOnlyObservable<string>;
     private _isEmpty;
     readonly isEmpty: ReadOnlyObservable<boolean>;
+    private _rawInputValue;
+    readonly rawInputText: ReadOnlyObservable<string>;
     private _shouldPreventChange;
     private _previousValue;
     private _caretPosition;

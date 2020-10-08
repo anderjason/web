@@ -100,6 +100,6 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
     );
 
     this._rawInputValue.setValue(this._inputElement.value);
-    this._isEmpty.setValue(!StringUtil.stringIsEmpty(this._inputElement.value));
+    this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
   }
 }

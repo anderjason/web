@@ -76,8 +76,10 @@ export class TextInputBinding<T = string> extends Actor<
       const displayText = this._inputElement.value;
       let value = this.props.valueGivenDisplayText(displayText);
 
+      let overrideText: string;
+
       if (this.props.overrideDisplayText != null) {
-        const overrideText = this.props.overrideDisplayText({
+        overrideText = this.props.overrideDisplayText({
           displayText,
           value,
           previousDisplayText: this._previousDisplayText,
@@ -93,10 +95,16 @@ export class TextInputBinding<T = string> extends Actor<
       }
 
       this.value.setValue(value);
-      this._rawInputValue.setValue(this._inputElement.value);
-      this._isEmpty.setValue(
-        StringUtil.stringIsEmpty(this._inputElement.value)
-      );
+
+      if (overrideText != null) {
+        requestAnimationFrame(() => {
+          this._inputElement.value = overrideText;
+          this._rawInputValue.setValue(this._inputElement.value);
+          this._isEmpty.setValue(
+            StringUtil.stringIsEmpty(this._inputElement.value)
+          );
+        });
+      }
     });
 
     this.cancelOnDeactivate(

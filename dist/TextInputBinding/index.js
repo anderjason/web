@@ -36,8 +36,9 @@ class TextInputBinding extends skytree_1.Actor {
         this._inputElement.addEventListener("input", (e) => {
             const displayText = this._inputElement.value;
             let value = this.props.valueGivenDisplayText(displayText);
+            let overrideText;
             if (this.props.overrideDisplayText != null) {
-                const overrideText = this.props.overrideDisplayText({
+                overrideText = this.props.overrideDisplayText({
                     displayText,
                     value,
                     previousDisplayText: this._previousDisplayText,
@@ -53,8 +54,13 @@ class TextInputBinding extends skytree_1.Actor {
                 }
             }
             this.value.setValue(value);
-            this._rawInputValue.setValue(this._inputElement.value);
-            this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+            if (overrideText != null) {
+                requestAnimationFrame(() => {
+                    this._inputElement.value = overrideText;
+                    this._rawInputValue.setValue(this._inputElement.value);
+                    this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
+                });
+            }
         });
         this.cancelOnDeactivate(this.value.didChange.subscribe((value) => {
             const displayText = this.props.displayTextGivenValue(value);

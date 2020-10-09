@@ -35,7 +35,7 @@ class TextInputBinding extends skytree_1.Actor {
         });
         this._inputElement.addEventListener("input", (e) => {
             const displayText = this._inputElement.value;
-            const value = this.props.valueGivenDisplayText(displayText);
+            let value = this.props.valueGivenDisplayText(displayText);
             if (this.props.overrideDisplayText != null) {
                 const overrideText = this.props.overrideDisplayText({
                     displayText,
@@ -45,11 +45,12 @@ class TextInputBinding extends skytree_1.Actor {
                 });
                 if (overrideText == null) {
                     this.onOverride(this._previousDisplayText, true);
+                    return;
                 }
                 else {
                     this.onOverride(overrideText, false);
+                    value = this.props.valueGivenDisplayText(overrideText);
                 }
-                return;
             }
             this.value.setValue(value);
             this._rawInputValue.setValue(this._inputElement.value);

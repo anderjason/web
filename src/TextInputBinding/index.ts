@@ -74,7 +74,7 @@ export class TextInputBinding<T = string> extends Actor<
 
     this._inputElement.addEventListener("input", (e: Event) => {
       const displayText = this._inputElement.value;
-      const value = this.props.valueGivenDisplayText(displayText);
+      let value = this.props.valueGivenDisplayText(displayText);
 
       if (this.props.overrideDisplayText != null) {
         const overrideText = this.props.overrideDisplayText({
@@ -85,11 +85,11 @@ export class TextInputBinding<T = string> extends Actor<
         });
         if (overrideText == null) {
           this.onOverride(this._previousDisplayText, true);
+          return;
         } else {
           this.onOverride(overrideText, false);
+          value = this.props.valueGivenDisplayText(overrideText);
         }
-
-        return;
       }
 
       this.value.setValue(value);

@@ -1,4 +1,9 @@
-import { Observable, ReadOnlyObservable } from "@anderjason/observable";
+import {
+  Observable,
+  ObservableArray,
+  ReadOnlyObservable,
+  Receipt,
+} from "@anderjason/observable";
 import { Actor } from "skytree";
 import { KeyboardWatcher } from "../KeyboardWatcher";
 
@@ -10,6 +15,29 @@ export interface KeyboardShortcutProps {
 }
 
 export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
+  private static shortcutsByKeyCombination = new Map<
+    string,
+    ObservableArray<KeyboardShortcut>
+  >();
+
+  private static getShortcutsArray(
+    keyCombination: KeyCombination
+  ): ObservableArray<KeyboardShortcut> {
+    const joinedCombination = keyCombination.join(",");
+    let shortcuts = KeyboardShortcut.shortcutsByKeyCombination.get(
+      joinedCombination
+    );
+    if (shortcuts == null) {
+      shortcuts = ObservableArray.ofEmpty();
+      KeyboardShortcut.shortcutsByKeyCombination.set(
+        joinedCombination,
+        shortcuts
+      );
+    }
+
+    return shortcuts;
+  }
+
   static givenKey(key: string, onPress: () => void): KeyboardShortcut {
     const keyCombination: KeyCombination = [key];
     return KeyboardShortcut.givenKeyCombination(keyCombination, onPress);
@@ -35,14 +63,6 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
   private _isPressed = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isPressed = ReadOnlyObservable.givenObservable(this._isPressed);
 
-  private _activeKeyCombination: KeyCombination;
-
-  constructor(props: KeyboardShortcutProps) {
-    super(props);
-
-    // any key with a single character should be lowercase
-  }
-
   onActivate() {
     const keyCombinations = this.props.keyCombinations.map((keyCombination) => {
       return keyCombination.map((key) => {
@@ -54,15 +74,40 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
       });
     });
 
+    keyCombinations.forEach((combination) => {
+      KeyboardShortcut.getShortcutsArray(combination).addValue(this);
+    });
+
+    this.cancelOnDeactivate(
+      new Receipt(() => {
+        keyCombinations.forEach((combination) => {
+          KeyboardShortcut.getShortcutsArray(combination).removeValue(this);
+        });
+      })
+    );
+
     this.cancelOnDeactivate(
       KeyboardWatcher.instance.keys.didChange.subscribe(() => {
-        this._activeKeyCombination = keyCombinations.find((keyCombination) => {
+        const activeKeyCombination = keyCombinations.find((keyCombination) => {
           return keyCombination.every((key) => {
             return KeyboardWatcher.instance.keys.hasValue(key);
           });
         });
 
-        this._isPressed.setValue(this._activeKeyCombination != null);
+        if (activeKeyCombination == null) {
+          this._isPressed.setValue(false);
+          return;
+        }
+
+        const shortcuts = KeyboardShortcut.getShortcutsArray(
+          activeKeyCombination
+        );
+
+        if (shortcuts.toOptionalValueGivenIndex(shortcuts.count - 1) == this) {
+          this._isPressed.setValue(activeKeyCombination != null);
+        } else {
+          this._isPressed.setValue(false);
+        }
       }, true)
     );
 

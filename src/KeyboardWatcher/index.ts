@@ -41,10 +41,22 @@ export class KeyboardWatcher extends Actor<void> {
       return;
     }
 
-    this._keys.addValue(e.key);
+    let key = e.key;
+
+    if (key.length === 1) {
+      key = key.toLowerCase();
+    }
+
+    this._keys.addValue(key);
   };
 
   private onKeyUp = (e: KeyboardEvent) => {
-    this._keys.removeValue(e.key);
+    let key = e.key;
+
+    if (key.length === 1) {
+      key = key.toLowerCase();
+    }
+
+    this._keys.removeValue(key);
   };
 }

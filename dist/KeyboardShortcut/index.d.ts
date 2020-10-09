@@ -6,12 +6,12 @@ export interface KeyboardShortcutProps {
     onPress: () => void;
 }
 export declare class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
+    private static shortcutsByKeyCombination;
+    private static getShortcutsArray;
     static givenKey(key: string, onPress: () => void): KeyboardShortcut;
     static givenKeyCombination(keyCombination: KeyCombination, onPress: () => void): KeyboardShortcut;
     static givenAnyKeyCombination(keyCombinations: KeyCombination[], onPress: () => void): KeyboardShortcut;
     private _isPressed;
     readonly isPressed: ReadOnlyObservable<boolean>;
-    private _activeKeyCombination;
-    constructor(props: KeyboardShortcutProps);
     onActivate(): void;
 }

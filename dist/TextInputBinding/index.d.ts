@@ -5,9 +5,15 @@ export interface TextInputBindingProps<T> {
     displayTextGivenValue: (value: T) => string;
     valueGivenDisplayText: (displayText: string) => T;
     value?: Observable<T>;
-    shouldPreventChange?: (displayText: string, value: T) => boolean;
+    overrideDisplayText?: (e: TextInputChangingData<T>) => string;
 }
-export declare class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
+export interface TextInputChangingData<T> {
+    displayText: string;
+    value: T;
+    previousDisplayText: string;
+    previousValue: T;
+}
+export declare class TextInputBinding<T = string> extends Actor<TextInputBindingProps<T>> {
     readonly value: Observable<T>;
     private _displayText;
     readonly displayText: ReadOnlyObservable<string>;
@@ -15,11 +21,11 @@ export declare class TextInputBinding<T> extends Actor<TextInputBindingProps<T>>
     readonly isEmpty: ReadOnlyObservable<boolean>;
     private _rawInputValue;
     readonly rawInputText: ReadOnlyObservable<string>;
-    private _shouldPreventChange;
-    private _previousValue;
+    private _overrideDisplayText;
+    private _previousDisplayText;
     private _caretPosition;
     private _inputElement;
     constructor(props: TextInputBindingProps<T>);
     onActivate(): void;
-    private undoChange;
+    private onOverride;
 }

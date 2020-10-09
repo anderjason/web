@@ -8,12 +8,19 @@ export interface TextInputBindingProps<T> {
   valueGivenDisplayText: (displayText: string) => T;
 
   value?: Observable<T>;
-  shouldPreventChange?: (displayText: string, value: T) => boolean;
+  overrideDisplayText?: (e: TextInputChangingData<T>) => string;
 }
 
-const allowAll = () => false;
+export interface TextInputChangingData<T> {
+  displayText: string;
+  value: T;
+  previousDisplayText: string;
+  previousValue: T;
+}
 
-export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
+export class TextInputBinding<T = string> extends Actor<
+  TextInputBindingProps<T>
+> {
   readonly value: Observable<T>;
 
   private _displayText = Observable.ofEmpty<string>(Observable.isStrictEqual);
@@ -23,10 +30,12 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
   readonly isEmpty = ReadOnlyObservable.givenObservable(this._isEmpty);
 
   private _rawInputValue = Observable.ofEmpty<string>(Observable.isStrictEqual);
-  readonly rawInputText = ReadOnlyObservable.givenObservable(this._rawInputValue);
+  readonly rawInputText = ReadOnlyObservable.givenObservable(
+    this._rawInputValue
+  );
 
-  private _shouldPreventChange: (displayText: string, value: T) => boolean;
-  private _previousValue: T;
+  private _overrideDisplayText: (e: TextInputChangingData<T>) => string;
+  private _previousDisplayText: string;
   private _caretPosition: number;
   private _inputElement: HTMLInputElement | HTMLTextAreaElement;
 
@@ -48,34 +57,46 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
 
     this.value =
       this.props.value || Observable.ofEmpty(Observable.isStrictEqual);
-
-    this._shouldPreventChange = props.shouldPreventChange || allowAll;
   }
 
   onActivate() {
-    this._previousValue = this.props.value.value;
+    this._previousDisplayText = this._inputElement.value;
     this._caretPosition = this._inputElement.selectionStart;
 
     this._inputElement.addEventListener("keydown", (e) => {
       this._caretPosition = this._inputElement.selectionStart;
+      this._previousDisplayText = this._inputElement.value;
       this._rawInputValue.setValue(this._inputElement.value);
-      this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
+      this._isEmpty.setValue(
+        StringUtil.stringIsEmpty(this._inputElement.value)
+      );
     });
 
     this._inputElement.addEventListener("input", (e: Event) => {
       const displayText = this._inputElement.value;
       const value = this.props.valueGivenDisplayText(displayText);
 
-      if (this._shouldPreventChange(displayText, value)) {
-        this.undoChange();
+      if (this.props.overrideDisplayText != null) {
+        const overrideText = this.props.overrideDisplayText({
+          displayText,
+          value,
+          previousDisplayText: this._previousDisplayText,
+          previousValue: this.value.value,
+        });
+        if (overrideText == null) {
+          this.onOverride(this._previousDisplayText, true);
+        } else {
+          this.onOverride(overrideText, false);
+        }
+
         return;
       }
 
       this.value.setValue(value);
-      this._previousValue = value;
-
       this._rawInputValue.setValue(this._inputElement.value);
-      this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
+      this._isEmpty.setValue(
+        StringUtil.stringIsEmpty(this._inputElement.value)
+      );
     });
 
     this.cancelOnDeactivate(
@@ -84,22 +105,25 @@ export class TextInputBinding<T> extends Actor<TextInputBindingProps<T>> {
         this._inputElement.value = displayText || "";
 
         this._rawInputValue.setValue(this._inputElement.value);
-        this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
+        this._isEmpty.setValue(
+          StringUtil.stringIsEmpty(this._inputElement.value)
+        );
       }, true)
     );
   }
 
-  private undoChange() {
-    this._inputElement.value = this.props.displayTextGivenValue(
-      this._previousValue
-    );
+  private onOverride(text: string, setCaretPosition: boolean) {
+    this._previousDisplayText = text;
+    this._inputElement.value = text;
 
-    this._inputElement.setSelectionRange(
-      this._caretPosition,
-      this._caretPosition
-    );
+    if (setCaretPosition) {
+      this._inputElement.setSelectionRange(
+        this._caretPosition,
+        this._caretPosition
+      );
+    }
 
-    this._rawInputValue.setValue(this._inputElement.value);
-    this._isEmpty.setValue(StringUtil.stringIsEmpty(this._inputElement.value));
+    this._rawInputValue.setValue(text);
+    this._isEmpty.setValue(StringUtil.stringIsEmpty(text));
   }
 }

@@ -10,6 +10,7 @@ import { KeyboardWatcher } from "./KeyboardWatcher";
 import { LocationUtil } from "./LocationUtil";
 import { ManagedElement } from "./ManagedElement";
 import { NetworkUtil } from "./NetworkUtil";
+import { ObservableState } from "./ObservableState";
 import { Pointer } from "./Pointer";
 import { Preload } from "./Preload";
 import { ScreenSize } from "./ScreenSize";
@@ -33,6 +34,7 @@ export {
   LocationUtil,
   ManagedElement,
   NetworkUtil,
+  ObservableState,
   Pointer,
   Preload,
   ScreenSize,

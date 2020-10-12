@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -23,7 +23,7 @@
     "@anderjason/observable": "^3.0.0",
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
-    "@anderjason/util": "^2.0.0",
+    "@anderjason/util": "^2.0.3",
     "fontfaceobserver": "^2.1.0",
     "skytree": "^9.0.0",
     "stylis": "^4.0.3"

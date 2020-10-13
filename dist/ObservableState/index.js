@@ -14,7 +14,7 @@ class ObservableState extends skytree_1.Actor {
         this._pathBindings = new Set();
     }
     onActivate() {
-        this._undoContext = new UndoContext_1.UndoContext(this.props.initialState || {}, 10);
+        this._undoContext = new UndoContext_1.UndoContext(util_1.ObjectUtil.objectWithDeepMerge({}, this.props.initialState || {}), 10);
         this.cancelOnDeactivate(this._undoContext.currentStep.didChange.subscribe((undoStep) => {
             this._state.setValue(undoStep);
         }, true));
@@ -49,7 +49,7 @@ class ObservableState extends skytree_1.Actor {
         if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, newValue)) {
             return;
         }
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, newValue);
+        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, util_1.ObjectUtil.objectWithDeepMerge({}, newValue));
         this._state.setValue(obj);
     }
 }

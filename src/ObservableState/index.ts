@@ -29,7 +29,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
 
   onActivate() {
     this._undoContext = new UndoContext<unknown>(
-      this.props.initialState || {},
+      ObjectUtil.objectWithDeepMerge({}, this.props.initialState || {}),
       10
     );
 
@@ -99,7 +99,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,
       path,
-      newValue
+      ObjectUtil.objectWithDeepMerge({}, newValue)
     );
     this._state.setValue(obj);
   }

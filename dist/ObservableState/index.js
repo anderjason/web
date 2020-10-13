@@ -6,6 +6,17 @@ const util_1 = require("@anderjason/util");
 const UndoContext_1 = require("../UndoContext");
 const skytree_1 = require("skytree");
 const ObservableStateBinding_1 = require("./_internal/ObservableStateBinding");
+function clone(input) {
+    if (typeof input === "object") {
+        return util_1.ObjectUtil.objectWithDeepMerge({}, input);
+    }
+    else if (Array.isArray(input)) {
+        return util_1.ObjectUtil.objectWithDeepMerge([], input);
+    }
+    else {
+        return input;
+    }
+}
 class ObservableState extends skytree_1.Actor {
     constructor() {
         super(...arguments);
@@ -14,9 +25,9 @@ class ObservableState extends skytree_1.Actor {
         this._pathBindings = new Set();
     }
     onActivate() {
-        this._undoContext = new UndoContext_1.UndoContext(util_1.ObjectUtil.objectWithDeepMerge({}, this.props.initialState || {}), 10);
+        this._undoContext = new UndoContext_1.UndoContext(clone(this.props.initialState || {}), 10);
         this.cancelOnDeactivate(this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-            this._state.setValue(undoStep);
+            this._state.setValue(clone(undoStep));
         }, true));
     }
     get undoContext() {
@@ -42,14 +53,14 @@ class ObservableState extends skytree_1.Actor {
         return new ObservableStateBinding_1.ObservableStateBinding(Object.assign({ observableState: this }, definition));
     }
     toOptionalValueGivenPath(path) {
-        return util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
+        return clone(util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path));
     }
-    update(path, newValue) {
+    update(path, inputValue) {
         const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
-        if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, newValue)) {
+        if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
             return;
         }
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, util_1.ObjectUtil.objectWithDeepMerge({}, newValue));
+        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
         this._state.setValue(obj);
     }
 }

@@ -47,3 +47,101 @@ Test.define("ObservableState stores a deep copy of the input value", () => {
 
   os.deactivate();
 });
+
+Test.define("ObservableState can include arrays", () => {
+  const colors = ["red", "orange", "yellow"];
+
+  const os = new ObservableState({
+    initialState: {
+      design: {
+        colors,
+      },
+    },
+  });
+  os.activate();
+
+  Test.assertIsDeepEqual(
+    os.toOptionalValueGivenPath(ValuePath.givenString("design.colors")),
+    ["red", "orange", "yellow"]
+  );
+
+  colors.push("green"); // should have no effect in the observable state
+
+  Test.assertIsDeepEqual(
+    os.toOptionalValueGivenPath(ValuePath.givenString("design.colors")),
+    ["red", "orange", "yellow"]
+  );
+
+  os.deactivate();
+});
+
+Test.define("ObservableState can set primitive values", () => {
+  const os = new ObservableState({
+    initialState: {
+      design: {
+        colors: {
+          background: "red",
+        },
+      },
+    },
+  });
+  os.activate();
+
+  os.update(ValuePath.givenString("design.colors.background"), "blue");
+
+  Test.assertIsDeepEqual(os.state.value, {
+    design: {
+      colors: {
+        background: "blue",
+      },
+    },
+  });
+
+  os.deactivate();
+});
+
+Test.define("ObservableState can set undefined", () => {
+  const os = new ObservableState({
+    initialState: {
+      design: {
+        colors: {
+          background: "red",
+        },
+      },
+    },
+  });
+  os.activate();
+
+  os.update(ValuePath.givenString("design.colors.background"), undefined);
+
+  Test.assertIsDeepEqual(os.state.value, {
+    design: {
+      colors: {
+        background: undefined,
+      },
+    },
+  });
+
+  os.deactivate();
+});
+
+Test.define("ObservableState can set arrays", () => {
+  const os = new ObservableState({
+    initialState: {
+      design: {
+        colors: ["red", "orange"],
+      },
+    },
+  });
+  os.activate();
+
+  os.update(ValuePath.givenString("design.colors"), ["green", "blue"]);
+
+  Test.assertIsDeepEqual(os.state.value, {
+    design: {
+      colors: ["green", "blue"],
+    },
+  });
+
+  os.deactivate();
+});

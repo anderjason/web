@@ -20,6 +20,16 @@ export interface ObservableStateBindingDefinition<T> {
   outputValueGivenPartialState?: (partialState: any) => T;
 }
 
+function clone(input: unknown): unknown {
+  if (typeof input === "object") {
+    return ObjectUtil.objectWithDeepMerge({}, input);
+  } else if (Array.isArray(input)) {
+    return ObjectUtil.objectWithDeepMerge([], input);
+  } else {
+    return input;
+  }
+}
+
 export class ObservableState extends Actor<ObservableStateProps> {
   private _state = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
   readonly state = ReadOnlyObservable.givenObservable(this._state);
@@ -29,13 +39,13 @@ export class ObservableState extends Actor<ObservableStateProps> {
 
   onActivate() {
     this._undoContext = new UndoContext<unknown>(
-      ObjectUtil.objectWithDeepMerge({}, this.props.initialState || {}),
+      clone(this.props.initialState || {}),
       10
     );
 
     this.cancelOnDeactivate(
       this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-        this._state.setValue(undoStep);
+        this._state.setValue(clone(undoStep));
       }, true)
     );
   }
@@ -83,24 +93,27 @@ export class ObservableState extends Actor<ObservableStateProps> {
   }
 
   toOptionalValueGivenPath(path: ValuePath): any {
-    return ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
+    return clone(
+      ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path)
+    );
   }
 
-  update(path: ValuePath, newValue: any): void {
+  update(path: ValuePath, inputValue: any): void {
     const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
       this._state.value,
       path
     );
 
-    if (ObjectUtil.objectIsDeepEqual(currentValue, newValue)) {
+    if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
       return;
     }
 
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,
       path,
-      ObjectUtil.objectWithDeepMerge({}, newValue)
+      clone(inputValue)
     );
+
     this._state.setValue(obj);
   }
 }

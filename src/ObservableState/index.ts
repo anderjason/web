@@ -99,14 +99,14 @@ export class ObservableState extends Actor<ObservableStateProps> {
   }
 
   update(path: ValuePath, inputValue: any): void {
-    const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
-      this._state.value,
-      path
-    );
+    // const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
+    //   this._state.value,
+    //   path
+    // );
 
-    if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
-      return;
-    }
+    // if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
+    //   return;
+    // }
 
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,

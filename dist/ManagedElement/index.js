@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManagedElement = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
-const time_1 = require("@anderjason/time");
 class ManagedElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
@@ -48,13 +47,11 @@ class ManagedElement extends skytree_1.Actor {
             }
         }, true));
         if (this._transitionIn != null) {
-            this.addActor(new skytree_1.Timer({
-                fn: () => {
+            requestAnimationFrame(() => {
+                if (this.isActive.value == true) {
                     this._transitionIn();
-                },
-                isRepeating: false,
-                duration: time_1.Duration.givenMilliseconds(10)
-            }));
+                }
+            });
         }
         let classesChangedReceipt;
         const cleanup = () => {

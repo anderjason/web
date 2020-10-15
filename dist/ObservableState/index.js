@@ -56,10 +56,13 @@ class ObservableState extends skytree_1.Actor {
         return clone(util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path));
     }
     update(path, inputValue) {
-        const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
-        if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
-            return;
-        }
+        // const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
+        //   this._state.value,
+        //   path
+        // );
+        // if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
+        //   return;
+        // }
         const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
         this._state.setValue(obj);
     }

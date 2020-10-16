@@ -28,16 +28,22 @@ export class ObservableStateBinding<T> extends Actor<
   }
 
   onActivate() {
+    let isUpdating = false;
+
     this.cancelOnDeactivate(
       this.props.observableState.subscribe(
         this.props.valuePath,
         (vccValue) => {
+          isUpdating = true;
+
           let result = vccValue;
           if (this.props.outputValueGivenPartialState != null) {
             result = this.props.outputValueGivenPartialState(result);
           }
 
           this.output.setValue(result);
+
+          isUpdating = false;
         },
         true
       )
@@ -45,6 +51,10 @@ export class ObservableStateBinding<T> extends Actor<
 
     this.cancelOnDeactivate(
       this.output.didChange.subscribe((value) => {
+        if (isUpdating == true) {
+          return;
+        }
+
         let result = value;
         if (this.props.partialStateGivenOutputValue != null) {
           result = this.props.outputValueGivenPartialState(result);

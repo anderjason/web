@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { ElementStyle, IntersectionWatcher } from "@anderjason/web";
+import { ElementStyle, IntersectionWatcher } from "../../../src";
 import { Percent } from "@anderjason/util";
 
 export interface ActiveBoxProps {

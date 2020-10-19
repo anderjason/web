@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { ElementStyle, ScrollArea } from "@anderjason/web";
+import { ElementStyle, ScrollArea } from "../../../src";
 import { Color } from "@anderjason/color";
 import { Observable } from "@anderjason/observable";
 

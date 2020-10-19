@@ -1,6 +1,6 @@
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
-import { ElementStyle, ElementBoundsWatcher } from "@anderjason/web";
+import { ElementStyle, ElementBoundsWatcher } from "../../../src";
 import { Actor, ConditionalActivator, Timer } from "skytree";
 
 export interface ElementBoundsWatcherDemoProps {}

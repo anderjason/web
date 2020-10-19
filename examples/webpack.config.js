@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.ts",
+  entry: "./examples/src/index.ts",
   module: {
     rules: [
       {
@@ -16,11 +16,12 @@ module.exports = {
   },
   devtool: "inline-source-map",
   devServer: {
-    contentBase: "./dist",
+    port: 9000,
+    contentBase: "./examples/dist",
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./examples/src/index.html",
     }),
   ],
 };

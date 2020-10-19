@@ -1,6 +1,6 @@
 import { Color } from "@anderjason/color";
 import { Observable, ObservableArray } from "@anderjason/observable";
-import { ElementStyle, ScrollArea } from "@anderjason/web";
+import { ElementStyle, ScrollArea } from "../../../src";
 import { Actor, ArrayActivator } from "skytree";
 import { ActiveBox } from "./ActiveBox";
 

@@ -7,6 +7,9 @@ class ManagedElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
         this.element = document.createElement(definition.tagName);
+        if (this.props.innerHTML != null) {
+            this.element.innerHTML = this.props.innerHTML;
+        }
         this._transitionIn = definition.transitionIn;
         this._transitionOut = definition.transitionOut;
         if (definition.classNames == null) {

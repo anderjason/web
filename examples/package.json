@@ -16,7 +16,7 @@
     "@anderjason/observable": "^3.0.1",
     "@anderjason/tests": "^1.0.1",
     "@anderjason/util": "^2.0.3",
-    "@anderjason/web": "^4.2.1",
+    "@anderjason/web": "^4.2.2",
     "skytree": "^9.1.1"
   },
   "devDependencies": {

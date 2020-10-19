@@ -18,6 +18,7 @@ class DynamicStyleElement extends skytree_1.Actor {
             this.parentElement = observable_1.Observable.givenValue(definition.parentElement);
         }
         this.tagName = definition.tagName;
+        this._innerHTML = definition.innerHTML;
         this._transitionIn = definition.transitionIn;
         this._transitionOut = definition.transitionOut;
         this._classNamesByModifierName =
@@ -44,6 +45,7 @@ class DynamicStyleElement extends skytree_1.Actor {
         this._managedElement = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,
+            innerHTML: this._innerHTML,
             transitionIn: this._transitionIn,
             transitionOut: this._transitionOut,
         }));

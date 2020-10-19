@@ -8,6 +8,7 @@ export interface DynamicStyleElementDefinition<K extends keyof HTMLElementTagNam
     constantClassNames?: string[];
     transitionIn?: () => void;
     transitionOut?: () => Promise<void>;
+    innerHTML?: string;
 }
 export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     readonly parentElement: Observable<HTMLElement>;
@@ -19,6 +20,7 @@ export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     private _constantClassNames;
     private _transitionIn?;
     private _transitionOut?;
+    private _innerHTML?;
     private constructor();
     get element(): T | undefined;
     get style(): CSSStyleDeclaration;

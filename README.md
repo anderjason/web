@@ -22,6 +22,10 @@
 
 `TODO`
 
+### ElementBoundsWatcher
+
+`TODO`
+
 ### ElementStyle
 
 `TODO`

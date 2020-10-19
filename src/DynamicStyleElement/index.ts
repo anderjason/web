@@ -12,6 +12,7 @@ export interface DynamicStyleElementDefinition<
   constantClassNames?: string[];
   transitionIn?: () => void;
   transitionOut?: () => Promise<void>;
+  innerHTML?: string;
 }
 
 export class DynamicStyleElement<T extends HTMLElement> extends Actor {
@@ -30,6 +31,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
   private _constantClassNames: string[];
   private _transitionIn?: () => void;
   private _transitionOut?: () => Promise<void>;
+  private _innerHTML?: string;
 
   private constructor(definition: DynamicStyleElementDefinition<any>) {
     super({});
@@ -43,6 +45,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
     }
 
     this.tagName = definition.tagName;
+    this._innerHTML = definition.innerHTML;
     this._transitionIn = definition.transitionIn;
     this._transitionOut = definition.transitionOut;
     this._classNamesByModifierName =
@@ -72,6 +75,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
       ManagedElement.givenDefinition({
         tagName: this.tagName,
         parentElement: this.parentElement,
+        innerHTML: this._innerHTML,
         transitionIn: this._transitionIn,
         transitionOut: this._transitionOut,
       }) as ManagedElement<any>

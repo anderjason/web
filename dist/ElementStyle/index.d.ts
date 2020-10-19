@@ -10,6 +10,7 @@ interface StyleToElementDefinition<K extends keyof HTMLElementTagNameMap> {
     parentElement?: HTMLElement | Observable<HTMLElement>;
     transitionIn?: () => void;
     transitionOut?: () => Promise<void>;
+    innerHTML?: string;
 }
 export declare class ElementStyle {
     private static allClassNames;

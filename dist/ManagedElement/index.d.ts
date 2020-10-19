@@ -6,6 +6,7 @@ export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap>
     classNames?: string[] | ObservableSet<string>;
     transitionIn?: () => void;
     transitionOut?: () => Promise<void>;
+    innerHTML?: string;
 }
 export declare class ManagedElement<T extends HTMLElement> extends Actor {
     readonly element: T;

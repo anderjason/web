@@ -2,9 +2,11 @@ import { CanvasUtil } from "./CanvasUtil";
 import { CheckboxBinding } from "./CheckboxBinding";
 import { Corners } from "./Corners";
 import { DynamicStyleElement } from "./DynamicStyleElement";
+import { ElementBoundsWatcher } from "./ElementBoundsWatcher";
 import { ElementStyle } from "./ElementStyle";
 import { EveryFrame } from "./EveryFrame";
 import { FocusWatcher } from "./FocusWatcher";
+import { IntersectionWatcher } from "./IntersectionWatcher";
 import { KeyboardShortcut } from "./KeyboardShortcut";
 import { KeyboardWatcher } from "./KeyboardWatcher";
 import { LocationUtil } from "./LocationUtil";
@@ -14,6 +16,7 @@ import { ObservableState } from "./ObservableState";
 import { Pointer } from "./Pointer";
 import { Preload } from "./Preload";
 import { ScreenSize } from "./ScreenSize";
+import { ScrollArea } from "./ScrollArea";
 import { ScrollWatcher } from "./ScrollWatcher";
 import { SequentialChoice } from "./SequentialChoice";
 import { StepDelayBinding } from "./StepDelayBinding";
@@ -26,11 +29,13 @@ export {
   CheckboxBinding,
   Corners,
   DynamicStyleElement,
+  ElementBoundsWatcher,
   ElementStyle,
   EveryFrame,
   FocusWatcher,
-  KeyboardWatcher,
+  IntersectionWatcher,
   KeyboardShortcut,
+  KeyboardWatcher,
   LocationUtil,
   ManagedElement,
   NetworkUtil,
@@ -38,6 +43,7 @@ export {
   Pointer,
   Preload,
   ScreenSize,
+  ScrollArea,
   ScrollWatcher,
   SequentialChoice,
   StepDelayBinding,

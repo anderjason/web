@@ -16,6 +16,7 @@ interface StyleToElementDefinition<K extends keyof HTMLElementTagNameMap> {
 
   transitionIn?: () => void;
   transitionOut?: () => Promise<void>;
+  innerHTML?: string;
 }
 
 export class ElementStyle {
@@ -102,6 +103,7 @@ export class ElementStyle {
       parentElement: definition.parentElement,
       transitionIn: definition.transitionIn,
       transitionOut: definition.transitionOut,
+      innerHTML: definition.innerHTML,
       classNamesByModifierName,
       constantClassNames: this.toClassNames(),
     });

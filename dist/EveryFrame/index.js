@@ -3,14 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EveryFrame = void 0;
 const skytree_1 = require("skytree");
 class EveryFrame extends skytree_1.Actor {
+    constructor() {
+        super(...arguments);
+        this.frameNumber = 0;
+    }
     onActivate() {
-        let frameNumber = 0;
         const nextFrame = () => {
             if (this.isActive.value === false) {
                 return;
             }
-            frameNumber += 1;
-            this.props.callback(frameNumber);
+            this.frameNumber += 1;
+            this.props.callback(this.frameNumber);
             requestAnimationFrame(nextFrame);
         };
         requestAnimationFrame(nextFrame);

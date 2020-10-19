@@ -10,6 +10,7 @@ export interface ManagedElementDefinition<
   classNames?: string[] | ObservableSet<string>;
   transitionIn?: () => void;
   transitionOut?: () => Promise<void>;
+  innerHTML?: string;
 }
 
 export class ManagedElement<T extends HTMLElement> extends Actor {
@@ -30,6 +31,11 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     super({});
 
     this.element = document.createElement(definition.tagName);
+
+    if (this.props.innerHTML != null) {
+      this.element.innerHTML = this.props.innerHTML;
+    }
+
     this._transitionIn = definition.transitionIn;
     this._transitionOut = definition.transitionOut;
 

@@ -5,16 +5,16 @@ export interface EveryFrameProps {
 }
 
 export class EveryFrame extends Actor<EveryFrameProps> {
-  onActivate() {
-    let frameNumber: number = 0;
+  frameNumber: number = 0;
 
+  onActivate() {
     const nextFrame = () => {
       if (this.isActive.value === false) {
         return;
       }
 
-      frameNumber += 1;
-      this.props.callback(frameNumber);
+      this.frameNumber += 1;
+      this.props.callback(this.frameNumber);
 
       requestAnimationFrame(nextFrame);
     };

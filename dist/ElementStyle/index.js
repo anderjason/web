@@ -54,6 +54,7 @@ class ElementStyle {
             parentElement: definition.parentElement,
             transitionIn: definition.transitionIn,
             transitionOut: definition.transitionOut,
+            innerHTML: definition.innerHTML,
             classNamesByModifierName,
             constantClassNames: this.toClassNames(),
         });

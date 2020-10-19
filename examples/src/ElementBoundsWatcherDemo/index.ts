@@ -90,6 +90,7 @@ const BoundsStyle = ElementStyle.givenDefinition({
     transition: 1s ease all;
     border-radius: 8px;
     font-family: monospace;
+    user-select: none;
   `,
   modifiers: {
     isSmall: `

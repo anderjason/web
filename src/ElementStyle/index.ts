@@ -60,20 +60,31 @@ export class ElementStyle {
     return Object.keys(this._modifiers || {});
   }
 
-  toCombinedClassName(modifierKey?: string): string {
-    return this.toClassNames(modifierKey).join(" ");
+  toCombinedClassName(modifierKeys?: string | string[]): string {
+    return this.toClassNames(modifierKeys).join(" ");
   }
 
-  toClassNames(modifierKey?: string): string[] {
+  toClassNames(modifierKeys?: string | string[]): string[] {
     const result = [this._className];
 
-    if (modifierKey != null) {
-      result.push(
-        `${this._className}__${StringUtil.stringWithCase(
-          modifierKey,
-          "kebab-case"
-        )}`
-      );
+    if (modifierKeys != null) {
+      if (Array.isArray(modifierKeys)) {
+        modifierKeys.forEach((modifierKey) => {
+          result.push(
+            `${this._className}__${StringUtil.stringWithCase(
+              modifierKey,
+              "kebab-case"
+            )}`
+          );
+        });
+      } else {
+        result.push(
+          `${this._className}__${StringUtil.stringWithCase(
+            modifierKeys,
+            "kebab-case"
+          )}`
+        );
+      }
     }
 
     return result;

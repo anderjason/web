@@ -28,13 +28,20 @@ class ElementStyle {
     toModifierKeys() {
         return Object.keys(this._modifiers || {});
     }
-    toCombinedClassName(modifierKey) {
-        return this.toClassNames(modifierKey).join(" ");
+    toCombinedClassName(modifierKeys) {
+        return this.toClassNames(modifierKeys).join(" ");
     }
-    toClassNames(modifierKey) {
+    toClassNames(modifierKeys) {
         const result = [this._className];
-        if (modifierKey != null) {
-            result.push(`${this._className}__${util_1.StringUtil.stringWithCase(modifierKey, "kebab-case")}`);
+        if (modifierKeys != null) {
+            if (Array.isArray(modifierKeys)) {
+                modifierKeys.forEach((modifierKey) => {
+                    result.push(`${this._className}__${util_1.StringUtil.stringWithCase(modifierKey, "kebab-case")}`);
+                });
+            }
+            else {
+                result.push(`${this._className}__${util_1.StringUtil.stringWithCase(modifierKeys, "kebab-case")}`);
+            }
         }
         return result;
     }

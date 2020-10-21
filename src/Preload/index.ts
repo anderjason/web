@@ -1,3 +1,4 @@
+import { Size2 } from "@anderjason/geometry";
 import {
   Observable,
   ReadOnlyObservable,
@@ -7,12 +8,18 @@ import * as FontFaceObserver from "fontfaceobserver";
 import { Actor, SequentialWorker } from "skytree";
 import { blobGivenUrl } from "../NetworkUtil/_internal/blobGivenUrl";
 import { dataUrlGivenBlob } from "../NetworkUtil/_internal/dataUrlGivenBlob";
+import { videoMetadataGivenUrl } from "../NetworkUtil/_internal/videoMetadataGivenUrl";
 
 export interface FontStyle {
   url: string;
   fontFamily: string;
   weight?: number;
   style?: "normal" | "italic";
+}
+
+export interface VideoMetadata {
+  url: string;
+  contentSize: Size2;
 }
 
 export class Preload extends Actor<void> {
@@ -27,18 +34,23 @@ export class Preload extends Actor<void> {
     return this._instance;
   }
 
+  readonly didLoadVideo = new TypedEvent<string>();
   readonly didLoadImage = new TypedEvent<string>();
   readonly didLoadFont = new TypedEvent<FontStyle>();
 
   private _isReady = Observable.givenValue(true, Observable.isStrictEqual);
   readonly isReady = ReadOnlyObservable.givenObservable(this._isReady);
 
-  private _imageDataUrlByUrl = new Map<string, Observable<string>>();
   private _sequentialWorker: SequentialWorker;
 
+  private _videoMetadataByUrl = new Map<string, Observable<VideoMetadata>>();
+  private _imageDataUrlByUrl = new Map<string, Observable<string>>();
   private _loadedFontSet = new Set<FontStyle>();
-  private _loadingImageSet = new Set<string>();
+
+  private _loadingVideoSet = new Set<string>();
   private _loadingFontSet = new Set<FontStyle>();
+  private _loadingImageSet = new Set<string>();
+
   private _requestedFontSet = new Set<FontStyle>();
 
   onActivate() {
@@ -77,12 +89,42 @@ export class Preload extends Actor<void> {
     this.loadGoogleFont(fontStyle);
   }
 
+  addVideo(url: string, priority: number = 5): void {
+    if (this._videoMetadataByUrl.has(url)) {
+      return;
+    }
+
+    this._videoMetadataByUrl.set(
+      url,
+      Observable.ofEmpty<VideoMetadata>(Observable.isStrictEqual)
+    );
+
+    this._loadingVideoSet.add(url);
+    this._isReady.setValue(false);
+
+    this._sequentialWorker.addWork(
+      async () => {
+        await this.loadVideo(url);
+      },
+      undefined,
+      priority
+    );
+  }
+
   toPreloadedImageUrl(imageUrl: string): Observable<string> {
     if (!this._imageDataUrlByUrl.has(imageUrl)) {
       this.addImage(imageUrl);
     }
 
     return this._imageDataUrlByUrl.get(imageUrl);
+  }
+
+  toVideoMetadataGivenUrl(url: string): Observable<VideoMetadata> {
+    if (!this._videoMetadataByUrl.has(url)) {
+      this.addVideo(url);
+    }
+
+    return this._videoMetadataByUrl.get(url);
   }
 
   ensureImageLoaded(imageUrl: string): Promise<void> {
@@ -128,6 +170,26 @@ export class Preload extends Actor<void> {
     });
   }
 
+  ensureVideoLoaded(url: string): Promise<void> {
+    if (!this._videoMetadataByUrl.has(url)) {
+      this.addVideo(url);
+    }
+
+    return new Promise((resolve) => {
+      const observable = this.toVideoMetadataGivenUrl(url);
+      const receipt = observable.didChange.subscribe((value) => {
+        if (value == null) {
+          return;
+        }
+
+        setTimeout(() => {
+          receipt.cancel();
+          resolve();
+        }, 1);
+      }, true);
+    });
+  }
+
   ensureAllLoaded(): Promise<void> {
     if (this._isReady.value === true) {
       return Promise.resolve();
@@ -151,6 +213,16 @@ export class Preload extends Actor<void> {
 
     this._loadingImageSet.delete(url);
     this.didLoadImage.emit(url);
+    this.checkReady();
+  }
+
+  private async loadVideo(url: string): Promise<void> {
+    const metadata = await videoMetadataGivenUrl(url);
+
+    this._videoMetadataByUrl.get(url).setValue(metadata);
+
+    this._loadingVideoSet.delete(url);
+    this.didLoadVideo.emit(url);
     this.checkReady();
   }
 
@@ -189,7 +261,9 @@ export class Preload extends Actor<void> {
 
   private checkReady(): void {
     this._isReady.setValue(
-      this._loadingFontSet.size === 0 && this._loadingImageSet.size === 0
+      this._loadingFontSet.size === 0 &&
+        this._loadingImageSet.size === 0 &&
+        this._loadingVideoSet.size === 0
     );
   }
 }

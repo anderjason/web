@@ -19,6 +19,7 @@ export declare class ObservableState extends Actor<ObservableStateProps> {
     private _pathBindings;
     onActivate(): void;
     get undoContext(): UndoContext;
+    pushCurrentState(): void;
     subscribe(valuePath: ValuePath, fn: (value: any) => void, includeLast?: boolean): Receipt;
     toBinding<T>(definition: ObservableStateBindingDefinition<T>): ObservableStateBinding<T>;
     toOptionalValueGivenPath(path: ValuePath): any;

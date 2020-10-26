@@ -33,6 +33,12 @@ class ObservableState extends skytree_1.Actor {
     get undoContext() {
         return this._undoContext;
     }
+    pushCurrentState() {
+        if (this.state.value == null) {
+            return;
+        }
+        this._undoContext.pushStep(this.state.value);
+    }
     subscribe(valuePath, fn, includeLast = false) {
         const binding = this.addActor(new skytree_1.PathBinding({
             input: this._state,
@@ -56,13 +62,10 @@ class ObservableState extends skytree_1.Actor {
         return clone(util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path));
     }
     update(path, inputValue) {
-        // const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
-        //   this._state.value,
-        //   path
-        // );
-        // if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
-        //   return;
-        // }
+        const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
+        if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
+            return;
+        }
         const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
         this._state.setValue(obj);
     }

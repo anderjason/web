@@ -54,6 +54,14 @@ export class ObservableState extends Actor<ObservableStateProps> {
     return this._undoContext;
   }
 
+  pushCurrentState(): void {
+    if (this.state.value == null) {
+      return;
+    }
+
+    this._undoContext.pushStep(this.state.value);
+  }
+
   subscribe(
     valuePath: ValuePath,
     fn: (value: any) => void,
@@ -99,14 +107,14 @@ export class ObservableState extends Actor<ObservableStateProps> {
   }
 
   update(path: ValuePath, inputValue: any): void {
-    // const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
-    //   this._state.value,
-    //   path
-    // );
+    const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
+      this._state.value,
+      path
+    );
 
-    // if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
-    //   return;
-    // }
+    if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
+      return;
+    }
 
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,

@@ -10,8 +10,15 @@ export interface DynamicStyleElementDefinition<
   parentElement?: HTMLElement | Observable<HTMLElement>;
   classNamesByModifierName?: Map<string, string[]>;
   constantClassNames?: string[];
-  transitionIn?: () => void;
-  transitionOut?: () => Promise<void>;
+
+  transitionIn?: (
+    element: DynamicStyleElement<HTMLElementTagNameMap[K]>
+  ) => void;
+
+  transitionOut?: (
+    element: DynamicStyleElement<HTMLElementTagNameMap[K]>
+  ) => Promise<void>;
+
   innerHTML?: string;
 }
 
@@ -29,8 +36,8 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
   private _managedElement: ManagedElement<T>;
   private _modifiers = new Set<string>();
   private _constantClassNames: string[];
-  private _transitionIn?: () => void;
-  private _transitionOut?: () => Promise<void>;
+  private _transitionIn?: (element: DynamicStyleElement<T>) => void;
+  private _transitionOut?: (element: DynamicStyleElement<T>) => Promise<void>;
   private _innerHTML?: string;
 
   private constructor(definition: DynamicStyleElementDefinition<any>) {
@@ -76,8 +83,16 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
         tagName: this.tagName,
         parentElement: this.parentElement,
         innerHTML: this._innerHTML,
-        transitionIn: this._transitionIn,
-        transitionOut: this._transitionOut,
+        transitionIn: () => {
+          if (this._transitionIn != null) {
+            this._transitionIn(this);
+          }
+        },
+        transitionOut: async () => {
+          if (this._transitionOut != null) {
+            await this._transitionOut(this);
+          }
+        },
       }) as ManagedElement<any>
     );
 

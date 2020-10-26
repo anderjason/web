@@ -26,7 +26,7 @@ class ObservableState extends skytree_1.Actor {
     }
     onActivate() {
         this._undoContext = new UndoContext_1.UndoContext(clone(this.props.initialState || {}), 10);
-        this.cancelOnDeactivate(this._undoContext.currentStep.didChange.subscribe((undoStep) => {
+        this.cancelOnDeactivate(this._undoContext.output.didChange.subscribe((undoStep) => {
             this._state.setValue(clone(undoStep));
         }, true));
     }

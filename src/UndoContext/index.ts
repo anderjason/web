@@ -1,12 +1,24 @@
-import { Observable, ReadOnlyObservable } from "@anderjason/observable";
-import { ArrayUtil, ObjectUtil } from "@anderjason/util";
+import {
+  Observable,
+  ObservableArray,
+  ReadOnlyObservable,
+  ReadOnlyObservableArray,
+} from "@anderjason/observable";
+import { ObjectUtil } from "@anderjason/util";
+
+export type UndoClearBehavior = "keepCurrent" | "clearAll";
 
 export class UndoContext<T = any> {
-  private _currentStep = Observable.ofEmpty<T>(Observable.isStrictEqual);
-  readonly currentStep = ReadOnlyObservable.givenObservable(this._currentStep);
+  private _output = Observable.ofEmpty<T>(Observable.isStrictEqual);
+  readonly output = ReadOnlyObservable.givenObservable(this._output);
 
-  private _undoStack: T[] = [];
-  private _redoStack: T[] = [];
+  private _currentIndex = Observable.ofEmpty<number>();
+  readonly currentIndex = ReadOnlyObservable.givenObservable(
+    this._currentIndex
+  );
+
+  private _steps = ObservableArray.ofEmpty<T>();
+  readonly steps = ReadOnlyObservableArray.givenObservableArray(this._steps);
 
   private _canUndo = Observable.givenValue<boolean>(
     false,
@@ -24,65 +36,78 @@ export class UndoContext<T = any> {
 
   constructor(initialValue: T, limit: number) {
     this._limit = limit;
-    this.addStep(initialValue);
+    this.pushStep(initialValue);
   }
 
-  addStep(step: T): void {
-    if (ObjectUtil.objectIsDeepEqual(step, this._currentStep.value)) {
+  pushStep(step: T): void {
+    if (ObjectUtil.objectIsDeepEqual(step, this._output.value)) {
       return; // no effect
     }
 
-    if (this._undoStack.length > this._limit - 1) {
-      this._undoStack = this._undoStack.slice(
-        this._undoStack.length - this._limit + 1
-      );
+    this._steps.removeAllWhere((v, i) => i > this._currentIndex.value);
+
+    if (this._limit != null && this.steps.count === this._limit) {
+      this._steps.removeValueAtIndex(0);
     }
 
-    this._redoStack = [];
-    this._undoStack = [...this._undoStack, step];
+    this._steps.addValue(step);
 
-    this._canUndo.setValue(this._undoStack.length > 1);
-    this._canRedo.setValue(this._redoStack.length > 0);
+    this.setCurrentIndex(this._steps.count - 1);
+  }
 
-    this._currentStep.setValue(step);
+  replaceStep(step: T): void {
+    if (this._currentIndex.value == null) {
+      return;
+    }
+
+    if (ObjectUtil.objectIsDeepEqual(step, this._output.value)) {
+      return; // no effect
+    }
+
+    this._steps.replaceValueAtIndex(this._currentIndex.value, step);
   }
 
   undo(): boolean {
-    if (this._undoStack.length === 0) {
+    if (this._currentIndex.value == null || this._currentIndex.value === 0) {
       return false;
     }
 
-    const step = this._undoStack.pop();
-    this._redoStack.push(step);
-
-    this._currentStep.setValue(
-      ArrayUtil.optionalLastValueGivenArray(this._undoStack)
-    );
-
-    this._canUndo.setValue(this._undoStack.length > 1);
-    this._canRedo.setValue(this._redoStack.length > 0);
+    this.setCurrentIndex(this.currentIndex.value - 1);
 
     return true;
   }
 
   redo(): boolean {
-    if (this._redoStack.length === 0) {
+    if (
+      this._currentIndex.value == null ||
+      this._currentIndex.value === this._steps.count - 1
+    ) {
       return false;
     }
 
-    const step = this._redoStack.pop();
-    this._undoStack.push(step);
+    this.setCurrentIndex(this.currentIndex.value + 1);
 
-    this._currentStep.setValue(step);
-    this._canUndo.setValue(this._undoStack.length > 1);
-    this._canRedo.setValue(this._redoStack.length > 0);
+    return true;
   }
 
-  clearSteps(): void {
-    this._undoStack = [this._currentStep.value];
-    this._redoStack = [];
+  clearSteps(clearBehavior: UndoClearBehavior): void {
+    const current = this._output.value;
 
-    this._canUndo.setValue(this._undoStack.length > 1);
-    this._canRedo.setValue(this._redoStack.length > 0);
+    if (current != null && clearBehavior == "keepCurrent") {
+      this._steps.sync([current]);
+      this.setCurrentIndex(0);
+    } else {
+      this._steps.clear();
+      this.setCurrentIndex(undefined);
+    }
+  }
+
+  private setCurrentIndex(index: number | undefined): void {
+    this._currentIndex.setValue(index);
+    this._output.setValue(
+      index != null ? this._steps.toOptionalValueGivenIndex(index) : undefined
+    );
+    this._canUndo.setValue(index != null && index > 0);
+    this._canRedo.setValue(index != null && index < this._steps.count - 1);
   }
 }

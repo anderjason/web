@@ -46,8 +46,16 @@ class DynamicStyleElement extends skytree_1.Actor {
             tagName: this.tagName,
             parentElement: this.parentElement,
             innerHTML: this._innerHTML,
-            transitionIn: this._transitionIn,
-            transitionOut: this._transitionOut,
+            transitionIn: () => {
+                if (this._transitionIn != null) {
+                    this._transitionIn(this);
+                }
+            },
+            transitionOut: async () => {
+                if (this._transitionOut != null) {
+                    await this._transitionOut(this);
+                }
+            },
         }));
         this.updateClassNames();
     }

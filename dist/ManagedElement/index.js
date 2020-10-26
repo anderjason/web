@@ -52,29 +52,24 @@ class ManagedElement extends skytree_1.Actor {
         if (this._transitionIn != null) {
             requestAnimationFrame(() => {
                 if (this.isActive.value == true) {
-                    this._transitionIn();
+                    this._transitionIn(this);
                 }
             });
         }
         let classesChangedReceipt;
-        const cleanup = () => {
+        this.cancelOnDeactivate(new observable_1.Receipt(async () => {
+            if (this._transitionOut != null) {
+                try {
+                    await this._transitionOut(this);
+                }
+                catch (err) {
+                    console.error(err);
+                }
+            }
             if (this.element.parentElement != null) {
                 this.element.parentElement.removeChild(this.element);
             }
             classesChangedReceipt.cancel();
-        };
-        this.cancelOnDeactivate(new observable_1.Receipt(() => {
-            if (this._transitionOut == null) {
-                cleanup();
-            }
-            else {
-                this._transitionOut()
-                    .then(cleanup)
-                    .catch((err) => {
-                    console.error(err);
-                    cleanup();
-                });
-            }
         }));
         classesChangedReceipt = this.classes.didChangeSteps.subscribe((changes) => {
             if (changes == null) {

@@ -8,6 +8,10 @@ import {
 export class KeyboardWatcher extends Actor<void> {
   private static _instance: KeyboardWatcher;
 
+  static controlKey = "Control";
+  static altKey = "Alt";
+  static shiftKey = "Shift";
+
   static get instance(): KeyboardWatcher {
     if (KeyboardWatcher._instance == null) {
       KeyboardWatcher._instance = new KeyboardWatcher();

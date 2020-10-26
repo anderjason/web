@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ElementBoundsWatcher = void 0;
+exports.ElementSizeWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
-class InternalElementBoundsWatcher extends skytree_1.Actor {
+class InternalElementSizeWatcher extends skytree_1.Actor {
     onActivate() {
         // missing Typescript definition for ResizeObserver
         // @ts-ignore
@@ -14,20 +14,20 @@ class InternalElementBoundsWatcher extends skytree_1.Actor {
                 return;
             }
             const bounds = element.contentRect;
-            const box = geometry_1.Box2.givenDomRect(bounds);
-            this.props.output.setValue(box);
+            this.props.output.setValue(geometry_1.Size2.givenWidthHeight(bounds.width, bounds.height));
         });
         // start observing
         observer.observe(this.props.element);
         // set initial value
-        this.props.output.setValue(geometry_1.Box2.givenDomRect(this.props.element.getBoundingClientRect()));
+        const initialBounds = this.props.element.getBoundingClientRect();
+        this.props.output.setValue(geometry_1.Size2.givenWidthHeight(initialBounds.width, initialBounds.height));
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             observer.disconnect();
             this.props.output.setValue(undefined);
         }));
     }
 }
-class ElementBoundsWatcher extends skytree_1.Actor {
+class ElementSizeWatcher extends skytree_1.Actor {
     constructor(props) {
         super(props);
         if (observable_1.Observable.isObservable(props.element)) {
@@ -36,7 +36,7 @@ class ElementBoundsWatcher extends skytree_1.Actor {
         else {
             this._element = observable_1.Observable.givenValue(props.element);
         }
-        this._output = props.output || observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
+        this._output = props.output || observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this.output = observable_1.ReadOnlyObservable.givenObservable(this._output);
     }
     onActivate() {
@@ -46,7 +46,7 @@ class ElementBoundsWatcher extends skytree_1.Actor {
                 this._activeWatcher = undefined;
             }
             if (element != null) {
-                this._activeWatcher = this.addActor(new InternalElementBoundsWatcher({
+                this._activeWatcher = this.addActor(new InternalElementSizeWatcher({
                     element,
                     output: this._output,
                 }));
@@ -54,5 +54,5 @@ class ElementBoundsWatcher extends skytree_1.Actor {
         }, true));
     }
 }
-exports.ElementBoundsWatcher = ElementBoundsWatcher;
+exports.ElementSizeWatcher = ElementSizeWatcher;
 //# sourceMappingURL=index.js.map

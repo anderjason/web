@@ -4,15 +4,15 @@ import {
   ReadOnlyObservable,
   Receipt,
 } from "@anderjason/observable";
-import { Box2 } from "@anderjason/geometry";
+import { Size2 } from "@anderjason/geometry";
 
-export interface InternalElementBoundsWatcherProps {
+export interface InternalElementSizeWatcherProps {
   element: HTMLElement;
-  output: Observable<Box2>;
+  output: Observable<Size2>;
 }
 
-class InternalElementBoundsWatcher extends Actor<
-  InternalElementBoundsWatcherProps
+class InternalElementSizeWatcher extends Actor<
+  InternalElementSizeWatcherProps
 > {
   onActivate() {
     // missing Typescript definition for ResizeObserver
@@ -24,8 +24,9 @@ class InternalElementBoundsWatcher extends Actor<
       }
 
       const bounds = element.contentRect;
-      const box = Box2.givenDomRect(bounds);
-      this.props.output.setValue(box);
+      this.props.output.setValue(
+        Size2.givenWidthHeight(bounds.width, bounds.height)
+      );
     });
 
     // start observing
@@ -33,8 +34,9 @@ class InternalElementBoundsWatcher extends Actor<
 
     // set initial value
 
+    const initialBounds = this.props.element.getBoundingClientRect();
     this.props.output.setValue(
-      Box2.givenDomRect(this.props.element.getBoundingClientRect())
+      Size2.givenWidthHeight(initialBounds.width, initialBounds.height)
     );
 
     this.cancelOnDeactivate(
@@ -46,20 +48,20 @@ class InternalElementBoundsWatcher extends Actor<
   }
 }
 
-export interface ElementBoundsWatcherProps {
+export interface ElementSizeWatcherProps {
   element: HTMLElement | Observable<HTMLElement>;
 
-  output?: Observable<Box2>;
+  output?: Observable<Size2>;
 }
 
-export class ElementBoundsWatcher extends Actor<ElementBoundsWatcherProps> {
-  private _output: Observable<Box2>;
-  readonly output: ReadOnlyObservable<Box2>;
+export class ElementSizeWatcher extends Actor<ElementSizeWatcherProps> {
+  private _output: Observable<Size2>;
+  readonly output: ReadOnlyObservable<Size2>;
 
   private _element: Observable<HTMLElement>;
-  private _activeWatcher: InternalElementBoundsWatcher | undefined;
+  private _activeWatcher: InternalElementSizeWatcher | undefined;
 
-  constructor(props: ElementBoundsWatcherProps) {
+  constructor(props: ElementSizeWatcherProps) {
     super(props);
 
     if (Observable.isObservable(props.element)) {
@@ -68,7 +70,7 @@ export class ElementBoundsWatcher extends Actor<ElementBoundsWatcherProps> {
       this._element = Observable.givenValue(props.element);
     }
 
-    this._output = props.output || Observable.ofEmpty<Box2>(Box2.isEqual);
+    this._output = props.output || Observable.ofEmpty<Size2>(Size2.isEqual);
     this.output = ReadOnlyObservable.givenObservable(this._output);
   }
 
@@ -82,7 +84,7 @@ export class ElementBoundsWatcher extends Actor<ElementBoundsWatcherProps> {
 
         if (element != null) {
           this._activeWatcher = this.addActor(
-            new InternalElementBoundsWatcher({
+            new InternalElementSizeWatcher({
               element,
               output: this._output,
             })

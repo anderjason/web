@@ -8,8 +8,10 @@ export interface ManagedElementDefinition<
 
   parentElement?: HTMLElement | Observable<HTMLElement>;
   classNames?: string[] | ObservableSet<string>;
-  transitionIn?: () => void;
-  transitionOut?: () => Promise<void>;
+  transitionIn?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => void;
+  transitionOut?: (
+    element: ManagedElement<HTMLElementTagNameMap[K]>
+  ) => Promise<void>;
   innerHTML?: string;
 }
 
@@ -24,8 +26,8 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     return new ManagedElement(definition);
   }
 
-  private _transitionIn?: () => void;
-  private _transitionOut?: () => Promise<void>;
+  private _transitionIn?: (element: ManagedElement<T>) => void;
+  private _transitionOut?: (element: ManagedElement<T>) => Promise<void>;
 
   private constructor(definition: ManagedElementDefinition<any>) {
     super({});
@@ -83,33 +85,28 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     if (this._transitionIn != null) {
       requestAnimationFrame(() => {
         if (this.isActive.value == true) {
-          this._transitionIn();
+          this._transitionIn(this);
         }
       });
     }
 
     let classesChangedReceipt: Receipt;
 
-    const cleanup = () => {
-      if (this.element.parentElement != null) {
-        this.element.parentElement.removeChild(this.element);
-      }
-
-      classesChangedReceipt.cancel();
-    };
-
     this.cancelOnDeactivate(
-      new Receipt(() => {
-        if (this._transitionOut == null) {
-          cleanup();
-        } else {
-          this._transitionOut()
-            .then(cleanup)
-            .catch((err) => {
-              console.error(err);
-              cleanup();
-            });
+      new Receipt(async () => {
+        if (this._transitionOut != null) {
+          try {
+            await this._transitionOut(this);
+          } catch (err) {
+            console.error(err);
+          }
         }
+
+        if (this.element.parentElement != null) {
+          this.element.parentElement.removeChild(this.element);
+        }
+
+        classesChangedReceipt.cancel();
       })
     );
 

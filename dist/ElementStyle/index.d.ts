@@ -8,8 +8,8 @@ interface ElementStyleDefinition {
 interface StyleToElementDefinition<K extends keyof HTMLElementTagNameMap> {
     tagName: K;
     parentElement?: HTMLElement | Observable<HTMLElement>;
-    transitionIn?: () => void;
-    transitionOut?: () => Promise<void>;
+    transitionIn?: (element: DynamicStyleElement<HTMLElementTagNameMap[K]>) => void;
+    transitionOut?: (element: DynamicStyleElement<HTMLElementTagNameMap[K]>) => Promise<void>;
     innerHTML?: string;
 }
 export declare class ElementStyle {

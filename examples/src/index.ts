@@ -3,6 +3,8 @@ import { ElementBoundsWatcherDemo } from "./ElementBoundsWatcherDemo";
 import { IntersectionWatcherDemo } from "./IntersectionWatcherDemo";
 import { ScrollAreaDemo } from "./ScrollAreaDemo";
 import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
+import { UndoDemo } from "./UndoDemo";
+import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
@@ -16,6 +18,14 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Scroll area",
     actor: new ScrollAreaDemo({}),
+  },
+  {
+    title: "Undo",
+    actor: new UndoDemo({}),
+  },
+  {
+    title: "Keyboard watcher",
+    actor: new KeyboardWatcherDemo({}),
   },
 ]);
 

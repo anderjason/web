@@ -44,7 +44,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     );
 
     this.cancelOnDeactivate(
-      this._undoContext.currentStep.didChange.subscribe((undoStep) => {
+      this._undoContext.output.didChange.subscribe((undoStep) => {
         this._state.setValue(clone(undoStep));
       }, true)
     );

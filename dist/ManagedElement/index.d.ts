@@ -4,8 +4,8 @@ export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap>
     tagName: K;
     parentElement?: HTMLElement | Observable<HTMLElement>;
     classNames?: string[] | ObservableSet<string>;
-    transitionIn?: () => void;
-    transitionOut?: () => Promise<void>;
+    transitionIn?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => void;
+    transitionOut?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => Promise<void>;
     innerHTML?: string;
 }
 export declare class ManagedElement<T extends HTMLElement> extends Actor {

@@ -43,4 +43,7 @@ class KeyboardWatcher extends skytree_1.Actor {
     }
 }
 exports.KeyboardWatcher = KeyboardWatcher;
+KeyboardWatcher.controlKey = "Control";
+KeyboardWatcher.altKey = "Alt";
+KeyboardWatcher.shiftKey = "Shift";
 //# sourceMappingURL=index.js.map

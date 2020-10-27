@@ -33,7 +33,7 @@ class Preload extends skytree_1.Actor {
     onActivate() {
         this._sequentialWorker = this.addActor(new skytree_1.SequentialWorker({}));
     }
-    addImage(url, priority = 5) {
+    addImage(url, priority = 5, includeCredentials) {
         if (this._imageDataUrlByUrl.has(url)) {
             return;
         }
@@ -41,7 +41,7 @@ class Preload extends skytree_1.Actor {
         this._loadingImageSet.add(url);
         this._isReady.setValue(false);
         this._sequentialWorker.addWork(async () => {
-            await this.loadImage(url);
+            await this.loadImage(url, includeCredentials);
         }, undefined, priority);
     }
     addFont(fontStyle, priority = 5) {
@@ -138,8 +138,14 @@ class Preload extends skytree_1.Actor {
             });
         });
     }
-    async loadImage(url) {
-        const blob = await blobGivenUrl_1.blobGivenUrl(url);
+    async loadImage(url, includeCredentials) {
+        let init;
+        if (includeCredentials) {
+            init = {
+                credentials: "include",
+            };
+        }
+        const blob = await blobGivenUrl_1.blobGivenUrl(url, init);
         const dataUrl = await dataUrlGivenBlob_1.dataUrlGivenBlob(blob);
         this._imageDataUrlByUrl.get(url).setValue(dataUrl);
         this._loadingImageSet.delete(url);

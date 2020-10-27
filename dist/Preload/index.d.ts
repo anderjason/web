@@ -28,7 +28,7 @@ export declare class Preload extends Actor<void> {
     private _loadingImageSet;
     private _requestedFontSet;
     onActivate(): void;
-    addImage(url: string, priority?: number): void;
+    addImage(url: string, priority?: number, includeCredentials?: boolean): void;
     addFont(fontStyle: FontStyle, priority?: number): void;
     addVideo(url: string, priority?: number): void;
     toPreloadedImageUrl(imageUrl: string): Observable<string>;

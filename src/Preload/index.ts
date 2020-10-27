@@ -57,7 +57,11 @@ export class Preload extends Actor<void> {
     this._sequentialWorker = this.addActor(new SequentialWorker({}));
   }
 
-  addImage(url: string, priority: number = 5): void {
+  addImage(
+    url: string,
+    priority: number = 5,
+    includeCredentials?: boolean
+  ): void {
     if (this._imageDataUrlByUrl.has(url)) {
       return;
     }
@@ -72,7 +76,7 @@ export class Preload extends Actor<void> {
 
     this._sequentialWorker.addWork(
       async () => {
-        await this.loadImage(url);
+        await this.loadImage(url, includeCredentials);
       },
       undefined,
       priority
@@ -205,8 +209,18 @@ export class Preload extends Actor<void> {
     });
   }
 
-  private async loadImage(url: string): Promise<void> {
-    const blob = await blobGivenUrl(url);
+  private async loadImage(
+    url: string,
+    includeCredentials: boolean
+  ): Promise<void> {
+    let init: RequestInit;
+    if (includeCredentials) {
+      init = {
+        credentials: "include",
+      };
+    }
+
+    const blob = await blobGivenUrl(url, init);
     const dataUrl = await dataUrlGivenBlob(blob);
 
     this._imageDataUrlByUrl.get(url).setValue(dataUrl);

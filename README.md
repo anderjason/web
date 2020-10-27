@@ -22,7 +22,7 @@
 
 `TODO`
 
-### ElementBoundsWatcher
+### ElementSizeWatcher
 
 `TODO`
 
@@ -38,6 +38,10 @@
 
 `TODO`
 
+### IntersectionWatcher
+
+`TODO`
+
 ### KeyboardShortcut
 
 `TODO`
@@ -47,6 +51,10 @@
 `TODO`
 
 ### LocationUtil
+
+`TODO`
+
+### ManagedCanvas
 
 `TODO`
 

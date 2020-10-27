@@ -23,5 +23,5 @@ export declare class ObservableState extends Actor<ObservableStateProps> {
     subscribe(valuePath: ValuePath, fn: (value: any) => void, includeLast?: boolean): Receipt;
     toBinding<T>(definition: ObservableStateBindingDefinition<T>): ObservableStateBinding<T>;
     toOptionalValueGivenPath(path: ValuePath): any;
-    update(path: ValuePath, inputValue: any): void;
+    update(path: ValuePath, inputValue: any): boolean;
 }

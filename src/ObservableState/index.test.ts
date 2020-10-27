@@ -145,3 +145,33 @@ Test.define("ObservableState can set arrays", () => {
 
   os.deactivate();
 });
+
+Test.define(
+  "ObservableState only updates if the resulting state changes",
+  () => {
+    const os = new ObservableState({
+      initialState: {
+        design: {
+          colors: ["red", "orange"],
+        },
+      },
+    });
+    os.activate();
+
+    let didUpdate: boolean;
+
+    didUpdate = os.update(ValuePath.givenString("design.colors"), [
+      "green",
+      "blue",
+    ]);
+    Test.assert(didUpdate == true);
+
+    didUpdate = os.update(ValuePath.givenString("design.colors"), [
+      "green",
+      "blue",
+    ]);
+    Test.assert(didUpdate == false);
+
+    os.deactivate();
+  }
+);

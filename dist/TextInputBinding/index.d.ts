@@ -14,14 +14,13 @@ export interface TextInputChangingData<T> {
     previousValue: T;
 }
 export declare class TextInputBinding<T = string> extends Actor<TextInputBindingProps<T>> {
-    readonly value: Observable<T>;
+    readonly output: Observable<T>;
     private _displayText;
     readonly displayText: ReadOnlyObservable<string>;
     private _isEmpty;
     readonly isEmpty: ReadOnlyObservable<boolean>;
     private _rawInputValue;
     readonly rawInputText: ReadOnlyObservable<string>;
-    private _overrideDisplayText;
     private _previousDisplayText;
     private _caretPosition;
     private _inputElement;

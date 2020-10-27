@@ -18,7 +18,7 @@ class CheckboxBinding extends skytree_1.Actor {
         if (this.inputElement.type !== "checkbox") {
             throw new Error(`Expected an input with type "checkbox"`);
         }
-        this.isChecked = observable_1.Observable.givenValue(props.initialValue || false, observable_1.Observable.isStrictEqual);
+        this.output = observable_1.Observable.givenValue(props.initialValue || false, observable_1.Observable.isStrictEqual);
     }
     onActivate() {
         this._previousValue = this.inputElement.checked;
@@ -29,10 +29,10 @@ class CheckboxBinding extends skytree_1.Actor {
                 this.inputElement.checked = this._previousValue;
                 return;
             }
-            this.isChecked.setValue(newValue);
+            this.output.setValue(newValue);
             this._previousValue = newValue;
         });
-        this.cancelOnDeactivate(this.isChecked.didChange.subscribe((value) => {
+        this.cancelOnDeactivate(this.output.didChange.subscribe((value) => {
             this.inputElement.checked = value;
         }, true));
     }

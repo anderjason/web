@@ -21,7 +21,7 @@ export interface TextInputChangingData<T> {
 export class TextInputBinding<T = string> extends Actor<
   TextInputBindingProps<T>
 > {
-  readonly value: Observable<T>;
+  readonly output: Observable<T>;
 
   private _displayText = Observable.ofEmpty<string>(Observable.isStrictEqual);
   readonly displayText = ReadOnlyObservable.givenObservable(this._displayText);
@@ -34,7 +34,6 @@ export class TextInputBinding<T = string> extends Actor<
     this._rawInputValue
   );
 
-  private _overrideDisplayText: (e: TextInputChangingData<T>) => string;
   private _previousDisplayText: string;
   private _caretPosition: number;
   private _inputElement: HTMLInputElement | HTMLTextAreaElement;
@@ -55,7 +54,7 @@ export class TextInputBinding<T = string> extends Actor<
 
     this._inputElement = props.inputElement as HTMLInputElement;
 
-    this.value =
+    this.output =
       this.props.value || Observable.ofEmpty(Observable.isStrictEqual);
   }
 
@@ -83,7 +82,7 @@ export class TextInputBinding<T = string> extends Actor<
           displayText,
           value,
           previousDisplayText: this._previousDisplayText,
-          previousValue: this.value.value,
+          previousValue: this.output.value,
         });
         if (overrideText == null) {
           this.onOverride(this._previousDisplayText, true);
@@ -94,7 +93,7 @@ export class TextInputBinding<T = string> extends Actor<
         }
       }
 
-      this.value.setValue(value);
+      this.output.setValue(value);
 
       if (overrideText != null) {
         requestAnimationFrame(() => {
@@ -108,7 +107,7 @@ export class TextInputBinding<T = string> extends Actor<
     });
 
     this.cancelOnDeactivate(
-      this.value.didChange.subscribe((value) => {
+      this.output.didChange.subscribe((value) => {
         const displayText = this.props.displayTextGivenValue(value);
         this._inputElement.value = displayText || "";
 

@@ -1,13 +1,11 @@
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
-import { ElementStyle, ElementBoundsWatcher } from "../../../src";
+import { ElementStyle, ElementSizeWatcher } from "../../../src";
 import { Actor, ConditionalActivator, Timer } from "skytree";
 
-export interface ElementBoundsWatcherDemoProps {}
+export interface ElementSizeWatcherDemoProps {}
 
-export class ElementBoundsWatcherDemo extends Actor<
-  ElementBoundsWatcherDemoProps
-> {
+export class ElementSizeWatcherDemo extends Actor<ElementSizeWatcherDemoProps> {
   readonly parentElement = Observable.ofEmpty<HTMLElement>();
   readonly isVisible = Observable.ofEmpty<boolean>();
 
@@ -30,7 +28,7 @@ export class ElementBoundsWatcherDemo extends Actor<
     );
 
     const boundsWatcher = this.addActor(
-      new ElementBoundsWatcher({
+      new ElementSizeWatcher({
         element: bounds.element,
       })
     );
@@ -55,7 +53,7 @@ export class ElementBoundsWatcherDemo extends Actor<
           return;
         }
 
-        const { width, height } = b.size;
+        const { width, height } = b;
         bounds.element.innerHTML = `${Math.round(width)}px ${Math.round(
           height
         )}px`;

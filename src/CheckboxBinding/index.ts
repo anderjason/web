@@ -11,7 +11,7 @@ export interface CheckboxBindingProps {
 const allowAll = () => false;
 
 export class CheckboxBinding extends Actor<CheckboxBindingProps> {
-  readonly isChecked: Observable<boolean>;
+  readonly output: Observable<boolean>;
   readonly inputElement: HTMLInputElement;
 
   private _previousValue: boolean;
@@ -33,7 +33,7 @@ export class CheckboxBinding extends Actor<CheckboxBindingProps> {
       throw new Error(`Expected an input with type "checkbox"`);
     }
 
-    this.isChecked = Observable.givenValue(
+    this.output = Observable.givenValue(
       props.initialValue || false,
       Observable.isStrictEqual
     );
@@ -51,12 +51,12 @@ export class CheckboxBinding extends Actor<CheckboxBindingProps> {
         return;
       }
 
-      this.isChecked.setValue(newValue);
+      this.output.setValue(newValue);
       this._previousValue = newValue;
     });
 
     this.cancelOnDeactivate(
-      this.isChecked.didChange.subscribe((value) => {
+      this.output.didChange.subscribe((value) => {
         this.inputElement.checked = value;
       }, true)
     );

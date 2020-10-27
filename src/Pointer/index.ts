@@ -6,6 +6,7 @@ import {
   TypedEvent,
 } from "@anderjason/observable";
 import { Actor } from "skytree";
+import { LocationUtil } from "..";
 import { PendingClick } from "./PendingClick";
 import { TouchVisualizer } from "./TouchVisualizer";
 
@@ -64,16 +65,15 @@ export class Pointer extends Actor<void> {
   }
 
   onActivate() {
-    if (
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "192.168.1.100"
-    ) {
-      this.addActor(
-        new TouchVisualizer({
-          touchSupport: this,
-        })
-      );
-    }
+    // if (
+    //   LocationUtil.currentHostIsLocal()
+    // ) {
+    //   this.addActor(
+    //     new TouchVisualizer({
+    //       touchSupport: this,
+    //     })
+    //   );
+    // }
 
     this.cancelOnDeactivate(
       new Receipt(() => {

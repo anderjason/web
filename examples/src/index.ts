@@ -1,15 +1,15 @@
 import { ObservableArray } from "@anderjason/observable";
-import { ElementBoundsWatcherDemo } from "./ElementBoundsWatcherDemo";
 import { IntersectionWatcherDemo } from "./IntersectionWatcherDemo";
 import { ScrollAreaDemo } from "./ScrollAreaDemo";
 import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
 import { UndoDemo } from "./UndoDemo";
 import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
+import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
-    title: "Element bounds watcher",
-    actor: new ElementBoundsWatcherDemo({}),
+    title: "Element size watcher",
+    actor: new ElementSizeWatcherDemo({}),
   },
   {
     title: "Intersection watcher",

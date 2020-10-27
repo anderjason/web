@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.LocationUtil = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.ManagedCanvas = exports.LocationUtil = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -25,6 +25,8 @@ const KeyboardWatcher_1 = require("./KeyboardWatcher");
 Object.defineProperty(exports, "KeyboardWatcher", { enumerable: true, get: function () { return KeyboardWatcher_1.KeyboardWatcher; } });
 const LocationUtil_1 = require("./LocationUtil");
 Object.defineProperty(exports, "LocationUtil", { enumerable: true, get: function () { return LocationUtil_1.LocationUtil; } });
+const ManagedCanvas_1 = require("./ManagedCanvas");
+Object.defineProperty(exports, "ManagedCanvas", { enumerable: true, get: function () { return ManagedCanvas_1.ManagedCanvas; } });
 const ManagedElement_1 = require("./ManagedElement");
 Object.defineProperty(exports, "ManagedElement", { enumerable: true, get: function () { return ManagedElement_1.ManagedElement; } });
 const NetworkUtil_1 = require("./NetworkUtil");

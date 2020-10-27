@@ -6,7 +6,7 @@ export interface CheckboxBindingProps {
     shouldPreventChange?: (newValue: boolean) => boolean;
 }
 export declare class CheckboxBinding extends Actor<CheckboxBindingProps> {
-    readonly isChecked: Observable<boolean>;
+    readonly output: Observable<boolean>;
     readonly inputElement: HTMLInputElement;
     private _previousValue;
     constructor(props: CheckboxBindingProps);

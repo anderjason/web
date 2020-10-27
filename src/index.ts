@@ -10,6 +10,7 @@ import { IntersectionWatcher } from "./IntersectionWatcher";
 import { KeyboardShortcut } from "./KeyboardShortcut";
 import { KeyboardWatcher } from "./KeyboardWatcher";
 import { LocationUtil } from "./LocationUtil";
+import { ManagedCanvas } from "./ManagedCanvas";
 import { ManagedElement } from "./ManagedElement";
 import { NetworkUtil } from "./NetworkUtil";
 import { ObservableState } from "./ObservableState";
@@ -37,6 +38,7 @@ export {
   KeyboardShortcut,
   KeyboardWatcher,
   LocationUtil,
+  ManagedCanvas,
   ManagedElement,
   NetworkUtil,
   ObservableState,

@@ -5,7 +5,6 @@ const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
 const PendingClick_1 = require("./PendingClick");
-const TouchVisualizer_1 = require("./TouchVisualizer");
 class Pointer extends skytree_1.Actor {
     constructor() {
         super();
@@ -114,12 +113,15 @@ class Pointer extends skytree_1.Actor {
         return this._instance;
     }
     onActivate() {
-        if (window.location.hostname === "localhost" ||
-            window.location.hostname === "192.168.1.100") {
-            this.addActor(new TouchVisualizer_1.TouchVisualizer({
-                touchSupport: this,
-            }));
-        }
+        // if (
+        //   LocationUtil.currentHostIsLocal()
+        // ) {
+        //   this.addActor(
+        //     new TouchVisualizer({
+        //       touchSupport: this,
+        //     })
+        //   );
+        // }
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this._referenceCountByTarget.clear();
         }));

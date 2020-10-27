@@ -21,7 +21,7 @@ class TextInputBinding extends skytree_1.Actor {
             throw new Error(`Expected an input or textarea element, but got '${nodeName}'`);
         }
         this._inputElement = props.inputElement;
-        this.value =
+        this.output =
             this.props.value || observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
     }
     onActivate() {
@@ -42,7 +42,7 @@ class TextInputBinding extends skytree_1.Actor {
                     displayText,
                     value,
                     previousDisplayText: this._previousDisplayText,
-                    previousValue: this.value.value,
+                    previousValue: this.output.value,
                 });
                 if (overrideText == null) {
                     this.onOverride(this._previousDisplayText, true);
@@ -53,7 +53,7 @@ class TextInputBinding extends skytree_1.Actor {
                     value = this.props.valueGivenDisplayText(overrideText);
                 }
             }
-            this.value.setValue(value);
+            this.output.setValue(value);
             if (overrideText != null) {
                 requestAnimationFrame(() => {
                     this._inputElement.value = overrideText;
@@ -62,7 +62,7 @@ class TextInputBinding extends skytree_1.Actor {
                 });
             }
         });
-        this.cancelOnDeactivate(this.value.didChange.subscribe((value) => {
+        this.cancelOnDeactivate(this.output.didChange.subscribe((value) => {
             const displayText = this.props.displayTextGivenValue(value);
             this._inputElement.value = displayText || "";
             this._rawInputValue.setValue(this._inputElement.value);

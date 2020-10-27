@@ -62,39 +62,28 @@ class DynamicStyleElement extends skytree_1.Actor {
     addManagedEventListener(type, listener, options) {
         return this.managedElement.addManagedEventListener(type, listener, options);
     }
-    addModifier(modifierName) {
-        if (this._modifiers.has(modifierName)) {
-            return;
-        }
-        this._modifiers.add(modifierName);
-        const classNames = this._classNamesByModifierName.get(modifierName);
-        if (classNames != null) {
-            classNames.forEach((name) => {
-                this.managedElement.classes.addValue(name);
-            });
-        }
-    }
-    removeModifier(modifierName) {
-        if (!this._modifiers.has(modifierName)) {
-            return;
-        }
-        this._modifiers.delete(modifierName);
-        this.updateClassNames();
-    }
     toggleModifier(modifierName) {
-        if (this._modifiers.has(modifierName)) {
-            this.removeModifier(modifierName);
-        }
-        else {
-            this.addModifier(modifierName);
-        }
+        this.setModifier(modifierName, !this._modifiers.has(modifierName));
     }
     setModifier(modifierName, isActive) {
         if (isActive) {
-            this.addModifier(modifierName);
+            if (this._modifiers.has(modifierName)) {
+                return;
+            }
+            this._modifiers.add(modifierName);
+            const classNames = this._classNamesByModifierName.get(modifierName);
+            if (classNames != null) {
+                classNames.forEach((name) => {
+                    this.managedElement.classes.addValue(name);
+                });
+            }
         }
         else {
-            this.removeModifier(modifierName);
+            if (!this._modifiers.has(modifierName)) {
+                return;
+            }
+            this._modifiers.delete(modifierName);
+            this.updateClassNames();
         }
     }
     toModifiers() {

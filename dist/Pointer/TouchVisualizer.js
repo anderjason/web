@@ -23,17 +23,17 @@ class TouchVisualizer extends skytree_1.Actor {
         this.cancelOnDeactivate(this.props.touchSupport.points.didChange.subscribe((points) => {
             if (points.first != null) {
                 point1.style.transform = `translate(${points.first.x}px, ${points.first.y}px)`;
-                point1.addModifier("isVisible");
+                point1.setModifier("isVisible", true);
             }
             else {
-                point1.removeModifier("isVisible");
+                point1.setModifier("isVisible", false);
             }
             if (points.second != null) {
                 point2.style.transform = `translate(${points.second.x}px, ${points.second.y}px)`;
-                point2.addModifier("isVisible");
+                point2.setModifier("isVisible", true);
             }
             else {
-                point2.removeModifier("isVisible");
+                point2.setModifier("isVisible", false);
             }
         }));
     }

@@ -1,1 +1,1 @@
-export declare function blobGivenUrl(url: string): Promise<Blob>;
+export declare function blobGivenUrl(url: string, init?: RequestInit): Promise<Blob>;

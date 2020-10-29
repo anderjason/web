@@ -18,7 +18,7 @@ export class KeyboardWatcherDemo extends Actor<KeyboardWatcherDemoProps> {
 
     this.cancelOnDeactivate(
       KeyboardWatcher.instance.keys.didChange.subscribe((keys) => {
-        if (keys.length == 0) {
+        if (keys == null || keys.length == 0) {
           label.element.innerHTML = "No keys pressed";
           return;
         }
@@ -40,5 +40,6 @@ const LabelStyle = ElementStyle.givenDefinition({
     font-family: monospace;
     font-size: 1.5rem;
     color: #FFF;
+    user-select: none;
   `,
 });

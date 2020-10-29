@@ -5,8 +5,13 @@ import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
 import { UndoDemo } from "./UndoDemo";
 import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
 import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
+import { TransitionDemo } from "./TransitionDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
+  {
+    title: "Transition",
+    actor: new TransitionDemo({}),
+  },
   {
     title: "Element size watcher",
     actor: new ElementSizeWatcherDemo({}),

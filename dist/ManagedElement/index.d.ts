@@ -1,5 +1,5 @@
+import { Observable, ObservableSet, Receipt } from "@anderjason/observable";
 import { Actor } from "skytree";
-import { Receipt, Observable, ObservableSet } from "@anderjason/observable";
 export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap> {
     tagName: K;
     parentElement?: HTMLElement | Observable<HTMLElement>;
@@ -19,4 +19,5 @@ export declare class ManagedElement<T extends HTMLElement> extends Actor {
     get style(): CSSStyleDeclaration;
     onActivate(): void;
     addManagedEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): Receipt;
+    private watchDomVisibility;
 }

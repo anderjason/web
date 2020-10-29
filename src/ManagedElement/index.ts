@@ -1,5 +1,6 @@
+import { Observable, ObservableSet, Receipt } from "@anderjason/observable";
 import { Actor } from "skytree";
-import { Receipt, Observable, ObservableSet } from "@anderjason/observable";
+import { ElementMountWatcher } from "../ElementMountWatcher";
 
 export interface ManagedElementDefinition<
   K extends keyof HTMLElementTagNameMap
@@ -67,12 +68,16 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
 
   onActivate() {
     this.cancelOnDeactivate(
-      this.parentElement.didChange.subscribe((parentElement) => {
+      this.parentElement.didChange.subscribe(async (parentElement) => {
         if (this.element.parentElement === parentElement) {
           return;
         }
 
         if (this.element.parentElement != null) {
+          if (this._transitionOut != null) {
+            await this._transitionOut(this);
+          }
+
           this.element.parentElement.removeChild(this.element);
         }
 
@@ -82,12 +87,8 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
       }, true)
     );
 
-    if (this._transitionIn != null) {
-      requestAnimationFrame(() => {
-        if (this.isActive.value == true) {
-          this._transitionIn(this);
-        }
-      });
+    if (this._transitionIn != null || this._transitionOut != null) {
+      this.watchDomVisibility();
     }
 
     let classesChangedReceipt: Receipt;
@@ -139,6 +140,45 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
       new Receipt(() => {
         this.element.removeEventListener(type, listener, options);
       })
+    );
+  }
+
+  private watchDomVisibility() {
+    const elementMountWatcher = this.addActor(
+      new ElementMountWatcher({
+        element: this.element,
+      })
+    );
+
+    this.cancelOnDeactivate(
+      elementMountWatcher.isElementMounted.didChange.subscribe((isMounted) => {
+        requestAnimationFrame(() => {
+          if (!this.isActive.value) {
+            return;
+          }
+
+          try {
+            if (isMounted) {
+              if (this._transitionIn != null) {
+                this._transitionIn(this);
+              }
+            } else {
+              // it's too late at this point for any transition out to
+              // be visible, because the element has already been removed
+              // from the DOM, but it's still important to run the function
+              // because the element may need to transition in again later
+              // so it needs a chance to update its state
+              if (this._transitionOut != null) {
+                this._transitionOut(this).catch((err) => {
+                  console.warn(err);
+                });
+              }
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+        });
+      }, true)
     );
   }
 }

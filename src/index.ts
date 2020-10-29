@@ -2,6 +2,7 @@ import { CanvasUtil } from "./CanvasUtil";
 import { CheckboxBinding } from "./CheckboxBinding";
 import { Corners } from "./Corners";
 import { DynamicStyleElement } from "./DynamicStyleElement";
+import { ElementMountWatcher } from "./ElementMountWatcher";
 import { ElementSizeWatcher } from "./ElementSizeWatcher";
 import { ElementStyle } from "./ElementStyle";
 import { EveryFrame } from "./EveryFrame";
@@ -30,6 +31,7 @@ export {
   CheckboxBinding,
   Corners,
   DynamicStyleElement,
+  ElementMountWatcher,
   ElementSizeWatcher,
   ElementStyle,
   EveryFrame,

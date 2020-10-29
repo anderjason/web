@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.ManagedCanvas = exports.LocationUtil = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.ManagedCanvas = exports.LocationUtil = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.ElementMountWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -9,6 +9,8 @@ const Corners_1 = require("./Corners");
 Object.defineProperty(exports, "Corners", { enumerable: true, get: function () { return Corners_1.Corners; } });
 const DynamicStyleElement_1 = require("./DynamicStyleElement");
 Object.defineProperty(exports, "DynamicStyleElement", { enumerable: true, get: function () { return DynamicStyleElement_1.DynamicStyleElement; } });
+const ElementMountWatcher_1 = require("./ElementMountWatcher");
+Object.defineProperty(exports, "ElementMountWatcher", { enumerable: true, get: function () { return ElementMountWatcher_1.ElementMountWatcher; } });
 const ElementSizeWatcher_1 = require("./ElementSizeWatcher");
 Object.defineProperty(exports, "ElementSizeWatcher", { enumerable: true, get: function () { return ElementSizeWatcher_1.ElementSizeWatcher; } });
 const ElementStyle_1 = require("./ElementStyle");

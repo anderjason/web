@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManagedElement = void 0;
-const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
+const skytree_1 = require("skytree");
+const ElementMountWatcher_1 = require("../ElementMountWatcher");
 class ManagedElement extends skytree_1.Actor {
     constructor(definition) {
         super({});
@@ -38,23 +39,22 @@ class ManagedElement extends skytree_1.Actor {
         return this.element.style;
     }
     onActivate() {
-        this.cancelOnDeactivate(this.parentElement.didChange.subscribe((parentElement) => {
+        this.cancelOnDeactivate(this.parentElement.didChange.subscribe(async (parentElement) => {
             if (this.element.parentElement === parentElement) {
                 return;
             }
             if (this.element.parentElement != null) {
+                if (this._transitionOut != null) {
+                    await this._transitionOut(this);
+                }
                 this.element.parentElement.removeChild(this.element);
             }
             if (parentElement != null) {
                 parentElement.appendChild(this.element);
             }
         }, true));
-        if (this._transitionIn != null) {
-            requestAnimationFrame(() => {
-                if (this.isActive.value == true) {
-                    this._transitionIn(this);
-                }
-            });
+        if (this._transitionIn != null || this._transitionOut != null) {
+            this.watchDomVisibility();
         }
         let classesChangedReceipt;
         this.cancelOnDeactivate(new observable_1.Receipt(async () => {
@@ -92,6 +92,40 @@ class ManagedElement extends skytree_1.Actor {
         return this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this.element.removeEventListener(type, listener, options);
         }));
+    }
+    watchDomVisibility() {
+        const elementMountWatcher = this.addActor(new ElementMountWatcher_1.ElementMountWatcher({
+            element: this.element,
+        }));
+        this.cancelOnDeactivate(elementMountWatcher.isElementMounted.didChange.subscribe((isMounted) => {
+            requestAnimationFrame(() => {
+                if (!this.isActive.value) {
+                    return;
+                }
+                try {
+                    if (isMounted) {
+                        if (this._transitionIn != null) {
+                            this._transitionIn(this);
+                        }
+                    }
+                    else {
+                        // it's too late at this point for any transition out to
+                        // be visible, because the element has already been removed
+                        // from the DOM, but it's still important to run the function
+                        // because the element may need to transition in again later
+                        // so it needs a chance to update its state
+                        if (this._transitionOut != null) {
+                            this._transitionOut(this).catch((err) => {
+                                console.warn(err);
+                            });
+                        }
+                    }
+                }
+                catch (err) {
+                    console.warn(err);
+                }
+            });
+        }, true));
     }
 }
 exports.ManagedElement = ManagedElement;

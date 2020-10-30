@@ -39,6 +39,7 @@ class ManagedElement extends skytree_1.Actor {
         return this.element.style;
     }
     onActivate() {
+        this.element.className = this.classes.toArray().join(" ");
         this.cancelOnDeactivate(this.parentElement.didChange.subscribe(async (parentElement) => {
             if (this.element.parentElement === parentElement) {
                 return;

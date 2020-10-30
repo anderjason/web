@@ -36,10 +36,10 @@ export class KeyboardWatcherDemo extends Actor<KeyboardWatcherDemoProps> {
 
 const LabelStyle = ElementStyle.givenDefinition({
   css: `
-    padding: 40px;
+    color: #FFF;
     font-family: monospace;
     font-size: 1.5rem;
-    color: #FFF;
+    padding: 40px;
     user-select: none;
   `,
 });

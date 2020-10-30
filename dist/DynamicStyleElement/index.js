@@ -45,6 +45,7 @@ class DynamicStyleElement extends skytree_1.Actor {
         this._managedElement = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,
+            classNames: Array.from(this.activeClassNames()),
             innerHTML: this._innerHTML,
             transitionIn: () => {
                 if (this._transitionIn != null) {

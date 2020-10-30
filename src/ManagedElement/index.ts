@@ -67,6 +67,8 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
   }
 
   onActivate() {
+    this.element.className = this.classes.toArray().join(" ");
+
     this.cancelOnDeactivate(
       this.parentElement.didChange.subscribe(async (parentElement) => {
         if (this.element.parentElement === parentElement) {

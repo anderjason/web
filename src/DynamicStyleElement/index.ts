@@ -82,6 +82,7 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
       ManagedElement.givenDefinition({
         tagName: this.tagName,
         parentElement: this.parentElement,
+        classNames: Array.from(this.activeClassNames()),
         innerHTML: this._innerHTML,
         transitionIn: () => {
           if (this._transitionIn != null) {

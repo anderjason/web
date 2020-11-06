@@ -7,14 +7,6 @@ import {
 import { Size2 } from "@anderjason/geometry";
 import ResizeObserverPolyfill from "resize-observer-polyfill";
 
-let LocalResizeObserver: typeof ResizeObserverPolyfill;
-
-if ("ResizeObserver" in window) {
-  LocalResizeObserver = (window as any).ResizeObserver;
-} else {
-  LocalResizeObserver = ResizeObserverPolyfill;
-}
-
 export interface InternalElementSizeWatcherProps {
   element: HTMLElement;
   output: Observable<Size2>;
@@ -24,7 +16,7 @@ class InternalElementSizeWatcher extends Actor<
   InternalElementSizeWatcherProps
 > {
   onActivate() {
-    const observer = new LocalResizeObserver((elements) => {
+    const observer = new ResizeObserverPolyfill((elements) => {
       const element = elements[0];
       if (element == null) {
         return;

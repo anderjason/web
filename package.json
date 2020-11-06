@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -14,7 +14,8 @@
     "build": "npm run clean && tsc",
     "clean": "rm -rf dist && rm -rf test",
     "test": "tsc -p tsconfig.test.json && node test/index.test && rm -rf test",
-    "examples": "webpack-dev-server --config ./examples/webpack.config.js --open"
+    "examples": "webpack-dev-server --config ./examples/webpack.config.js --open",
+    "build:examples": "webpack --config ./examples/webpack.build.js"
   },
   "files": [
     "dist/**/*"
@@ -27,6 +28,7 @@
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
     "fontfaceobserver": "^2.1.0",
+    "resize-observer-polyfill": "^1.5.1",
     "skytree": "^9.1.1",
     "stylis": "^4.0.3"
   },
@@ -36,9 +38,9 @@
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
+    "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "webpack": "4.44.2"
+    "webpack-dev-server": "^3.11.0"
   },
   "bugs": {
     "url": "https://github.com/anderjason/web/issues"

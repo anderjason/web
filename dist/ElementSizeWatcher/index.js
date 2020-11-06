@@ -4,11 +4,17 @@ exports.ElementSizeWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
+const resize_observer_polyfill_1 = require("resize-observer-polyfill");
+let LocalResizeObserver;
+if ("ResizeObserver" in window) {
+    LocalResizeObserver = window.ResizeObserver;
+}
+else {
+    LocalResizeObserver = resize_observer_polyfill_1.default;
+}
 class InternalElementSizeWatcher extends skytree_1.Actor {
     onActivate() {
-        // missing Typescript definition for ResizeObserver
-        // @ts-ignore
-        const observer = new ResizeObserver((elements) => {
+        const observer = new LocalResizeObserver((elements) => {
             const element = elements[0];
             if (element == null) {
                 return;

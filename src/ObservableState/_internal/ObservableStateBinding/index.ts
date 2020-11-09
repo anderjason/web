@@ -1,11 +1,12 @@
 import { Observable } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
-import { Actor } from "skytree";
+import { Actor, PathBinding } from "skytree";
 import { ObservableState } from "../..";
 
 export interface ObservableStateBindingProps<T> {
   observableState: ObservableState;
   valuePath: ValuePath;
+  onRequestUpdate: (valuePath: ValuePath, value: any) => boolean;
 
   output?: Observable<T>;
   partialStateGivenOutputValue?: (outputValue: T) => any;
@@ -30,23 +31,26 @@ export class ObservableStateBinding<T> extends Actor<
   onActivate() {
     let isUpdating = false;
 
+    const binding = this.addActor(
+      new PathBinding<any, T>({
+        input: this.props.observableState.state,
+        path: this.props.valuePath,
+      })
+    );
+
     this.cancelOnDeactivate(
-      this.props.observableState.subscribe(
-        this.props.valuePath,
-        (vccValue) => {
-          isUpdating = true;
+      binding.output.didChange.subscribe((vccValue) => {
+        isUpdating = true;
 
-          let result = vccValue;
-          if (this.props.outputValueGivenPartialState != null) {
-            result = this.props.outputValueGivenPartialState(result);
-          }
+        let result = vccValue;
+        if (this.props.outputValueGivenPartialState != null) {
+          result = this.props.outputValueGivenPartialState(result);
+        }
 
-          this.output.setValue(result);
+        this.output.setValue(result);
 
-          isUpdating = false;
-        },
-        true
-      )
+        isUpdating = false;
+      }, true)
     );
 
     this.cancelOnDeactivate(
@@ -60,7 +64,7 @@ export class ObservableStateBinding<T> extends Actor<
           result = this.props.outputValueGivenPartialState(result);
         }
 
-        this.props.observableState.update(this.props.valuePath, result);
+        this.props.onRequestUpdate(this.props.valuePath, result);
       })
     );
   }

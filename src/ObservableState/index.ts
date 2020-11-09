@@ -1,11 +1,7 @@
-import {
-  Observable,
-  ReadOnlyObservable,
-  Receipt,
-} from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoContext } from "../UndoContext";
-import { Actor, PathBinding } from "skytree";
+import { Actor } from "skytree";
 import { ObservableStateBinding } from "./_internal/ObservableStateBinding";
 
 export interface ObservableStateProps {
@@ -35,7 +31,6 @@ export class ObservableState extends Actor<ObservableStateProps> {
   readonly state = ReadOnlyObservable.givenObservable(this._state);
 
   private _undoContext: UndoContext;
-  private _pathBindings = new Set<PathBinding<unknown, unknown>>();
 
   onActivate() {
     this._undoContext = new UndoContext<unknown>(
@@ -62,40 +57,12 @@ export class ObservableState extends Actor<ObservableStateProps> {
     this._undoContext.pushStep(this.state.value);
   }
 
-  subscribe(
-    valuePath: ValuePath,
-    fn: (value: any) => void,
-    includeLast = false
-  ): Receipt {
-    const binding = this.addActor(
-      new PathBinding({
-        input: this._state,
-        path: valuePath,
-      })
-    );
-
-    this._pathBindings.add(binding);
-
-    const innerHandle = this.cancelOnDeactivate(
-      binding.output.didChange.subscribe((value) => {
-        fn(value);
-      }, includeLast)
-    );
-
-    return new Receipt(() => {
-      this._pathBindings.delete(binding);
-
-      innerHandle.cancel();
-      this.removeCancelOnDeactivate(innerHandle);
-      this.removeActor(binding);
-    });
-  }
-
   toBinding<T>(
     definition: ObservableStateBindingDefinition<T>
   ): ObservableStateBinding<T> {
     return new ObservableStateBinding<T>({
       observableState: this,
+      onRequestUpdate: this.onRequestUpdate,
       ...definition,
     });
   }
@@ -106,7 +73,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     );
   }
 
-  update(path: ValuePath, inputValue: any): boolean {
+  private onRequestUpdate = (path: ValuePath, inputValue: any): boolean => {
     const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
       this._state.value,
       path
@@ -125,5 +92,5 @@ export class ObservableState extends Actor<ObservableStateProps> {
     this._state.setValue(obj);
 
     return true;
-  }
+  };
 }

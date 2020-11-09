@@ -34,9 +34,18 @@ Test.define("ObservableState stores a deep copy of the input value", () => {
     foreground: "green",
   };
 
-  os.update(colorsPath, colors);
+  const colorsBinding = os.addActor(
+    os.toBinding({
+      valuePath: colorsPath,
+    })
+  );
 
-  Test.assertIsDeepEqual(os.toOptionalValueGivenPath(colorsPath), colors);
+  Test.assert(colorsBinding.isActive.value == true);
+
+  colorsBinding.output.setValue(colors);
+
+  const actual = os.toOptionalValueGivenPath(colorsPath);
+  Test.assertIsDeepEqual(actual, colors);
 
   colors.background = "orange"; // should have no effect in the observable state
 
@@ -87,7 +96,13 @@ Test.define("ObservableState can set primitive values", () => {
   });
   os.activate();
 
-  os.update(ValuePath.givenString("design.colors.background"), "blue");
+  const backgroundBinding = os.addActor(
+    os.toBinding({
+      valuePath: ValuePath.givenString("design.colors.background"),
+    })
+  );
+
+  backgroundBinding.output.setValue("blue");
 
   Test.assertIsDeepEqual(os.state.value, {
     design: {
@@ -112,7 +127,13 @@ Test.define("ObservableState can set undefined", () => {
   });
   os.activate();
 
-  os.update(ValuePath.givenString("design.colors.background"), undefined);
+  const backgroundBinding = os.addActor(
+    os.toBinding({
+      valuePath: ValuePath.givenString("design.colors.background"),
+    })
+  );
+
+  backgroundBinding.output.setValue(undefined);
 
   Test.assertIsDeepEqual(os.state.value, {
     design: {
@@ -135,7 +156,13 @@ Test.define("ObservableState can set arrays", () => {
   });
   os.activate();
 
-  os.update(ValuePath.givenString("design.colors"), ["green", "blue"]);
+  const colorsBinding = os.addActor(
+    os.toBinding({
+      valuePath: ValuePath.givenString("design.colors"),
+    })
+  );
+
+  colorsBinding.output.setValue(["green", "blue"]);
 
   Test.assertIsDeepEqual(os.state.value, {
     design: {
@@ -145,33 +172,3 @@ Test.define("ObservableState can set arrays", () => {
 
   os.deactivate();
 });
-
-Test.define(
-  "ObservableState only updates if the resulting state changes",
-  () => {
-    const os = new ObservableState({
-      initialState: {
-        design: {
-          colors: ["red", "orange"],
-        },
-      },
-    });
-    os.activate();
-
-    let didUpdate: boolean;
-
-    didUpdate = os.update(ValuePath.givenString("design.colors"), [
-      "green",
-      "blue",
-    ]);
-    Test.assert(didUpdate == true);
-
-    didUpdate = os.update(ValuePath.givenString("design.colors"), [
-      "green",
-      "blue",
-    ]);
-    Test.assert(didUpdate == false);
-
-    os.deactivate();
-  }
-);

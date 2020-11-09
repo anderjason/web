@@ -22,7 +22,15 @@ class ObservableState extends skytree_1.Actor {
         super(...arguments);
         this._state = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.state = observable_1.ReadOnlyObservable.givenObservable(this._state);
-        this._pathBindings = new Set();
+        this.onRequestUpdate = (path, inputValue) => {
+            const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
+            if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
+                return false;
+            }
+            const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
+            this._state.setValue(obj);
+            return true;
+        };
     }
     onActivate() {
         this._undoContext = new UndoContext_1.UndoContext(clone(this.props.initialState || {}), 10);
@@ -39,36 +47,11 @@ class ObservableState extends skytree_1.Actor {
         }
         this._undoContext.pushStep(this.state.value);
     }
-    subscribe(valuePath, fn, includeLast = false) {
-        const binding = this.addActor(new skytree_1.PathBinding({
-            input: this._state,
-            path: valuePath,
-        }));
-        this._pathBindings.add(binding);
-        const innerHandle = this.cancelOnDeactivate(binding.output.didChange.subscribe((value) => {
-            fn(value);
-        }, includeLast));
-        return new observable_1.Receipt(() => {
-            this._pathBindings.delete(binding);
-            innerHandle.cancel();
-            this.removeCancelOnDeactivate(innerHandle);
-            this.removeActor(binding);
-        });
-    }
     toBinding(definition) {
-        return new ObservableStateBinding_1.ObservableStateBinding(Object.assign({ observableState: this }, definition));
+        return new ObservableStateBinding_1.ObservableStateBinding(Object.assign({ observableState: this, onRequestUpdate: this.onRequestUpdate }, definition));
     }
     toOptionalValueGivenPath(path) {
         return clone(util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path));
-    }
-    update(path, inputValue) {
-        const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
-        if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
-            return false;
-        }
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
-        this._state.setValue(obj);
-        return true;
     }
 }
 exports.ObservableState = ObservableState;

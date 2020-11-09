@@ -15,7 +15,11 @@ class ObservableStateBinding extends skytree_1.Actor {
     }
     onActivate() {
         let isUpdating = false;
-        this.cancelOnDeactivate(this.props.observableState.subscribe(this.props.valuePath, (vccValue) => {
+        const binding = this.addActor(new skytree_1.PathBinding({
+            input: this.props.observableState.state,
+            path: this.props.valuePath,
+        }));
+        this.cancelOnDeactivate(binding.output.didChange.subscribe((vccValue) => {
             isUpdating = true;
             let result = vccValue;
             if (this.props.outputValueGivenPartialState != null) {
@@ -32,7 +36,7 @@ class ObservableStateBinding extends skytree_1.Actor {
             if (this.props.partialStateGivenOutputValue != null) {
                 result = this.props.outputValueGivenPartialState(result);
             }
-            this.props.observableState.update(this.props.valuePath, result);
+            this.props.onRequestUpdate(this.props.valuePath, result);
         }));
     }
 }

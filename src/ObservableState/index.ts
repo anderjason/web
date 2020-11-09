@@ -62,7 +62,6 @@ export class ObservableState extends Actor<ObservableStateProps> {
   ): ObservableStateBinding<T> {
     return new ObservableStateBinding<T>({
       observableState: this,
-      onRequestUpdate: this.onRequestUpdate,
       ...definition,
     });
   }
@@ -73,7 +72,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     );
   }
 
-  private onRequestUpdate = (path: ValuePath, inputValue: any): boolean => {
+  update(path: ValuePath, inputValue: any): boolean {
     const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
       this._state.value,
       path
@@ -92,5 +91,5 @@ export class ObservableState extends Actor<ObservableStateProps> {
     this._state.setValue(obj);
 
     return true;
-  };
+  }
 }

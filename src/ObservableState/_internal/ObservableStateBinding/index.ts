@@ -6,7 +6,6 @@ import { ObservableState } from "../..";
 export interface ObservableStateBindingProps<T> {
   observableState: ObservableState;
   valuePath: ValuePath;
-  onRequestUpdate: (valuePath: ValuePath, value: any) => boolean;
 
   output?: Observable<T>;
   partialStateGivenOutputValue?: (outputValue: T) => any;
@@ -64,7 +63,7 @@ export class ObservableStateBinding<T> extends Actor<
           result = this.props.outputValueGivenPartialState(result);
         }
 
-        this.props.onRequestUpdate(this.props.valuePath, result);
+        this.props.observableState.update(this.props.valuePath, result);
       })
     );
   }

@@ -34,7 +34,7 @@ class ObservableStateBinding extends skytree_1.Actor {
             }
             let result = value;
             if (this.props.partialStateGivenOutputValue != null) {
-                result = this.props.outputValueGivenPartialState(result);
+                result = this.props.partialStateGivenOutputValue(result);
             }
             this.props.observableState.update(this.props.valuePath, result);
         }));

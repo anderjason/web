@@ -6,7 +6,7 @@ const observable_1 = require("@anderjason/observable");
 const geometry_1 = require("@anderjason/geometry");
 const ResizeObserverPolyfill = require("resize-observer-polyfill");
 let LocalResizeObserver;
-if ("ResizeObserver" in window) {
+if (typeof window != "undefined" && "ResizeObserver" in window) {
     LocalResizeObserver = window.ResizeObserver;
 }
 else {

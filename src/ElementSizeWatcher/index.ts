@@ -9,7 +9,7 @@ import * as ResizeObserverPolyfill from "resize-observer-polyfill";
 
 let LocalResizeObserver: any;
 
-if ("ResizeObserver" in window) {
+if (typeof window != "undefined" && "ResizeObserver" in window) {
   LocalResizeObserver = (window as any).ResizeObserver;
 } else {
   LocalResizeObserver = ResizeObserverPolyfill;

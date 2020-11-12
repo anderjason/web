@@ -55,6 +55,7 @@ class ManagedCanvas extends skytree_1.Actor {
     render() {
         const context = this._canvas.element.getContext("2d");
         const pixelSize = this.pixelSize.value;
+        context.clearRect(0, 0, pixelSize.width, pixelSize.height);
         this.renderers.forEach((renderFn) => {
             renderFn(context, pixelSize);
         });

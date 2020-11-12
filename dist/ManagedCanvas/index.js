@@ -6,11 +6,12 @@ const skytree_1 = require("skytree");
 const web_1 = require("@anderjason/web");
 const observable_1 = require("@anderjason/observable");
 const __1 = require("..");
+const util_1 = require("@anderjason/util");
 class ManagedCanvas extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._pixelSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
-        this.renderers = observable_1.ObservableArray.ofEmpty();
+        this._renderers = observable_1.ObservableArray.ofEmpty();
         this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this.props.size);
         this.pixelSize = observable_1.ReadOnlyObservable.givenObservable(this._pixelSize);
     }
@@ -20,10 +21,31 @@ class ManagedCanvas extends skytree_1.Actor {
     get element() {
         return this._canvas.element;
     }
+    addRenderer(fn, timing) {
+        const thisRenderer = {
+            render: fn,
+            timing,
+        };
+        let renderers = [
+            ...this._renderers.toValues(),
+            thisRenderer,
+        ];
+        renderers = util_1.ArrayUtil.arrayWithOrderFromValue(renderers, (r) => r.timing, "ascending");
+        this._renderers.sync(renderers);
+        return new observable_1.Receipt(() => {
+            this._renderers.removeValue(thisRenderer);
+        });
+    }
     onActivate() {
         this._canvas = this.addActor(web_1.ManagedElement.givenDefinition({
             tagName: "canvas",
             parentElement: this.props.parentElement,
+        }));
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
+            this._renderers.clear();
+        }));
+        this.cancelOnDeactivate(this._renderers.didChange.subscribe(() => {
+            this.render();
         }));
         const devicePixelRatio = window.devicePixelRatio || 1;
         this.cancelOnDeactivate(this.props.size.didChange.subscribe((size) => {
@@ -55,9 +77,10 @@ class ManagedCanvas extends skytree_1.Actor {
     render() {
         const context = this._canvas.element.getContext("2d");
         const pixelSize = this.pixelSize.value;
+        const displaySize = this.displaySize.value;
         context.clearRect(0, 0, pixelSize.width, pixelSize.height);
-        this.renderers.forEach((renderFn) => {
-            renderFn(context, pixelSize);
+        this._renderers.forEach((renderer) => {
+            renderer.render(context, pixelSize, displaySize);
         });
     }
 }

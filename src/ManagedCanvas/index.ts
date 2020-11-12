@@ -6,8 +6,10 @@ import {
   ObservableArray,
   ObservableBase,
   ReadOnlyObservable,
+  Receipt,
 } from "@anderjason/observable";
 import { EveryFrame } from "..";
+import { ArrayUtil } from "@anderjason/util";
 
 export interface ManagedCanvasProps {
   parentElement: Observable<HTMLElement>;
@@ -16,10 +18,16 @@ export interface ManagedCanvasProps {
   renderEveryFrame?: boolean | Observable<boolean>;
 }
 
-export type ManagedCanvasRenderer = (
+export type ManagedCanvasRenderFunction = (
   context: CanvasRenderingContext2D,
-  pixelSize: Size2
+  pixelSize: Size2,
+  displaySize: Size2
 ) => void;
+
+interface ManagedCanvasRenderer {
+  render: ManagedCanvasRenderFunction;
+  timing: number;
+}
 
 export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   private _canvas: ManagedElement<HTMLCanvasElement>;
@@ -33,10 +41,10 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   }
 
   private _pixelSize = Observable.ofEmpty<Size2>(Size2.isEqual);
+  private _renderers = ObservableArray.ofEmpty<ManagedCanvasRenderer>();
 
   readonly displaySize: ReadOnlyObservable<Size2>;
   readonly pixelSize: ReadOnlyObservable<Size2>;
-  readonly renderers = ObservableArray.ofEmpty<ManagedCanvasRenderer>();
 
   constructor(props: ManagedCanvasProps) {
     super(props);
@@ -45,11 +53,47 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     this.pixelSize = ReadOnlyObservable.givenObservable(this._pixelSize);
   }
 
+  addRenderer(fn: ManagedCanvasRenderFunction, timing: number): Receipt {
+    const thisRenderer = {
+      render: fn,
+      timing,
+    };
+
+    let renderers: ManagedCanvasRenderer[] = [
+      ...this._renderers.toValues(),
+      thisRenderer,
+    ];
+
+    renderers = ArrayUtil.arrayWithOrderFromValue(
+      renderers,
+      (r) => r.timing,
+      "ascending"
+    );
+
+    this._renderers.sync(renderers);
+
+    return new Receipt(() => {
+      this._renderers.removeValue(thisRenderer);
+    });
+  }
+
   onActivate() {
     this._canvas = this.addActor(
       ManagedElement.givenDefinition({
         tagName: "canvas",
         parentElement: this.props.parentElement,
+      })
+    );
+
+    this.cancelOnDeactivate(
+      new Receipt(() => {
+        this._renderers.clear();
+      })
+    );
+
+    this.cancelOnDeactivate(
+      this._renderers.didChange.subscribe(() => {
+        this.render();
       })
     );
 
@@ -101,11 +145,12 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   render() {
     const context = this._canvas.element.getContext("2d")!;
     const pixelSize = this.pixelSize.value;
+    const displaySize = this.displaySize.value;
 
     context.clearRect(0, 0, pixelSize.width, pixelSize.height);
 
-    this.renderers.forEach((renderFn) => {
-      renderFn(context, pixelSize);
+    this._renderers.forEach((renderer) => {
+      renderer.render(context, pixelSize, displaySize);
     });
   }
 }

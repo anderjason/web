@@ -12,6 +12,7 @@ class ManagedCanvas extends skytree_1.Actor {
         super(props);
         this._pixelSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this._renderers = observable_1.ObservableArray.ofEmpty();
+        this._needsRender = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this.props.size);
         this.pixelSize = observable_1.ReadOnlyObservable.givenObservable(this._pixelSize);
     }
@@ -47,6 +48,13 @@ class ManagedCanvas extends skytree_1.Actor {
         this.cancelOnDeactivate(this._renderers.didChange.subscribe(() => {
             this.render();
         }));
+        this.cancelOnDeactivate(this._needsRender.didChange.subscribe((needsUpdate) => {
+            if (needsUpdate == true) {
+                requestAnimationFrame(() => {
+                    this.render();
+                });
+            }
+        }));
         const devicePixelRatio = window.devicePixelRatio || 1;
         this.cancelOnDeactivate(this.props.size.didChange.subscribe((size) => {
             if (size == null) {
@@ -74,7 +82,11 @@ class ManagedCanvas extends skytree_1.Actor {
             }),
         }));
     }
+    needsRender() {
+        this._needsRender.setValue(true);
+    }
     render() {
+        this._needsRender.setValue(false);
         const context = this._canvas.element.getContext("2d");
         const pixelSize = this.pixelSize.value;
         const displaySize = this.displaySize.value;

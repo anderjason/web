@@ -42,6 +42,7 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
 
   private _pixelSize = Observable.ofEmpty<Size2>(Size2.isEqual);
   private _renderers = ObservableArray.ofEmpty<ManagedCanvasRenderer>();
+  private _needsRender = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
 
   readonly displaySize: ReadOnlyObservable<Size2>;
   readonly pixelSize: ReadOnlyObservable<Size2>;
@@ -97,6 +98,16 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
       })
     );
 
+    this.cancelOnDeactivate(
+      this._needsRender.didChange.subscribe((needsUpdate) => {
+        if (needsUpdate == true) {
+          requestAnimationFrame(() => {
+            this.render();
+          });
+        }
+      })
+    );
+
     const devicePixelRatio = window.devicePixelRatio || 1;
 
     this.cancelOnDeactivate(
@@ -142,7 +153,13 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     );
   }
 
-  render() {
+  needsRender() {
+    this._needsRender.setValue(true);
+  }
+
+  private render() {
+    this._needsRender.setValue(false);
+
     const context = this._canvas.element.getContext("2d")!;
     const pixelSize = this.pixelSize.value;
     const displaySize = this.displaySize.value;

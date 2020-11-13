@@ -13,10 +13,12 @@ export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     get element(): HTMLCanvasElement;
     private _pixelSize;
     private _renderers;
+    private _needsRender;
     readonly displaySize: ReadOnlyObservable<Size2>;
     readonly pixelSize: ReadOnlyObservable<Size2>;
     constructor(props: ManagedCanvasProps);
     addRenderer(fn: ManagedCanvasRenderFunction, timing: number): Receipt;
     onActivate(): void;
-    render(): void;
+    needsRender(): void;
+    private render;
 }

@@ -42,7 +42,7 @@ class DynamicStyleElement extends skytree_1.Actor {
         return this._managedElement;
     }
     onActivate() {
-        this._managedElement = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
+        this._managedElement = this.addActor(skytree_1.Actor.withDescription(this.actorDescription, ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,
             classNames: Array.from(this.activeClassNames()),
@@ -57,7 +57,7 @@ class DynamicStyleElement extends skytree_1.Actor {
                     await this._transitionOut(this);
                 }
             },
-        }));
+        })));
         this.updateClassNames();
     }
     addManagedEventListener(type, listener, options) {

@@ -35,6 +35,7 @@ export class ScrollAreaDemo extends Actor<ScrollAreaDemoProps> {
 }
 
 const OuterStyle = ElementStyle.givenDefinition({
+  elementDescription: "Outer",
   css: `
     position: absolute;
     width: 300px;
@@ -47,6 +48,7 @@ const OuterStyle = ElementStyle.givenDefinition({
 });
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     width: 600px;
     height: 600px;

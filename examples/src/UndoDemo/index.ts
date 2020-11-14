@@ -162,6 +162,7 @@ export class UndoDemo extends Actor<UndoDemoProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     position: absolute;
     left: 0;
@@ -175,6 +176,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const IndicatorStyle = ElementStyle.givenDefinition({
+  elementDescription: "Indicator",
   css: `
     position: absolute;
     left: -10px;
@@ -187,6 +189,7 @@ const IndicatorStyle = ElementStyle.givenDefinition({
 });
 
 const ButtonStyle = ElementStyle.givenDefinition({
+  elementDescription: "Button",
   css: `
     appearance: none;
     background: blue;
@@ -211,6 +214,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
 });
 
 const ButtonAreaStyle = ElementStyle.givenDefinition({
+  elementDescription: "ButtonArea",
   css: `
     display: grid;
     position: absolute;
@@ -222,6 +226,7 @@ const ButtonAreaStyle = ElementStyle.givenDefinition({
 });
 
 const SidebarStyle = ElementStyle.givenDefinition({
+  elementDescription: "Sidebar",
   css: `
     position: absolute;
     right: 20px;

@@ -13,7 +13,7 @@ import { ArrayUtil } from "@anderjason/util";
 
 export interface ManagedCanvasProps {
   parentElement: Observable<HTMLElement>;
-  size: ObservableBase<Size2>;
+  size: ObservableBase<Size2>; // TODO change to displaySize
 
   renderEveryFrame?: boolean | Observable<boolean>;
 }

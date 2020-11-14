@@ -2,6 +2,7 @@ import { DynamicStyleElement } from "../DynamicStyleElement";
 import { Observable, Dict } from "@anderjason/observable";
 interface ElementStyleDefinition {
     css: string;
+    elementDescription?: string;
     className?: string;
     modifiers?: Dict<string>;
 }
@@ -17,6 +18,7 @@ export declare class ElementStyle {
     static givenDefinition(definition: ElementStyleDefinition): ElementStyle;
     readonly css: string;
     private _className;
+    private _elementDescription;
     private _modifiers;
     private constructor();
     toOptionalModifiers(): Dict<string> | undefined;

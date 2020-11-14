@@ -18,6 +18,7 @@ module.exports = {
   devServer: {
     port: 9000,
     host: "0.0.0.0",
+    openPage: "http://localhost:9000",
     contentBase: "./examples/dist",
   },
   plugins: [

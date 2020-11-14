@@ -35,6 +35,7 @@ export class KeyboardWatcherDemo extends Actor<KeyboardWatcherDemoProps> {
 }
 
 const LabelStyle = ElementStyle.givenDefinition({
+  elementDescription: "Label",
   css: `
     color: #FFF;
     font-family: monospace;

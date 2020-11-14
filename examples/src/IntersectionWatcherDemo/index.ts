@@ -37,6 +37,7 @@ export class IntersectionWatcherDemo extends Actor<
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     background: #333;
     position: absolute;

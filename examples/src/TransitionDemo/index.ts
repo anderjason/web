@@ -57,12 +57,14 @@ export class TransitionDemo extends Actor<TransitionDemoProps> {
 }
 
 const OuterStyle = ElementStyle.givenDefinition({
+  elementDescription: "Outer",
   css: `
     
   `,
 });
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     position: absolute;
     left: 0;
@@ -76,6 +78,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const CircleStyle = ElementStyle.givenDefinition({
+  elementDescription: "Circle",
   css: `
     border-radius: 50%;
     background: white;

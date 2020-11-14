@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -29,7 +29,7 @@
     "@anderjason/util": "^2.0.3",
     "fontfaceobserver": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1",
-    "skytree": "^9.2.0",
+    "skytree": "^9.3.0",
     "stylis": "^4.0.3"
   },
   "devDependencies": {

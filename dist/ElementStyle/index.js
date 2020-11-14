@@ -4,15 +4,23 @@ exports.ElementStyle = void 0;
 const componentStyleToPreparedDomAction_1 = require("./_internal/componentStyleToPreparedDomAction");
 const DynamicStyleElement_1 = require("../DynamicStyleElement");
 const util_1 = require("@anderjason/util");
+const skytree_1 = require("skytree");
 class ElementStyle {
     constructor(definition) {
         this.css = definition.css;
         this._modifiers = definition.modifiers;
-        const randomString = util_1.StringUtil.stringOfRandomCharacters(6);
-        this._className =
-            definition.className != null
-                ? definition.className
-                : `es-${randomString}`;
+        this._elementDescription = definition.elementDescription;
+        const randomString = util_1.StringUtil.stringOfRandomCharacters(5).toLowerCase();
+        if (definition.className != null) {
+            this._className = definition.className; // TODO remove this feature
+        }
+        else if (this._elementDescription != null) {
+            const classDescription = util_1.StringUtil.stringWithCase(this._elementDescription, "kebab-case");
+            this._className = `${classDescription}-${randomString}`;
+        }
+        else {
+            this._className = randomString;
+        }
         if (ElementStyle.allClassNames.has(this._className)) {
             throw new Error(`A style with class name '${this._className}' has already been created`);
         }
@@ -56,7 +64,7 @@ class ElementStyle {
             const classNames = this.toClassNames(modifierName);
             classNamesByModifierName.set(modifierName, classNames);
         });
-        return DynamicStyleElement_1.DynamicStyleElement.givenDefinition({
+        return skytree_1.Actor.withDescription(this._elementDescription, DynamicStyleElement_1.DynamicStyleElement.givenDefinition({
             tagName: definition.tagName,
             parentElement: definition.parentElement,
             transitionIn: definition.transitionIn,
@@ -64,7 +72,7 @@ class ElementStyle {
             innerHTML: definition.innerHTML,
             classNamesByModifierName,
             constantClassNames: this.toClassNames(),
-        });
+        }));
     }
 }
 exports.ElementStyle = ElementStyle;

@@ -5,6 +5,8 @@ import { Actor, ConditionalActivator, Timer } from "skytree";
 
 export interface ElementSizeWatcherDemoProps {}
 
+(window as any).as = Actor.activeSet;
+
 export class ElementSizeWatcherDemo extends Actor<ElementSizeWatcherDemoProps> {
   readonly parentElement = Observable.ofEmpty<HTMLElement>();
   readonly isVisible = Observable.ofEmpty<boolean>();
@@ -63,6 +65,7 @@ export class ElementSizeWatcherDemo extends Actor<ElementSizeWatcherDemoProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     position: absolute;
     left: 0;
@@ -76,6 +79,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const BoundsStyle = ElementStyle.givenDefinition({
+  elementDescription: "Bounds",
   css: `
     background: #0055FF;
     position: absolute;

@@ -2,10 +2,12 @@ import { componentStyleToPreparedDomAction } from "./_internal/componentStyleToP
 import { DynamicStyleElement } from "../DynamicStyleElement";
 import { StringUtil } from "@anderjason/util";
 import { Observable, Dict } from "@anderjason/observable";
+import { Actor } from "skytree";
 
 interface ElementStyleDefinition {
   css: string;
 
+  elementDescription?: string;
   className?: string;
   modifiers?: Dict<string>;
 }
@@ -35,18 +37,27 @@ export class ElementStyle {
   readonly css: string;
 
   private _className: string;
+  private _elementDescription: string;
   private _modifiers: Dict<string> | undefined;
 
   private constructor(definition: ElementStyleDefinition) {
     this.css = definition.css;
     this._modifiers = definition.modifiers;
+    this._elementDescription = definition.elementDescription;
 
-    const randomString = StringUtil.stringOfRandomCharacters(6);
+    const randomString = StringUtil.stringOfRandomCharacters(5).toLowerCase();
 
-    this._className =
-      definition.className != null
-        ? definition.className
-        : `es-${randomString}`;
+    if (definition.className != null) {
+      this._className = definition.className; // TODO remove this feature
+    } else if (this._elementDescription != null) {
+      const classDescription = StringUtil.stringWithCase(
+        this._elementDescription,
+        "kebab-case"
+      );
+      this._className = `${classDescription}-${randomString}`;
+    } else {
+      this._className = randomString;
+    }
 
     if (ElementStyle.allClassNames.has(this._className)) {
       throw new Error(
@@ -115,14 +126,17 @@ export class ElementStyle {
       classNamesByModifierName.set(modifierName, classNames);
     });
 
-    return DynamicStyleElement.givenDefinition({
-      tagName: definition.tagName,
-      parentElement: definition.parentElement,
-      transitionIn: definition.transitionIn,
-      transitionOut: definition.transitionOut,
-      innerHTML: definition.innerHTML,
-      classNamesByModifierName,
-      constantClassNames: this.toClassNames(),
-    });
+    return Actor.withDescription(
+      this._elementDescription,
+      DynamicStyleElement.givenDefinition({
+        tagName: definition.tagName,
+        parentElement: definition.parentElement,
+        transitionIn: definition.transitionIn,
+        transitionOut: definition.transitionOut,
+        innerHTML: definition.innerHTML,
+        classNamesByModifierName,
+        constantClassNames: this.toClassNames(),
+      })
+    );
   }
 }

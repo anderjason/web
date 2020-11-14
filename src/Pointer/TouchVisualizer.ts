@@ -53,6 +53,7 @@ export class TouchVisualizer extends Actor<TouchVisualizerProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "TouchVisualizer",
   css: `
     bottom: 0;
     left: 0;
@@ -66,6 +67,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const PointStyle = ElementStyle.givenDefinition({
+  elementDescription: "Point",
   css: `
     background: rgba(255,255,255,0.9);
     border-radius: 50%;

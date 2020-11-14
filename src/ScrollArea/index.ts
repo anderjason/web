@@ -29,6 +29,7 @@ export function styleGivenHexColor(color: Color): ElementStyle {
       .toHexString();
 
     const result = ElementStyle.givenDefinition({
+      elementDescription: "ScrollArea",
       css: `
         position: absolute;
         left: 0;

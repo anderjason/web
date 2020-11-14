@@ -15,6 +15,7 @@ function styleGivenHexColor(color) {
             .withAlpha(util_1.Percent.givenFraction(0.2, 1))
             .toHexString();
         const result = ElementStyle_1.ElementStyle.givenDefinition({
+            elementDescription: "ScrollArea",
             css: `
         position: absolute;
         left: 0;

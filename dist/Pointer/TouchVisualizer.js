@@ -40,6 +40,7 @@ class TouchVisualizer extends skytree_1.Actor {
 }
 exports.TouchVisualizer = TouchVisualizer;
 const WrapperStyle = ElementStyle_1.ElementStyle.givenDefinition({
+    elementDescription: "TouchVisualizer",
     css: `
     bottom: 0;
     left: 0;
@@ -52,6 +53,7 @@ const WrapperStyle = ElementStyle_1.ElementStyle.givenDefinition({
   `,
 });
 const PointStyle = ElementStyle_1.ElementStyle.givenDefinition({
+    elementDescription: "Point",
     css: `
     background: rgba(255,255,255,0.9);
     border-radius: 50%;

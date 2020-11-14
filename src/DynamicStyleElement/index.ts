@@ -79,25 +79,22 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
 
   onActivate() {
     this._managedElement = this.addActor(
-      Actor.withDescription(
-        this.actorDescription,
-        ManagedElement.givenDefinition({
-          tagName: this.tagName,
-          parentElement: this.parentElement,
-          classNames: Array.from(this.activeClassNames()),
-          innerHTML: this._innerHTML,
-          transitionIn: () => {
-            if (this._transitionIn != null) {
-              this._transitionIn(this);
-            }
-          },
-          transitionOut: async () => {
-            if (this._transitionOut != null) {
-              await this._transitionOut(this);
-            }
-          },
-        }) as ManagedElement<any>
-      )
+      ManagedElement.givenDefinition({
+        tagName: this.tagName,
+        parentElement: this.parentElement,
+        classNames: Array.from(this.activeClassNames()),
+        innerHTML: this._innerHTML,
+        transitionIn: () => {
+          if (this._transitionIn != null) {
+            this._transitionIn(this);
+          }
+        },
+        transitionOut: async () => {
+          if (this._transitionOut != null) {
+            await this._transitionOut(this);
+          }
+        },
+      }) as ManagedElement<any>
     );
 
     this.updateClassNames();

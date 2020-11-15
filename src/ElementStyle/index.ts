@@ -56,7 +56,7 @@ export class ElementStyle {
       );
       this._className = `${classDescription}-${randomString}`;
     } else {
-      this._className = randomString;
+      this._className = `es-${randomString}`;
     }
 
     if (ElementStyle.allClassNames.has(this._className)) {

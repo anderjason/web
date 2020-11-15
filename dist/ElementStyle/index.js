@@ -19,7 +19,7 @@ class ElementStyle {
             this._className = `${classDescription}-${randomString}`;
         }
         else {
-            this._className = randomString;
+            this._className = `es-${randomString}`;
         }
         if (ElementStyle.allClassNames.has(this._className)) {
             throw new Error(`A style with class name '${this._className}' has already been created`);

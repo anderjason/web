@@ -6,31 +6,36 @@ import { UndoDemo } from "./UndoDemo";
 import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
 import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
 import { TransitionDemo } from "./TransitionDemo";
+import { VerticalExpanderDemo } from "./VerticalExpanderDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
+    title: "Vertical expander",
+    actor: new VerticalExpanderDemo(),
+  },
+  {
     title: "Transition",
-    actor: new TransitionDemo({}),
+    actor: new TransitionDemo(),
   },
   {
     title: "Element size watcher",
-    actor: new ElementSizeWatcherDemo({}),
+    actor: new ElementSizeWatcherDemo(),
   },
   {
     title: "Intersection watcher",
-    actor: new IntersectionWatcherDemo({}),
+    actor: new IntersectionWatcherDemo(),
   },
   {
     title: "Scroll area",
-    actor: new ScrollAreaDemo({}),
+    actor: new ScrollAreaDemo(),
   },
   {
     title: "Undo",
-    actor: new UndoDemo({}),
+    actor: new UndoDemo(),
   },
   {
     title: "Keyboard watcher",
-    actor: new KeyboardWatcherDemo({}),
+    actor: new KeyboardWatcherDemo(),
   },
 ]);
 

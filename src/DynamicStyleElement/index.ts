@@ -136,6 +136,10 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
     }
   }
 
+  hasModifier(modifierName: string): boolean {
+    return this._modifiers.has(modifierName);
+  }
+
   toModifiers(): string[] {
     return Array.from(this._modifiers);
   }

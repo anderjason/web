@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.ManagedCanvas = exports.LocationUtil = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.ElementMountWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
+exports.VerticalExpander = exports.UndoContext = exports.Transform = exports.TextInputBinding = exports.StepDelayBinding = exports.SequentialChoice = exports.ScrollWatcher = exports.ScrollArea = exports.ScreenSize = exports.Preload = exports.Pointer = exports.ObservableState = exports.NetworkUtil = exports.ManagedElement = exports.ManagedCanvas = exports.LocationUtil = exports.LocalStorageBinding = exports.KeyboardWatcher = exports.KeyboardShortcut = exports.IntersectionWatcher = exports.FocusWatcher = exports.EveryFrame = exports.ElementStyle = exports.ElementSizeWatcher = exports.ElementMountWatcher = exports.DynamicStyleElement = exports.Corners = exports.CheckboxBinding = exports.CanvasUtil = void 0;
 const CanvasUtil_1 = require("./CanvasUtil");
 Object.defineProperty(exports, "CanvasUtil", { enumerable: true, get: function () { return CanvasUtil_1.CanvasUtil; } });
 const CheckboxBinding_1 = require("./CheckboxBinding");
@@ -25,6 +25,8 @@ const KeyboardShortcut_1 = require("./KeyboardShortcut");
 Object.defineProperty(exports, "KeyboardShortcut", { enumerable: true, get: function () { return KeyboardShortcut_1.KeyboardShortcut; } });
 const KeyboardWatcher_1 = require("./KeyboardWatcher");
 Object.defineProperty(exports, "KeyboardWatcher", { enumerable: true, get: function () { return KeyboardWatcher_1.KeyboardWatcher; } });
+const LocalStorageBinding_1 = require("./LocalStorageBinding");
+Object.defineProperty(exports, "LocalStorageBinding", { enumerable: true, get: function () { return LocalStorageBinding_1.LocalStorageBinding; } });
 const LocationUtil_1 = require("./LocationUtil");
 Object.defineProperty(exports, "LocationUtil", { enumerable: true, get: function () { return LocationUtil_1.LocationUtil; } });
 const ManagedCanvas_1 = require("./ManagedCanvas");
@@ -55,4 +57,6 @@ const Transform_1 = require("./Transform");
 Object.defineProperty(exports, "Transform", { enumerable: true, get: function () { return Transform_1.Transform; } });
 const UndoContext_1 = require("./UndoContext");
 Object.defineProperty(exports, "UndoContext", { enumerable: true, get: function () { return UndoContext_1.UndoContext; } });
+const VerticalExpander_1 = require("./VerticalExpander");
+Object.defineProperty(exports, "VerticalExpander", { enumerable: true, get: function () { return VerticalExpander_1.VerticalExpander; } });
 //# sourceMappingURL=index.js.map

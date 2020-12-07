@@ -35,8 +35,8 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
 
     this.element = document.createElement(definition.tagName);
 
-    if (this.props.innerHTML != null) {
-      this.element.innerHTML = this.props.innerHTML;
+    if (definition.innerHTML != null) {
+      this.element.innerHTML = definition.innerHTML;
     }
 
     this._transitionIn = definition.transitionIn;

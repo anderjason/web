@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "6.2.3",
+  "version": "6.3.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -29,15 +29,15 @@
     "@anderjason/util": "^2.0.3",
     "fontfaceobserver": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1",
-    "skytree": "^9.3.0",
-    "stylis": "^4.0.3"
+    "skytree": "^9.3.1",
+    "stylis": "^4.0.6"
   },
   "devDependencies": {
     "@anderjason/example-tools": "git+https://github.com/anderjason/example-tools.git",
     "@types/fontfaceobserver": "0.0.6",
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.5",
-    "typescript": "^4.0.5",
+    "typescript": "^4.1.2",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

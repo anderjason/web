@@ -1,17 +1,11 @@
 import { Color } from "@anderjason/color";
-import { Observable, ObservableArray } from "@anderjason/observable";
-import { ElementStyle, ScrollArea } from "../../../src";
-import { Actor, ArrayActivator } from "skytree";
+import { DemoActor } from "@anderjason/example-tools";
+import { ObservableArray } from "@anderjason/observable";
+import { ArrayActivator } from "skytree";
+import { ScrollArea } from "../../../src";
 import { ActiveBox } from "./ActiveBox";
 
-export interface IntersectionWatcherDemoProps {}
-
-export class IntersectionWatcherDemo extends Actor<
-  IntersectionWatcherDemoProps
-> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class IntersectionWatcherDemo extends DemoActor<void> {
   onActivate() {
     const wrapper = this.addActor(
       new ScrollArea({
@@ -35,18 +29,3 @@ export class IntersectionWatcherDemo extends Actor<
     );
   }
 }
-
-const WrapperStyle = ElementStyle.givenDefinition({
-  elementDescription: "Wrapper",
-  css: `
-    background: #333;
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-    color: white;
-    overflow-y: scroll;
-  `,
-});

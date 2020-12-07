@@ -87,6 +87,9 @@ class DynamicStyleElement extends skytree_1.Actor {
             this.updateClassNames();
         }
     }
+    hasModifier(modifierName) {
+        return this._modifiers.has(modifierName);
+    }
     toModifiers() {
         return Array.from(this._modifiers);
     }

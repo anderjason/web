@@ -1,16 +1,9 @@
-import { Observable } from "@anderjason/observable";
+import { DemoActor } from "@anderjason/example-tools";
 import { Duration } from "@anderjason/time";
-import { ElementStyle, ElementSizeWatcher } from "../../../src";
-import { Actor, ConditionalActivator, Timer } from "skytree";
+import { ConditionalActivator, Timer } from "skytree";
+import { ElementSizeWatcher, ElementStyle } from "../../../src";
 
-export interface ElementSizeWatcherDemoProps {}
-
-(window as any).as = Actor.activeSet;
-
-export class ElementSizeWatcherDemo extends Actor<ElementSizeWatcherDemoProps> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class ElementSizeWatcherDemo extends DemoActor<void> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

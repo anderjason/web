@@ -10,6 +10,7 @@ import { FocusWatcher } from "./FocusWatcher";
 import { IntersectionWatcher } from "./IntersectionWatcher";
 import { KeyboardShortcut } from "./KeyboardShortcut";
 import { KeyboardWatcher } from "./KeyboardWatcher";
+import { LocalStorageBinding } from "./LocalStorageBinding";
 import { LocationUtil } from "./LocationUtil";
 import { ManagedCanvas } from "./ManagedCanvas";
 import { ManagedElement } from "./ManagedElement";
@@ -25,6 +26,7 @@ import { StepDelayBinding } from "./StepDelayBinding";
 import { TextInputBinding } from "./TextInputBinding";
 import { Transform } from "./Transform";
 import { UndoContext } from "./UndoContext";
+import { VerticalExpander } from "./VerticalExpander";
 
 export {
   CanvasUtil,
@@ -39,6 +41,7 @@ export {
   IntersectionWatcher,
   KeyboardShortcut,
   KeyboardWatcher,
+  LocalStorageBinding,
   LocationUtil,
   ManagedCanvas,
   ManagedElement,
@@ -54,4 +57,5 @@ export {
   TextInputBinding,
   Transform,
   UndoContext,
+  VerticalExpander,
 };

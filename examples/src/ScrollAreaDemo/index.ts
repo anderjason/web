@@ -1,14 +1,8 @@
-import { Actor } from "skytree";
-import { ElementStyle, ScrollArea } from "../../../src";
 import { Color } from "@anderjason/color";
-import { Observable } from "@anderjason/observable";
+import { DemoActor } from "@anderjason/example-tools";
+import { ElementStyle, ScrollArea } from "../../../src";
 
-export interface ScrollAreaDemoProps {}
-
-export class ScrollAreaDemo extends Actor<ScrollAreaDemoProps> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class ScrollAreaDemo extends DemoActor<void> {
   onActivate() {
     const outer = this.addActor(
       OuterStyle.toManagedElement({

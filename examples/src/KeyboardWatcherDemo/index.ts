@@ -1,13 +1,7 @@
-import { Actor } from "skytree";
+import { DemoActor } from "@anderjason/example-tools";
 import { ElementStyle, KeyboardWatcher } from "../../../src";
-import { Observable } from "@anderjason/observable";
 
-export interface KeyboardWatcherDemoProps {}
-
-export class KeyboardWatcherDemo extends Actor<KeyboardWatcherDemoProps> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class KeyboardWatcherDemo extends DemoActor<void> {
   onActivate() {
     const label = this.addActor(
       LabelStyle.toManagedElement({

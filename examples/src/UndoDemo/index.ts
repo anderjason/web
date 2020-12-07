@@ -1,14 +1,9 @@
-import { Observable, Receipt } from "@anderjason/observable";
-import { ElementStyle, UndoContext } from "../../../src";
-import { Actor, MultiBinding } from "skytree";
+import { DemoActor } from "@anderjason/example-tools";
 import { Point2 } from "@anderjason/geometry";
+import { Receipt } from "@anderjason/observable";
+import { ElementStyle, UndoContext } from "../../../src";
 
-export interface UndoDemoProps {}
-
-export class UndoDemo extends Actor<UndoDemoProps> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class UndoDemo extends DemoActor<void> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

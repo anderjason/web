@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManagedCanvas = void 0;
 const geometry_1 = require("@anderjason/geometry");
 const skytree_1 = require("skytree");
-const web_1 = require("@anderjason/web");
+const ManagedElement_1 = require("../ManagedElement");
 const observable_1 = require("@anderjason/observable");
-const __1 = require("..");
+const EveryFrame_1 = require("../EveryFrame");
 const util_1 = require("@anderjason/util");
 class ManagedCanvas extends skytree_1.Actor {
     constructor(props) {
@@ -38,7 +38,7 @@ class ManagedCanvas extends skytree_1.Actor {
         });
     }
     onActivate() {
-        this._canvas = this.addActor(web_1.ManagedElement.givenDefinition({
+        this._canvas = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
             tagName: "canvas",
             parentElement: this.props.parentElement,
         }));
@@ -75,7 +75,7 @@ class ManagedCanvas extends skytree_1.Actor {
         this.addActor(new skytree_1.ConditionalActivator({
             input: renderEveryFrame,
             fn: (v) => v,
-            actor: new __1.EveryFrame({
+            actor: new EveryFrame_1.EveryFrame({
                 callback: () => {
                     this.render();
                 },

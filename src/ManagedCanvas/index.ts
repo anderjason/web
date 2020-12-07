@@ -1,6 +1,6 @@
 import { Size2 } from "@anderjason/geometry";
 import { Actor, ConditionalActivator } from "skytree";
-import { ManagedElement } from "@anderjason/web";
+import { ManagedElement } from "../ManagedElement";
 import {
   Observable,
   ObservableArray,
@@ -8,7 +8,7 @@ import {
   ReadOnlyObservable,
   Receipt,
 } from "@anderjason/observable";
-import { EveryFrame } from "..";
+import { EveryFrame } from "../EveryFrame";
 import { ArrayUtil } from "@anderjason/util";
 
 export interface ManagedCanvasProps {

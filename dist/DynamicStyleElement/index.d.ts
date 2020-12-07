@@ -29,6 +29,7 @@ export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     addManagedEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): Receipt;
     toggleModifier(modifierName: string): void;
     setModifier(modifierName: string, isActive: boolean): void;
+    hasModifier(modifierName: string): boolean;
     toModifiers(): string[];
     private activeClassNames;
     private updateClassNames;

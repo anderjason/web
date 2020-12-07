@@ -2,13 +2,9 @@ import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { ElementStyle } from "../../../src";
 import { Actor, Timer } from "skytree";
+import { DemoActor } from "@anderjason/example-tools";
 
-export interface TransitionDemoProps {}
-
-export class TransitionDemo extends Actor<TransitionDemoProps> {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class TransitionDemo extends DemoActor<void> {
   onActivate() {
     const outer = this.addActor(
       OuterStyle.toManagedElement({

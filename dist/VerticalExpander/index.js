@@ -9,6 +9,7 @@ const color_1 = require("@anderjason/color");
 class VerticalExpander extends skytree_1.Actor {
     constructor(props) {
         super(props);
+        this._minHeight = observable_1.Observable.givenValueOrObservable(this.props.minHeight);
         this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight);
     }
     get element() {
@@ -39,6 +40,7 @@ class VerticalExpander extends skytree_1.Actor {
         this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
             const size = contentSize.output.value;
             const isExpanded = this.props.isExpanded.value;
+            const minHeight = this._minHeight.value;
             const maxHeight = this._maxHeight.value;
             if (size == null) {
                 return;
@@ -51,7 +53,11 @@ class VerticalExpander extends skytree_1.Actor {
                 wrapper.style.height = `${height}px`;
             }
             else {
-                wrapper.style.height = "0";
+                let height = 0;
+                if (minHeight != null) {
+                    height = Math.max(minHeight, height);
+                }
+                wrapper.style.height = `${height}px`;
             }
         }, true));
     }

@@ -8,16 +8,19 @@ export interface VerticalExpanderProps {
   parentElement: HTMLElement;
   isExpanded: Observable<boolean>;
 
+  minHeight?: number | Observable<number>;
   maxHeight?: number | Observable<number>;
 }
 
 export class VerticalExpander extends Actor<VerticalExpanderProps> {
   private _content: DynamicStyleElement<HTMLDivElement>;
+  private _minHeight: ObservableBase<number>;
   private _maxHeight: ObservableBase<number>;
 
   constructor(props: VerticalExpanderProps) {
     super(props);
 
+    this._minHeight = Observable.givenValueOrObservable(this.props.minHeight);
     this._maxHeight = Observable.givenValueOrObservable(this.props.maxHeight);
   }
 
@@ -66,6 +69,7 @@ export class VerticalExpander extends Actor<VerticalExpanderProps> {
       heightBinding.didInvalidate.subscribe(() => {
         const size = contentSize.output.value;
         const isExpanded = this.props.isExpanded.value;
+        const minHeight = this._minHeight.value;
         const maxHeight = this._maxHeight.value;
 
         if (size == null) {
@@ -80,7 +84,12 @@ export class VerticalExpander extends Actor<VerticalExpanderProps> {
 
           wrapper.style.height = `${height}px`;
         } else {
-          wrapper.style.height = "0";
+          let height = 0;
+          if (minHeight != null) {
+            height = Math.max(minHeight, height);
+          }
+
+          wrapper.style.height = `${height}px`;
         }
       }, true)
     );

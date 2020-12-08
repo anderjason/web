@@ -77,6 +77,7 @@ export class VerticalExpanderDemo extends DemoActor<void> {
       new VerticalExpander({
         parentElement: wrapper.element,
         isExpanded: isExpanded2,
+        minHeight: 25,
       })
     );
 

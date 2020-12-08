@@ -249,7 +249,14 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         const x2 = visibleEndPercent * trackLength;
         const y2 = scrollbarSize * devicePixelRatio;
 
-        drawRoundRect(context, x1, y1, x2, y2, scrollbarSize);
+        drawRoundRect(
+          context,
+          x1,
+          y1,
+          x2,
+          y2,
+          (scrollbarSize / 2) * devicePixelRatio
+        );
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
       })
@@ -277,7 +284,14 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         const x2 = scrollbarSize * devicePixelRatio;
         const y2 = visibleEndPercent * trackLength;
 
-        drawRoundRect(context, x1, y1, x2, y2, scrollbarSize);
+        drawRoundRect(
+          context,
+          x1,
+          y1,
+          x2,
+          y2,
+          (scrollbarSize / 2) * devicePixelRatio
+        );
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
       })

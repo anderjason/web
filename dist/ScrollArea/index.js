@@ -7,7 +7,7 @@ const skytree_1 = require("skytree");
 const __1 = require("..");
 const ElementStyle_1 = require("../ElementStyle");
 const scrollbarSize = 4.5;
-const scrollbarAreaPadding = 8;
+const scrollbarAreaPadding = 9;
 function drawRoundRect(context, x1, y1, x2, y2, radius) {
     context.beginPath();
     context.moveTo(x1 + radius, y1);
@@ -213,6 +213,7 @@ const ContentStyle = ElementStyle_1.ElementStyle.givenDefinition({
     elementDescription: "Content",
     css: `
     position: absolute;
+    min-width: 100%;
   `,
 });
 const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
@@ -220,7 +221,7 @@ const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
     css: `
     bottom: 0;
     left: 0;
-    opacity: 0.15;
+    opacity: 0.25;
     pointer-events: none;
     position: absolute;
     right: 0;

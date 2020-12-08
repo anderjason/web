@@ -17,7 +17,7 @@ import { ElementStyle } from "../ElementStyle";
 export type ScrollDirection = "none" | "vertical" | "horizontal" | "both";
 
 const scrollbarSize = 4.5;
-const scrollbarAreaPadding = 8;
+const scrollbarAreaPadding = 9;
 
 function drawRoundRect(
   context: CanvasRenderingContext2D,
@@ -341,6 +341,7 @@ const ContentStyle = ElementStyle.givenDefinition({
   elementDescription: "Content",
   css: `
     position: absolute;
+    min-width: 100%;
   `,
 });
 
@@ -349,7 +350,7 @@ const TrackAreaStyle = ElementStyle.givenDefinition({
   css: `
     bottom: 0;
     left: 0;
-    opacity: 0.15;
+    opacity: 0.25;
     pointer-events: none;
     position: absolute;
     right: 0;

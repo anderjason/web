@@ -8,7 +8,6 @@ interface ElementStyleDefinition {
   css: string;
 
   elementDescription?: string;
-  className?: string;
   modifiers?: Dict<string>;
 }
 
@@ -47,9 +46,7 @@ export class ElementStyle {
 
     const randomString = StringUtil.stringOfRandomCharacters(5).toLowerCase();
 
-    if (definition.className != null) {
-      this._className = definition.className; // TODO remove this feature
-    } else if (this._elementDescription != null) {
+    if (this._elementDescription != null) {
       const classDescription = StringUtil.stringWithCase(
         this._elementDescription,
         "kebab-case"

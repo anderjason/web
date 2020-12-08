@@ -10,6 +10,10 @@ import { VerticalExpanderDemo } from "./VerticalExpanderDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
+    title: "Scroll area",
+    actor: new ScrollAreaDemo(),
+  },
+  {
     title: "Vertical expander",
     actor: new VerticalExpanderDemo(),
   },
@@ -24,10 +28,6 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Intersection watcher",
     actor: new IntersectionWatcherDemo(),
-  },
-  {
-    title: "Scroll area",
-    actor: new ScrollAreaDemo(),
   },
   {
     title: "Undo",

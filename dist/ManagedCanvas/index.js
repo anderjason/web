@@ -13,8 +13,10 @@ class ManagedCanvas extends skytree_1.Actor {
         this._pixelSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         this._renderers = observable_1.ObservableArray.ofEmpty();
         this._needsRender = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this.props.size);
+        this._displaySize = observable_1.Observable.givenValueOrObservable(this.props.displaySize);
+        this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this._displaySize);
         this.pixelSize = observable_1.ReadOnlyObservable.givenObservable(this._pixelSize);
+        this._parentElement = observable_1.Observable.givenValueOrObservable(this.props.parentElement);
     }
     get context() {
         return this.element.getContext("2d");
@@ -22,16 +24,16 @@ class ManagedCanvas extends skytree_1.Actor {
     get element() {
         return this._canvas.element;
     }
-    addRenderer(fn, timing) {
+    addRenderer(renderOrder, render) {
         const thisRenderer = {
-            render: fn,
-            timing,
+            render,
+            renderOrder,
         };
         let renderers = [
             ...this._renderers.toValues(),
             thisRenderer,
         ];
-        renderers = util_1.ArrayUtil.arrayWithOrderFromValue(renderers, (r) => r.timing, "ascending");
+        renderers = util_1.ArrayUtil.arrayWithOrderFromValue(renderers, (r) => r.renderOrder, "ascending");
         this._renderers.sync(renderers);
         return new observable_1.Receipt(() => {
             this._renderers.removeValue(thisRenderer);
@@ -42,6 +44,9 @@ class ManagedCanvas extends skytree_1.Actor {
             tagName: "canvas",
             parentElement: this.props.parentElement,
         }));
+        if (this.props.className != null) {
+            this._canvas.element.className = this.props.className;
+        }
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this._renderers.clear();
         }));
@@ -56,19 +61,19 @@ class ManagedCanvas extends skytree_1.Actor {
             }
         }));
         const devicePixelRatio = window.devicePixelRatio || 1;
-        this.cancelOnDeactivate(this.props.size.didChange.subscribe((size) => {
-            if (size == null) {
+        this.cancelOnDeactivate(this._displaySize.didChange.subscribe((displaySize) => {
+            if (displaySize == null) {
                 return;
             }
-            if (this.props.parentElement.value == null) {
+            if (this._parentElement.value == null) {
                 return;
             }
-            const newPixelSize = geometry_1.Size2.givenWidthHeight(size.width * devicePixelRatio, size.height * devicePixelRatio);
+            const newPixelSize = geometry_1.Size2.givenWidthHeight(displaySize.width * devicePixelRatio, displaySize.height * devicePixelRatio);
             this._pixelSize.setValue(newPixelSize);
             this._canvas.element.width = newPixelSize.width;
             this._canvas.element.height = newPixelSize.height;
-            this._canvas.style.width = `${size.width}px`;
-            this._canvas.style.height = `${size.height}px`;
+            this._canvas.style.width = `${displaySize.width}px`;
+            this._canvas.style.height = `${displaySize.height}px`;
             this.render();
         }, true));
         const renderEveryFrame = observable_1.Observable.givenValueOrObservable(this.props.renderEveryFrame || false);
@@ -76,7 +81,7 @@ class ManagedCanvas extends skytree_1.Actor {
             input: renderEveryFrame,
             fn: (v) => v,
             actor: new EveryFrame_1.EveryFrame({
-                callback: () => {
+                fn: () => {
                     this.render();
                 },
             }),
@@ -91,8 +96,14 @@ class ManagedCanvas extends skytree_1.Actor {
         const pixelSize = this.pixelSize.value;
         const displaySize = this.displaySize.value;
         context.clearRect(0, 0, pixelSize.width, pixelSize.height);
+        const renderParams = {
+            context,
+            pixelSize,
+            displaySize,
+            devicePixelRatio: window.devicePixelRatio || 1,
+        };
         this._renderers.forEach((renderer) => {
-            renderer.render(context, pixelSize, displaySize);
+            renderer.render(renderParams);
         });
     }
 }

@@ -3,7 +3,6 @@ import { Observable, Dict } from "@anderjason/observable";
 interface ElementStyleDefinition {
     css: string;
     elementDescription?: string;
-    className?: string;
     modifiers?: Dict<string>;
 }
 interface StyleToElementDefinition<K extends keyof HTMLElementTagNameMap> {

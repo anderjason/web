@@ -7,7 +7,7 @@ import { ActiveBox } from "./ActiveBox";
 
 export class IntersectionWatcherDemo extends DemoActor<void> {
   onActivate() {
-    const wrapper = this.addActor(
+    const scrollArea = this.addActor(
       new ScrollArea({
         parentElement: this.parentElement,
         direction: "vertical",
@@ -22,7 +22,8 @@ export class IntersectionWatcherDemo extends DemoActor<void> {
         input: el,
         fn: () => {
           return new ActiveBox({
-            parentElement: wrapper.element,
+            parentElement: scrollArea.element,
+            scrollElement: scrollArea.scrollElement,
           });
         },
       })

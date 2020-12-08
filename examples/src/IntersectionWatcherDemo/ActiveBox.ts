@@ -4,6 +4,7 @@ import { Percent } from "@anderjason/util";
 
 export interface ActiveBoxProps {
   parentElement: HTMLElement;
+  scrollElement: HTMLElement;
 }
 
 export class ActiveBox extends Actor<ActiveBoxProps> {
@@ -18,6 +19,7 @@ export class ActiveBox extends Actor<ActiveBoxProps> {
     const intersectionWatcher = this.addActor(
       new IntersectionWatcher({
         element: wrapper.element,
+        scrollElement: this.props.scrollElement,
         minimumVisiblePercent: Percent.givenFraction(3, 5),
       })
     );

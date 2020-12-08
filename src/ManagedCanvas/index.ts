@@ -12,21 +12,27 @@ import { EveryFrame } from "../EveryFrame";
 import { ArrayUtil } from "@anderjason/util";
 
 export interface ManagedCanvasProps {
-  parentElement: Observable<HTMLElement>;
-  size: ObservableBase<Size2>; // TODO change to displaySize
+  parentElement: HTMLElement | Observable<HTMLElement>;
+  displaySize: Size2 | ObservableBase<Size2>;
+  renderEveryFrame: boolean | Observable<boolean>;
 
-  renderEveryFrame?: boolean | Observable<boolean>;
+  className?: string;
+}
+
+export interface ManagedCanvasRenderParams {
+  context: CanvasRenderingContext2D;
+  pixelSize: Size2;
+  displaySize: Size2;
+  devicePixelRatio: number;
 }
 
 export type ManagedCanvasRenderFunction = (
-  context: CanvasRenderingContext2D,
-  pixelSize: Size2,
-  displaySize: Size2
+  params: ManagedCanvasRenderParams
 ) => void;
 
 interface ManagedCanvasRenderer {
   render: ManagedCanvasRenderFunction;
-  timing: number;
+  renderOrder: number;
 }
 
 export class ManagedCanvas extends Actor<ManagedCanvasProps> {
@@ -43,6 +49,8 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   private _pixelSize = Observable.ofEmpty<Size2>(Size2.isEqual);
   private _renderers = ObservableArray.ofEmpty<ManagedCanvasRenderer>();
   private _needsRender = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _parentElement: ObservableBase<HTMLElement>;
+  private _displaySize: ObservableBase<Size2>;
 
   readonly displaySize: ReadOnlyObservable<Size2>;
   readonly pixelSize: ReadOnlyObservable<Size2>;
@@ -50,14 +58,24 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   constructor(props: ManagedCanvasProps) {
     super(props);
 
-    this.displaySize = ReadOnlyObservable.givenObservable(this.props.size);
+    this._displaySize = Observable.givenValueOrObservable(
+      this.props.displaySize
+    );
+
+    this.displaySize = ReadOnlyObservable.givenObservable(this._displaySize);
     this.pixelSize = ReadOnlyObservable.givenObservable(this._pixelSize);
+    this._parentElement = Observable.givenValueOrObservable(
+      this.props.parentElement
+    );
   }
 
-  addRenderer(fn: ManagedCanvasRenderFunction, timing: number): Receipt {
-    const thisRenderer = {
-      render: fn,
-      timing,
+  addRenderer(
+    renderOrder: number,
+    render: ManagedCanvasRenderFunction
+  ): Receipt {
+    const thisRenderer: ManagedCanvasRenderer = {
+      render,
+      renderOrder,
     };
 
     let renderers: ManagedCanvasRenderer[] = [
@@ -67,7 +85,7 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
 
     renderers = ArrayUtil.arrayWithOrderFromValue(
       renderers,
-      (r) => r.timing,
+      (r) => r.renderOrder,
       "ascending"
     );
 
@@ -85,6 +103,10 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
         parentElement: this.props.parentElement,
       })
     );
+
+    if (this.props.className != null) {
+      this._canvas.element.className = this.props.className;
+    }
 
     this.cancelOnDeactivate(
       new Receipt(() => {
@@ -111,26 +133,26 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     const devicePixelRatio = window.devicePixelRatio || 1;
 
     this.cancelOnDeactivate(
-      this.props.size.didChange.subscribe((size) => {
-        if (size == null) {
+      this._displaySize.didChange.subscribe((displaySize) => {
+        if (displaySize == null) {
           return;
         }
 
-        if (this.props.parentElement.value == null) {
+        if (this._parentElement.value == null) {
           return;
         }
 
         const newPixelSize = Size2.givenWidthHeight(
-          size.width * devicePixelRatio,
-          size.height * devicePixelRatio
+          displaySize.width * devicePixelRatio,
+          displaySize.height * devicePixelRatio
         );
 
         this._pixelSize.setValue(newPixelSize);
 
         this._canvas.element.width = newPixelSize.width;
         this._canvas.element.height = newPixelSize.height;
-        this._canvas.style.width = `${size.width}px`;
-        this._canvas.style.height = `${size.height}px`;
+        this._canvas.style.width = `${displaySize.width}px`;
+        this._canvas.style.height = `${displaySize.height}px`;
 
         this.render();
       }, true)
@@ -145,7 +167,7 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
         input: renderEveryFrame,
         fn: (v) => v,
         actor: new EveryFrame({
-          callback: () => {
+          fn: () => {
             this.render();
           },
         }),
@@ -166,8 +188,15 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
 
     context.clearRect(0, 0, pixelSize.width, pixelSize.height);
 
+    const renderParams = {
+      context,
+      pixelSize,
+      displaySize,
+      devicePixelRatio: window.devicePixelRatio || 1,
+    };
+
     this._renderers.forEach((renderer) => {
-      renderer.render(context, pixelSize, displaySize);
+      renderer.render(renderParams);
     });
   }
 }

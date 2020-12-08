@@ -13,7 +13,7 @@ class EveryFrame extends skytree_1.Actor {
                 return;
             }
             this.frameNumber += 1;
-            this.props.callback(this.frameNumber);
+            this.props.fn(this.frameNumber);
             requestAnimationFrame(nextFrame);
         };
         requestAnimationFrame(nextFrame);

@@ -11,10 +11,7 @@ class ElementStyle {
         this._modifiers = definition.modifiers;
         this._elementDescription = definition.elementDescription;
         const randomString = util_1.StringUtil.stringOfRandomCharacters(5).toLowerCase();
-        if (definition.className != null) {
-            this._className = definition.className; // TODO remove this feature
-        }
-        else if (this._elementDescription != null) {
+        if (this._elementDescription != null) {
             const classDescription = util_1.StringUtil.stringWithCase(this._elementDescription, "kebab-case");
             this._className = `${classDescription}-${randomString}`;
         }

@@ -1,7 +1,7 @@
 import { Actor } from "skytree";
 
 export interface EveryFrameProps {
-  callback: (frameNumber: number) => void; // TODO change to fn
+  fn: (frameNumber: number) => void;
 }
 
 export class EveryFrame extends Actor<EveryFrameProps> {
@@ -14,7 +14,7 @@ export class EveryFrame extends Actor<EveryFrameProps> {
       }
 
       this.frameNumber += 1;
-      this.props.callback(this.frameNumber);
+      this.props.fn(this.frameNumber);
 
       requestAnimationFrame(nextFrame);
     };

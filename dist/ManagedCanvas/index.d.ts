@@ -2,11 +2,18 @@ import { Size2 } from "@anderjason/geometry";
 import { Actor } from "skytree";
 import { Observable, ObservableBase, ReadOnlyObservable, Receipt } from "@anderjason/observable";
 export interface ManagedCanvasProps {
-    parentElement: Observable<HTMLElement>;
-    size: ObservableBase<Size2>;
-    renderEveryFrame?: boolean | Observable<boolean>;
+    parentElement: HTMLElement | Observable<HTMLElement>;
+    displaySize: Size2 | ObservableBase<Size2>;
+    renderEveryFrame: boolean | Observable<boolean>;
+    className?: string;
 }
-export declare type ManagedCanvasRenderFunction = (context: CanvasRenderingContext2D, pixelSize: Size2, displaySize: Size2) => void;
+export interface ManagedCanvasRenderParams {
+    context: CanvasRenderingContext2D;
+    pixelSize: Size2;
+    displaySize: Size2;
+    devicePixelRatio: number;
+}
+export declare type ManagedCanvasRenderFunction = (params: ManagedCanvasRenderParams) => void;
 export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     private _canvas;
     get context(): CanvasRenderingContext2D;
@@ -14,10 +21,12 @@ export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     private _pixelSize;
     private _renderers;
     private _needsRender;
+    private _parentElement;
+    private _displaySize;
     readonly displaySize: ReadOnlyObservable<Size2>;
     readonly pixelSize: ReadOnlyObservable<Size2>;
     constructor(props: ManagedCanvasProps);
-    addRenderer(fn: ManagedCanvasRenderFunction, timing: number): Receipt;
+    addRenderer(renderOrder: number, render: ManagedCanvasRenderFunction): Receipt;
     onActivate(): void;
     needsRender(): void;
     private render;

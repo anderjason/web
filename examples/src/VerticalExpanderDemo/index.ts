@@ -17,7 +17,7 @@ export class VerticalExpanderDemo extends DemoActor<void> {
       options: [0, 1, 2],
     });
 
-    const isExpanded1 = Observable.givenValue(false, Observable.isStrictEqual);
+    const isExpanded1 = Observable.givenValue(true, Observable.isStrictEqual);
     const isExpanded2 = Observable.givenValue(false, Observable.isStrictEqual);
 
     this.addActor(

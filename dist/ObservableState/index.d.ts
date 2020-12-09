@@ -21,5 +21,5 @@ export declare class ObservableState extends Actor<ObservableStateProps> {
     pushCurrentState(): void;
     toBinding<T>(definition: ObservableStateBindingDefinition<T>): ObservableStateBinding<T>;
     toOptionalValueGivenPath(path: ValuePath): any;
-    update(path: ValuePath, inputValue: any): boolean;
+    update(path: string | string[] | ValuePath, inputValue: any): boolean;
 }

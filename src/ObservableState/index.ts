@@ -17,6 +17,10 @@ export interface ObservableStateBindingDefinition<T> {
 }
 
 function clone(input: unknown): unknown {
+  if (input == null) {
+    return input;
+  }
+  
   if (typeof input === "object") {
     return ObjectUtil.objectWithDeepMerge({}, input);
   } else if (Array.isArray(input)) {
@@ -72,10 +76,19 @@ export class ObservableState extends Actor<ObservableStateProps> {
     );
   }
 
-  update(path: ValuePath, inputValue: any): boolean {
+  update(path: string | string[] | ValuePath, inputValue: any): boolean {
+    let valuePath: ValuePath;
+    if (typeof path === "string") {
+      valuePath = ValuePath.givenString(path);
+    } else if (Array.isArray(path)) {
+      valuePath = ValuePath.givenParts(path);
+    } else {
+      valuePath = path;
+    }
+
     const currentValue = ObjectUtil.optionalValueAtPathGivenObject(
       this._state.value,
-      path
+      valuePath
     );
 
     if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
@@ -84,7 +97,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
 
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,
-      path,
+      valuePath,
       clone(inputValue)
     );
 

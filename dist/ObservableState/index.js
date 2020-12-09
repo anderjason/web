@@ -7,6 +7,9 @@ const UndoContext_1 = require("../UndoContext");
 const skytree_1 = require("skytree");
 const ObservableStateBinding_1 = require("./_internal/ObservableStateBinding");
 function clone(input) {
+    if (input == null) {
+        return input;
+    }
     if (typeof input === "object") {
         return util_1.ObjectUtil.objectWithDeepMerge({}, input);
     }
@@ -45,11 +48,21 @@ class ObservableState extends skytree_1.Actor {
         return clone(util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path));
     }
     update(path, inputValue) {
-        const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
+        let valuePath;
+        if (typeof path === "string") {
+            valuePath = util_1.ValuePath.givenString(path);
+        }
+        else if (Array.isArray(path)) {
+            valuePath = util_1.ValuePath.givenParts(path);
+        }
+        else {
+            valuePath = path;
+        }
+        const currentValue = util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, valuePath);
         if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
             return false;
         }
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, clone(inputValue));
+        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, valuePath, clone(inputValue));
         this._state.setValue(obj);
         return true;
     }

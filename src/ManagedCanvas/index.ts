@@ -42,6 +42,10 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     return this.element.getContext("2d");
   }
 
+  get managedElement(): ManagedElement<HTMLCanvasElement> {
+    return this._canvas;
+  }
+
   get element(): HTMLCanvasElement {
     return this._canvas.element;
   }

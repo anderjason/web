@@ -6,15 +6,26 @@ const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
 const __1 = require("..");
 const ElementStyle_1 = require("../ElementStyle");
-const scrollbarSize = 4.5;
-const scrollbarAreaPadding = 9;
-function drawRoundRect(context, x1, y1, x2, y2, radius) {
+const DragHorizontal_1 = require("./_internal/DragHorizontal");
+const DragVertical_1 = require("./_internal/DragVertical");
+const scrollbarSize = 4;
+const scrollbarAreaPadding = 8;
+function drawRoundRect(context, box, radius) {
+    if (context == null || box == null) {
+        return;
+    }
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const deviceRadius = radius * devicePixelRatio;
+    const x1 = box.toLeft() * devicePixelRatio;
+    const y1 = box.toTop() * devicePixelRatio;
+    const x2 = box.toRight() * devicePixelRatio;
+    const y2 = box.toBottom() * devicePixelRatio;
     context.beginPath();
-    context.moveTo(x1 + radius, y1);
-    context.arcTo(x2, y1, x2, y2, radius);
-    context.arcTo(x2, y2, x1, y2, radius);
-    context.arcTo(x1, y2, x1, y1, radius);
-    context.arcTo(x1, y1, x2, y1, radius);
+    context.moveTo(x1 + deviceRadius, y1);
+    context.arcTo(x2, y1, x2, y2, deviceRadius);
+    context.arcTo(x2, y2, x1, y2, deviceRadius);
+    context.arcTo(x1, y2, x1, y1, deviceRadius);
+    context.arcTo(x1, y1, x2, y1, deviceRadius);
     context.closePath();
 }
 class ScrollArea extends skytree_1.Actor {
@@ -22,6 +33,8 @@ class ScrollArea extends skytree_1.Actor {
         super(props);
         this._scrollbarSize = observable_1.Observable.ofEmpty();
         this.scrollbarSize = observable_1.ReadOnlyObservable.givenObservable(this._scrollbarSize);
+        this._overflowDirection = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this.overflowDirection = observable_1.ReadOnlyObservable.givenObservable(this._overflowDirection);
         const totalSize = scrollbarSize + scrollbarAreaPadding * 2;
         this._scrollPositionColor = observable_1.Observable.givenValueOrObservable(this.props.scrollPositionColor);
         this._direction = observable_1.Observable.givenValueOrObservable(this.props.direction);
@@ -49,6 +62,8 @@ class ScrollArea extends skytree_1.Actor {
     onActivate() {
         const horizontalTrackSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         const verticalTrackSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
+        const horizontalThumb = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
+        const verticalThumb = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
         const isHovered = observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
@@ -122,54 +137,76 @@ class ScrollArea extends skytree_1.Actor {
             const isHorizontalVisible = contentSize.width > wrapperSize.width;
             const isVerticalVisible = contentSize.height > wrapperSize.height;
             const isBothVisible = isHorizontalVisible && isVerticalVisible;
-            const padding = isBothVisible
-                ? scrollbarAreaPadding * 3
-                : scrollbarAreaPadding * 2;
-            horizontalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(wrapperSize.width - padding, scrollbarSize + scrollbarAreaPadding));
-            verticalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(scrollbarSize + scrollbarAreaPadding, wrapperSize.height - padding));
+            if (isBothVisible) {
+                this._overflowDirection.setValue("both");
+            }
+            else if (isHorizontalVisible) {
+                this._overflowDirection.setValue("horizontal");
+            }
+            else if (isVerticalVisible) {
+                this._overflowDirection.setValue("vertical");
+            }
+            else {
+                this._overflowDirection.setValue("none");
+            }
+            const sizeOffset = isBothVisible ? this._scrollbarSize.value.width : 0;
+            horizontalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(wrapperSize.width - sizeOffset, this._scrollbarSize.value.height));
+            verticalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(this._scrollbarSize.value.width, wrapperSize.height - sizeOffset));
             horizontalScrollbarCanvas.needsRender();
             verticalScrollbarCanvas.needsRender();
         }, true));
         this.cancelOnDeactivate(horizontalScrollbarCanvas.addRenderer(0, (params) => {
-            const { context, pixelSize, devicePixelRatio } = params;
-            const trackLength = pixelSize.width;
-            const scrollPosition = scrollPositionWatcher.position.value.x;
-            const visibleLength = wrapperSizeWatcher.output.value.width;
-            const contentLength = contentSizeWatcher.output.value.width;
-            if (visibleLength >= contentLength) {
+            const { context } = params;
+            if (horizontalThumb.value == null) {
                 return;
             }
-            const visibleStartPercent = scrollPosition / contentLength;
-            const visibleEndPercent = (scrollPosition + visibleLength) / contentLength;
-            const x1 = visibleStartPercent * trackLength;
-            const y1 = 0;
-            const x2 = visibleEndPercent * trackLength;
-            const y2 = scrollbarSize * devicePixelRatio;
-            drawRoundRect(context, x1, y1, x2, y2, (scrollbarSize / 2) * devicePixelRatio);
+            drawRoundRect(context, horizontalThumb.value, scrollbarSize / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
         this.cancelOnDeactivate(verticalScrollbarCanvas.addRenderer(0, (params) => {
-            const { context, pixelSize, devicePixelRatio } = params;
-            const trackLength = pixelSize.height;
-            const scrollPosition = scrollPositionWatcher.position.value.y;
-            const visibleLength = wrapperSizeWatcher.output.value.height;
-            const contentLength = contentSizeWatcher.output.value.height;
-            if (visibleLength >= contentLength) {
+            const { context } = params;
+            if (verticalThumb.value == null) {
                 return;
             }
-            const visibleStartPercent = scrollPosition / contentLength;
-            const visibleEndPercent = (scrollPosition + visibleLength) / contentLength;
-            const x1 = 0;
-            const y1 = visibleStartPercent * trackLength;
-            const x2 = scrollbarSize * devicePixelRatio;
-            const y2 = visibleEndPercent * trackLength;
-            drawRoundRect(context, x1, y1, x2, y2, (scrollbarSize / 2) * devicePixelRatio);
+            drawRoundRect(context, verticalThumb.value, scrollbarSize / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
-        this.cancelOnDeactivate(scrollPositionWatcher.position.didChange.subscribe(() => {
+        const thumbBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            scrollPositionWatcher.position,
+            wrapperSizeWatcher.output,
+            contentSizeWatcher.output,
+            horizontalTrackSize,
+            verticalTrackSize,
+        ]));
+        this.cancelOnDeactivate(thumbBinding.didInvalidate.subscribe(() => {
+            const visibleLengthX = wrapperSizeWatcher.output.value.width;
+            const visibleLengthY = wrapperSizeWatcher.output.value.height;
+            const contentLengthX = contentSizeWatcher.output.value.width;
+            const contentLengthY = contentSizeWatcher.output.value.height;
+            if (visibleLengthX < contentLengthX) {
+                const trackLengthX = horizontalTrackSize.value.width - (scrollbarAreaPadding * 2);
+                const scrollPositionX = scrollPositionWatcher.position.value.x;
+                const visibleStartPercent = scrollPositionX / contentLengthX;
+                const visibleEndPercent = (scrollPositionX + visibleLengthX) / contentLengthX;
+                horizontalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaPadding + visibleStartPercent * trackLengthX, scrollbarAreaPadding), geometry_1.Point2.givenXY(scrollbarAreaPadding + visibleEndPercent * trackLengthX, scrollbarAreaPadding + scrollbarSize)));
+            }
+            if (visibleLengthY < contentLengthY) {
+                const trackLengthY = verticalTrackSize.value.height - (scrollbarAreaPadding * 2);
+                const scrollPositionY = scrollPositionWatcher.position.value.y;
+                const visibleStartPercentY = scrollPositionY / contentLengthY;
+                const visibleEndPercentY = (scrollPositionY + visibleLengthY) / contentLengthY;
+                verticalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaPadding, scrollbarAreaPadding + visibleStartPercentY * trackLengthY), geometry_1.Point2.givenXY(scrollbarAreaPadding + scrollbarSize, scrollbarAreaPadding + visibleEndPercentY * trackLengthY)));
+            }
+            else {
+                verticalThumb.setValue(undefined);
+            }
+        }, true));
+        this.cancelOnDeactivate(horizontalThumb.didChange.subscribe(() => {
             horizontalScrollbarCanvas.needsRender();
+        }, true));
+        this.cancelOnDeactivate(verticalThumb.didChange.subscribe(() => {
             verticalScrollbarCanvas.needsRender();
         }, true));
         this.cancelOnDeactivate(wrapper.addManagedEventListener("pointerenter", () => {
@@ -178,12 +215,33 @@ class ScrollArea extends skytree_1.Actor {
         this.cancelOnDeactivate(wrapper.addManagedEventListener("pointerleave", () => {
             isHovered.setValue(false);
         }));
+        this.cancelOnDeactivate(wrapper.addManagedEventListener("pointerdown", () => {
+            if (this._overflowDirection.value === "none") {
+                return;
+            }
+            ScrollArea.willScroll.emit(this);
+        }));
+        this.addActor(new DragHorizontal_1.DragHorizontal({
+            canvas: horizontalScrollbarCanvas.managedElement,
+            scrollElement: this._scroller.element,
+            trackSize: horizontalTrackSize,
+            thumb: horizontalThumb,
+        }));
+        this.addActor(new DragVertical_1.DragVertical({
+            canvas: verticalScrollbarCanvas.managedElement,
+            scrollElement: this._scroller.element,
+            trackSize: verticalTrackSize,
+            thumb: verticalThumb,
+        }));
         this.cancelOnDeactivate(isHovered.didChange.subscribe((value) => {
             trackArea.setModifier("isHovered", value);
+            horizontalScrollbarCanvas.needsRender();
+            verticalScrollbarCanvas.needsRender();
         }, true));
     }
 }
 exports.ScrollArea = ScrollArea;
+ScrollArea.willScroll = new observable_1.TypedEvent();
 const WrapperStyle = ElementStyle_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
@@ -217,16 +275,16 @@ const ContentStyle = ElementStyle_1.ElementStyle.givenDefinition({
   `,
 });
 const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
-    elementDescription: "TrackArea",
+    elementDescription: "HorizontalTrackArea",
     css: `
     bottom: 0;
     left: 0;
     opacity: 0.25;
     pointer-events: none;
     position: absolute;
+    transition: 0.2s ease opacity;
     right: 0;
     top: 0;
-    transition: 0.2s ease opacity;
     z-index: 10000;
   `,
     modifiers: {
@@ -239,10 +297,11 @@ const HorizontalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     elementDescription: "HorizontalTrack",
     css: `
     position: absolute;
-    left: ${scrollbarAreaPadding}px;
-    right: ${scrollbarAreaPadding}px;
+    left: 0;
+    right: 0;
     bottom: 0;
     z-index: 10000;
+    pointer-events: auto;
   `,
 });
 const VerticalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
@@ -250,8 +309,9 @@ const VerticalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     css: `
     position: absolute;
     right: 0;
-    top: ${scrollbarAreaPadding}px;
+    top: 0;
     bottom: 0;
+    pointer-events: auto;
   `,
 });
 //# sourceMappingURL=index.js.map

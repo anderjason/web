@@ -21,6 +21,9 @@ class ManagedCanvas extends skytree_1.Actor {
     get context() {
         return this.element.getContext("2d");
     }
+    get managedElement() {
+        return this._canvas;
+    }
     get element() {
         return this._canvas.element;
     }

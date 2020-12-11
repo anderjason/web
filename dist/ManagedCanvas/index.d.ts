@@ -1,5 +1,6 @@
 import { Size2 } from "@anderjason/geometry";
 import { Actor } from "skytree";
+import { ManagedElement } from "../ManagedElement";
 import { Observable, ObservableBase, ReadOnlyObservable, Receipt } from "@anderjason/observable";
 export interface ManagedCanvasProps {
     parentElement: HTMLElement | Observable<HTMLElement>;
@@ -17,6 +18,7 @@ export declare type ManagedCanvasRenderFunction = (params: ManagedCanvasRenderPa
 export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     private _canvas;
     get context(): CanvasRenderingContext2D;
+    get managedElement(): ManagedElement<HTMLCanvasElement>;
     get element(): HTMLCanvasElement;
     private _pixelSize;
     private _renderers;

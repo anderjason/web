@@ -25,6 +25,7 @@ class ObservableState extends skytree_1.Actor {
         super(...arguments);
         this._state = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.state = observable_1.ReadOnlyObservable.givenObservable(this._state);
+        this.willChange = new observable_1.TypedEvent();
     }
     onActivate() {
         this._undoContext = new UndoContext_1.UndoContext(clone(this.props.initialState || {}), 10);
@@ -62,7 +63,13 @@ class ObservableState extends skytree_1.Actor {
         if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
             return false;
         }
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, valuePath, clone(inputValue));
+        const newValue = clone(inputValue);
+        this.willChange.emit({
+            valuePath,
+            oldValue: currentValue,
+            newValue
+        });
+        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, valuePath, newValue);
         this._state.setValue(obj);
         return true;
     }

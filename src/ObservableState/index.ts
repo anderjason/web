@@ -1,4 +1,4 @@
-import { Observable, ReadOnlyObservable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable, TypedEvent } from "@anderjason/observable";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoContext } from "../UndoContext";
 import { Actor } from "skytree";
@@ -6,6 +6,12 @@ import { ObservableStateBinding } from "./_internal/ObservableStateBinding";
 
 export interface ObservableStateProps {
   initialState?: any;
+}
+
+export interface ObservableStateChange {
+  valuePath: ValuePath;
+  oldValue: any;
+  newValue: any;
 }
 
 export interface ObservableStateBindingDefinition<T> {
@@ -35,6 +41,8 @@ export class ObservableState extends Actor<ObservableStateProps> {
   readonly state = ReadOnlyObservable.givenObservable(this._state);
 
   private _undoContext: UndoContext;
+
+  readonly willChange = new TypedEvent<ObservableStateChange>();
 
   onActivate() {
     this._undoContext = new UndoContext<unknown>(
@@ -94,11 +102,19 @@ export class ObservableState extends Actor<ObservableStateProps> {
     if (ObjectUtil.objectIsDeepEqual(currentValue, inputValue)) {
       return false;
     }
+    
+    const newValue = clone(inputValue);
+
+    this.willChange.emit({
+      valuePath,
+      oldValue: currentValue,
+      newValue
+    })
 
     const obj = ObjectUtil.objectWithValueAtPath(
       this._state.value,
       valuePath,
-      clone(inputValue)
+      newValue  
     );
 
     this._state.setValue(obj);

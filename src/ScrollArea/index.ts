@@ -19,8 +19,15 @@ import { DragVertical } from "./_internal/DragVertical";
 
 export type ScrollDirection = "none" | "vertical" | "horizontal" | "both";
 
-const scrollbarSize = 4;
-const scrollbarAreaPadding = 8;
+const scrollbarThickness = 4;
+const scrollbarAreaEdgePadding = 8;
+const scrollbarAreaEndPadding = 14;
+const anchorThreshold = 5;
+
+let devicePixelRatio: number = 1;
+if (typeof window !== "undefined") {
+  devicePixelRatio = window.devicePixelRatio || 1;
+}
 
 function drawRoundRect(
   context: CanvasRenderingContext2D,
@@ -31,7 +38,6 @@ function drawRoundRect(
     return;
   }
 
-  const devicePixelRatio = window.devicePixelRatio || 1;
   const deviceRadius = radius * devicePixelRatio;
 
   const x1 = box.toLeft() * devicePixelRatio;
@@ -52,6 +58,8 @@ export interface ScrollAreaProps {
   parentElement: HTMLElement | Observable<HTMLElement>;
   direction: ScrollDirection | ObservableBase<ScrollDirection>;
   scrollPositionColor: Color | ObservableBase<Color>;
+
+  anchorBottom?: boolean;
 }
 
 export class ScrollArea extends Actor<ScrollAreaProps> {
@@ -73,11 +81,16 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
   private _content: DynamicStyleElement<HTMLDivElement>;
   private _scrollPositionColor: ObservableBase<Color>;
   private _direction: ObservableBase<ScrollDirection>;
+  private _contentSizeWatcher: ElementSizeWatcher;
+
+  get contentSize(): ReadOnlyObservable<Size2> {
+    return this._contentSizeWatcher.output;
+  }
 
   constructor(props: ScrollAreaProps) {
     super(props);
 
-    const totalSize = scrollbarSize + scrollbarAreaPadding * 2;
+    const totalThickness = scrollbarThickness + scrollbarAreaEdgePadding * 2;
 
     this._scrollPositionColor = Observable.givenValueOrObservable(
       this.props.scrollPositionColor
@@ -90,14 +103,14 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         this._scrollbarSize.setValue(Size2.ofZero());
         break;
       case "horizontal":
-        this._scrollbarSize.setValue(Size2.givenWidthHeight(0, totalSize));
+        this._scrollbarSize.setValue(Size2.givenWidthHeight(0, totalThickness));
         break;
       case "vertical":
-        this._scrollbarSize.setValue(Size2.givenWidthHeight(totalSize, 0));
+        this._scrollbarSize.setValue(Size2.givenWidthHeight(totalThickness, 0));
         break;
       case "both":
         this._scrollbarSize.setValue(
-          Size2.givenWidthHeight(totalSize, totalSize)
+          Size2.givenWidthHeight(totalThickness, totalThickness)
         );
         break;
     }
@@ -196,7 +209,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
-    const contentSizeWatcher = this.addActor(
+    this._contentSizeWatcher = this.addActor(
       new ElementSizeWatcher({
         element: this._content.element,
       })
@@ -211,14 +224,35 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     const sizeBinding = this.addActor(
       MultiBinding.givenAnyChange([
         wrapperSizeWatcher.output,
-        contentSizeWatcher.output,
+        this._contentSizeWatcher.output,
       ])
     );
+
+    if (this.props.anchorBottom == true) {
+      this.cancelOnDeactivate(
+        this._contentSizeWatcher.output.didChange.subscribe(
+          (newContentSize, oldContentSize) => {
+            if (oldContentSize == null) {
+              return;
+            }
+
+            const remainingContentBelow =
+              oldContentSize.height -
+              scrollPositionWatcher.position.value.y -
+              this._scroller.element.offsetHeight;
+
+            if (remainingContentBelow < anchorThreshold) {
+              this._scroller.element.scrollTo(0, newContentSize.height);
+            }
+          }
+        )
+      );
+    }
 
     this.cancelOnDeactivate(
       sizeBinding.didInvalidate.subscribe(() => {
         const wrapperSize = wrapperSizeWatcher.output.value;
-        const contentSize = contentSizeWatcher.output.value;
+        const contentSize = this._contentSizeWatcher.output.value;
 
         if (wrapperSize == null || contentSize == null) {
           return;
@@ -238,7 +272,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           this._overflowDirection.setValue("none");
         }
 
-        const sizeOffset = isBothVisible ? this._scrollbarSize.value.width : 0;
+        const sizeOffset = isBothVisible ? 6 : 0;
 
         horizontalTrackSize.setValue(
           Size2.givenWidthHeight(
@@ -267,7 +301,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(context, horizontalThumb.value, scrollbarSize / 2);
+        drawRoundRect(context, horizontalThumb.value, scrollbarThickness / 2);
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
@@ -282,7 +316,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(context, verticalThumb.value, scrollbarSize / 2);
+        drawRoundRect(context, verticalThumb.value, scrollbarThickness / 2);
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
@@ -293,7 +327,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       MultiBinding.givenAnyChange([
         scrollPositionWatcher.position,
         wrapperSizeWatcher.output,
-        contentSizeWatcher.output,
+        this._contentSizeWatcher.output,
         horizontalTrackSize,
         verticalTrackSize,
       ])
@@ -304,11 +338,12 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         const visibleLengthX = wrapperSizeWatcher.output.value.width;
         const visibleLengthY = wrapperSizeWatcher.output.value.height;
 
-        const contentLengthX = contentSizeWatcher.output.value.width;
-        const contentLengthY = contentSizeWatcher.output.value.height;
+        const contentLengthX = this._contentSizeWatcher.output.value.width;
+        const contentLengthY = this._contentSizeWatcher.output.value.height;
 
         if (visibleLengthX < contentLengthX) {
-          const trackLengthX = horizontalTrackSize.value.width - (scrollbarAreaPadding * 2);
+          const trackLengthX =
+            horizontalTrackSize.value.width - scrollbarAreaEndPadding * 2;
           const scrollPositionX = scrollPositionWatcher.position.value.x;
           const visibleStartPercent = scrollPositionX / contentLengthX;
           const visibleEndPercent =
@@ -316,14 +351,21 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 
           horizontalThumb.setValue(
             Box2.givenOppositeCorners(
-              Point2.givenXY(scrollbarAreaPadding + visibleStartPercent * trackLengthX, scrollbarAreaPadding),
-              Point2.givenXY(scrollbarAreaPadding + visibleEndPercent * trackLengthX, scrollbarAreaPadding + scrollbarSize)
+              Point2.givenXY(
+                scrollbarAreaEndPadding + visibleStartPercent * trackLengthX,
+                scrollbarAreaEdgePadding
+              ),
+              Point2.givenXY(
+                scrollbarAreaEndPadding + visibleEndPercent * trackLengthX,
+                scrollbarAreaEdgePadding + scrollbarThickness
+              )
             )
           );
         }
 
         if (visibleLengthY < contentLengthY) {
-          const trackLengthY = verticalTrackSize.value.height - (scrollbarAreaPadding * 2);
+          const trackLengthY =
+            verticalTrackSize.value.height - scrollbarAreaEndPadding * 2;
           const scrollPositionY = scrollPositionWatcher.position.value.y;
           const visibleStartPercentY = scrollPositionY / contentLengthY;
           const visibleEndPercentY =
@@ -331,8 +373,14 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 
           verticalThumb.setValue(
             Box2.givenOppositeCorners(
-              Point2.givenXY(scrollbarAreaPadding, scrollbarAreaPadding + visibleStartPercentY * trackLengthY),
-              Point2.givenXY(scrollbarAreaPadding + scrollbarSize, scrollbarAreaPadding + visibleEndPercentY * trackLengthY)
+              Point2.givenXY(
+                scrollbarAreaEdgePadding,
+                scrollbarAreaEndPadding + visibleStartPercentY * trackLengthY
+              ),
+              Point2.givenXY(
+                scrollbarAreaEdgePadding + scrollbarThickness,
+                scrollbarAreaEndPadding + visibleEndPercentY * trackLengthY
+              )
             )
           );
         } else {

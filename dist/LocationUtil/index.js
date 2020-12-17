@@ -6,6 +6,7 @@ const objectGivenQueryString_1 = require("./_internal/objectGivenQueryString");
 const objectOfCurrentQueryString_1 = require("./_internal/objectOfCurrentQueryString");
 const queryStringGivenObject_1 = require("./_internal/queryStringGivenObject");
 const updateCurrentQueryString_1 = require("./_internal/updateCurrentQueryString");
+const urlGivenUrlLike_1 = require("./_internal/urlGivenUrlLike");
 class LocationUtil {
 }
 exports.LocationUtil = LocationUtil;
@@ -14,4 +15,5 @@ LocationUtil.objectGivenQueryString = objectGivenQueryString_1.objectGivenQueryS
 LocationUtil.objectOfCurrentQueryString = objectOfCurrentQueryString_1.objectOfCurrentQueryString;
 LocationUtil.queryStringGivenObject = queryStringGivenObject_1.queryStringGivenObject;
 LocationUtil.updateCurrentQueryString = updateCurrentQueryString_1.updateCurrentQueryString;
+LocationUtil.urlGivenUrlLike = urlGivenUrlLike_1.urlGivenUrlLike;
 //# sourceMappingURL=index.js.map

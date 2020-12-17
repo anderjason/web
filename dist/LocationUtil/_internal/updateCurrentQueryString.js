@@ -10,7 +10,9 @@ function updateCurrentQueryString(values) {
     const previousValue = objectOfCurrentQueryString_1.objectOfCurrentQueryString();
     const allValues = Object.assign(Object.assign({}, previousValue), values);
     const newQueryString = queryStringGivenObject_1.queryStringGivenObject(allValues);
-    window.history.replaceState(null, "", `${window.location.pathname}${newQueryString}`);
+    if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", `${window.location.pathname}${newQueryString}`);
+    }
 }
 exports.updateCurrentQueryString = updateCurrentQueryString;
 //# sourceMappingURL=updateCurrentQueryString.js.map

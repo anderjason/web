@@ -97,6 +97,7 @@ export class VerticalExpander extends Actor<VerticalExpanderProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     transition: 0.4s cubic-bezier(.5,0,.3,1) height;
     position: relative;
@@ -106,6 +107,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const ContentStyle = ElementStyle.givenDefinition({
+  elementDescription: "Content",
   css: `
     left: 0;
     top: 0;

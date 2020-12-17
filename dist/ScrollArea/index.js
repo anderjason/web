@@ -8,13 +8,18 @@ const __1 = require("..");
 const ElementStyle_1 = require("../ElementStyle");
 const DragHorizontal_1 = require("./_internal/DragHorizontal");
 const DragVertical_1 = require("./_internal/DragVertical");
-const scrollbarSize = 4;
-const scrollbarAreaPadding = 8;
+const scrollbarThickness = 4;
+const scrollbarAreaEdgePadding = 8;
+const scrollbarAreaEndPadding = 14;
+const anchorThreshold = 5;
+let devicePixelRatio = 1;
+if (typeof window !== "undefined") {
+    devicePixelRatio = window.devicePixelRatio || 1;
+}
 function drawRoundRect(context, box, radius) {
     if (context == null || box == null) {
         return;
     }
-    const devicePixelRatio = window.devicePixelRatio || 1;
     const deviceRadius = radius * devicePixelRatio;
     const x1 = box.toLeft() * devicePixelRatio;
     const y1 = box.toTop() * devicePixelRatio;
@@ -35,7 +40,7 @@ class ScrollArea extends skytree_1.Actor {
         this.scrollbarSize = observable_1.ReadOnlyObservable.givenObservable(this._scrollbarSize);
         this._overflowDirection = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.overflowDirection = observable_1.ReadOnlyObservable.givenObservable(this._overflowDirection);
-        const totalSize = scrollbarSize + scrollbarAreaPadding * 2;
+        const totalThickness = scrollbarThickness + scrollbarAreaEdgePadding * 2;
         this._scrollPositionColor = observable_1.Observable.givenValueOrObservable(this.props.scrollPositionColor);
         this._direction = observable_1.Observable.givenValueOrObservable(this.props.direction);
         switch (props.direction) {
@@ -43,15 +48,18 @@ class ScrollArea extends skytree_1.Actor {
                 this._scrollbarSize.setValue(geometry_1.Size2.ofZero());
                 break;
             case "horizontal":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(0, totalSize));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(0, totalThickness));
                 break;
             case "vertical":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalSize, 0));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalThickness, 0));
                 break;
             case "both":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalSize, totalSize));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalThickness, totalThickness));
                 break;
         }
+    }
+    get contentSize() {
+        return this._contentSizeWatcher.output;
     }
     get element() {
         return this._content.element;
@@ -118,7 +126,7 @@ class ScrollArea extends skytree_1.Actor {
         const wrapperSizeWatcher = this.addActor(new __1.ElementSizeWatcher({
             element: wrapper.element,
         }));
-        const contentSizeWatcher = this.addActor(new __1.ElementSizeWatcher({
+        this._contentSizeWatcher = this.addActor(new __1.ElementSizeWatcher({
             element: this._content.element,
         }));
         const scrollPositionWatcher = this.addActor(new __1.ScrollWatcher({
@@ -126,11 +134,24 @@ class ScrollArea extends skytree_1.Actor {
         }));
         const sizeBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
             wrapperSizeWatcher.output,
-            contentSizeWatcher.output,
+            this._contentSizeWatcher.output,
         ]));
+        if (this.props.anchorBottom == true) {
+            this.cancelOnDeactivate(this._contentSizeWatcher.output.didChange.subscribe((newContentSize, oldContentSize) => {
+                if (oldContentSize == null) {
+                    return;
+                }
+                const remainingContentBelow = oldContentSize.height -
+                    scrollPositionWatcher.position.value.y -
+                    this._scroller.element.offsetHeight;
+                if (remainingContentBelow < anchorThreshold) {
+                    this._scroller.element.scrollTo(0, newContentSize.height);
+                }
+            }));
+        }
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
             const wrapperSize = wrapperSizeWatcher.output.value;
-            const contentSize = contentSizeWatcher.output.value;
+            const contentSize = this._contentSizeWatcher.output.value;
             if (wrapperSize == null || contentSize == null) {
                 return;
             }
@@ -149,7 +170,7 @@ class ScrollArea extends skytree_1.Actor {
             else {
                 this._overflowDirection.setValue("none");
             }
-            const sizeOffset = isBothVisible ? this._scrollbarSize.value.width : 0;
+            const sizeOffset = isBothVisible ? 6 : 0;
             horizontalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(wrapperSize.width - sizeOffset, this._scrollbarSize.value.height));
             verticalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(this._scrollbarSize.value.width, wrapperSize.height - sizeOffset));
             horizontalScrollbarCanvas.needsRender();
@@ -160,7 +181,7 @@ class ScrollArea extends skytree_1.Actor {
             if (horizontalThumb.value == null) {
                 return;
             }
-            drawRoundRect(context, horizontalThumb.value, scrollbarSize / 2);
+            drawRoundRect(context, horizontalThumb.value, scrollbarThickness / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
@@ -169,35 +190,35 @@ class ScrollArea extends skytree_1.Actor {
             if (verticalThumb.value == null) {
                 return;
             }
-            drawRoundRect(context, verticalThumb.value, scrollbarSize / 2);
+            drawRoundRect(context, verticalThumb.value, scrollbarThickness / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
         const thumbBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
             scrollPositionWatcher.position,
             wrapperSizeWatcher.output,
-            contentSizeWatcher.output,
+            this._contentSizeWatcher.output,
             horizontalTrackSize,
             verticalTrackSize,
         ]));
         this.cancelOnDeactivate(thumbBinding.didInvalidate.subscribe(() => {
             const visibleLengthX = wrapperSizeWatcher.output.value.width;
             const visibleLengthY = wrapperSizeWatcher.output.value.height;
-            const contentLengthX = contentSizeWatcher.output.value.width;
-            const contentLengthY = contentSizeWatcher.output.value.height;
+            const contentLengthX = this._contentSizeWatcher.output.value.width;
+            const contentLengthY = this._contentSizeWatcher.output.value.height;
             if (visibleLengthX < contentLengthX) {
-                const trackLengthX = horizontalTrackSize.value.width - (scrollbarAreaPadding * 2);
+                const trackLengthX = horizontalTrackSize.value.width - scrollbarAreaEndPadding * 2;
                 const scrollPositionX = scrollPositionWatcher.position.value.x;
                 const visibleStartPercent = scrollPositionX / contentLengthX;
                 const visibleEndPercent = (scrollPositionX + visibleLengthX) / contentLengthX;
-                horizontalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaPadding + visibleStartPercent * trackLengthX, scrollbarAreaPadding), geometry_1.Point2.givenXY(scrollbarAreaPadding + visibleEndPercent * trackLengthX, scrollbarAreaPadding + scrollbarSize)));
+                horizontalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaEndPadding + visibleStartPercent * trackLengthX, scrollbarAreaEdgePadding), geometry_1.Point2.givenXY(scrollbarAreaEndPadding + visibleEndPercent * trackLengthX, scrollbarAreaEdgePadding + scrollbarThickness)));
             }
             if (visibleLengthY < contentLengthY) {
-                const trackLengthY = verticalTrackSize.value.height - (scrollbarAreaPadding * 2);
+                const trackLengthY = verticalTrackSize.value.height - scrollbarAreaEndPadding * 2;
                 const scrollPositionY = scrollPositionWatcher.position.value.y;
                 const visibleStartPercentY = scrollPositionY / contentLengthY;
                 const visibleEndPercentY = (scrollPositionY + visibleLengthY) / contentLengthY;
-                verticalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaPadding, scrollbarAreaPadding + visibleStartPercentY * trackLengthY), geometry_1.Point2.givenXY(scrollbarAreaPadding + scrollbarSize, scrollbarAreaPadding + visibleEndPercentY * trackLengthY)));
+                verticalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaEdgePadding, scrollbarAreaEndPadding + visibleStartPercentY * trackLengthY), geometry_1.Point2.givenXY(scrollbarAreaEdgePadding + scrollbarThickness, scrollbarAreaEndPadding + visibleEndPercentY * trackLengthY)));
             }
             else {
                 verticalThumb.setValue(undefined);

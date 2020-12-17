@@ -17,7 +17,15 @@ export class DragVertical extends Actor<DragVerticalProps> {
     let speed: number;
 
     this.cancelOnDeactivate(
+      this.props.canvas.addManagedEventListener("touchmove", (e) => {
+        e.preventDefault();
+      }
+    ));
+    
+    this.cancelOnDeactivate(
       this.props.canvas.addManagedEventListener("pointerdown", (e) => {
+        e.preventDefault();
+
         startMouseY = e.offsetY;
         startScrollY = this.props.scrollElement.scrollTop;
 
@@ -39,8 +47,6 @@ export class DragVertical extends Actor<DragVerticalProps> {
 
           this.props.scrollElement.scrollTop = startScrollY;
         }
-        
-        e.preventDefault();
       })
     );
 
@@ -49,6 +55,8 @@ export class DragVertical extends Actor<DragVerticalProps> {
         if (startMouseY == null) {
           return;
         }
+
+        e.preventDefault();
         
         const relativeMouseY = e.offsetY;
         const delta = relativeMouseY - startMouseY;

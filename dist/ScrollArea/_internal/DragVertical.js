@@ -7,7 +7,11 @@ class DragVertical extends skytree_1.Actor {
         let startMouseY = null;
         let startScrollY = null;
         let speed;
+        this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("touchmove", (e) => {
+            e.preventDefault();
+        }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointerdown", (e) => {
+            e.preventDefault();
             startMouseY = e.offsetY;
             startScrollY = this.props.scrollElement.scrollTop;
             this.props.canvas.element.setPointerCapture(e.pointerId);
@@ -24,12 +28,12 @@ class DragVertical extends skytree_1.Actor {
                 startScrollY = maxScroll * percent;
                 this.props.scrollElement.scrollTop = startScrollY;
             }
-            e.preventDefault();
         }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointermove", (e) => {
             if (startMouseY == null) {
                 return;
             }
+            e.preventDefault();
             const relativeMouseY = e.offsetY;
             const delta = relativeMouseY - startMouseY;
             this.props.scrollElement.scrollTop = startScrollY + (delta * speed);

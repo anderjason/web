@@ -7,7 +7,11 @@ class DragHorizontal extends skytree_1.Actor {
         let startMouseX = null;
         let startScrollX = null;
         let speed;
+        this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("touchmove", (e) => {
+            e.preventDefault();
+        }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointerdown", (e) => {
+            e.preventDefault();
             startMouseX = e.offsetX;
             startScrollX = this.props.scrollElement.scrollLeft;
             this.props.canvas.element.setPointerCapture(e.pointerId);
@@ -24,12 +28,12 @@ class DragHorizontal extends skytree_1.Actor {
                 startScrollX = maxScroll * percent;
                 this.props.scrollElement.scrollLeft = startScrollX;
             }
-            e.preventDefault();
         }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointermove", (e) => {
             if (startMouseX == null) {
                 return;
             }
+            e.preventDefault();
             const relativeMouseX = e.offsetX;
             const delta = relativeMouseX - startMouseX;
             this.props.scrollElement.scrollLeft = startScrollX + (delta * speed);

@@ -42,9 +42,11 @@ export class ScreenSize extends Actor<void> {
       duration: Duration.givenMilliseconds(250),
     });
 
-    window.addEventListener("resize", () => {
-      this.recalculateSize();
-    });
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", () => {
+        this.recalculateSize();
+      });
+    }
 
     this.recalculateSize();
 
@@ -93,6 +95,10 @@ export class ScreenSize extends Actor<void> {
   }
 
   recalculateSize() {
+    if (typeof window === "undefined") {
+      return;
+    }
+    
     this._availableSize.setValue(
       Size2.givenWidthHeight(
         Math.min(window.outerWidth, window.innerWidth),

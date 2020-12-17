@@ -1,26 +1,15 @@
-import { ObservableArray } from "@anderjason/observable";
-import { IntersectionWatcherDemo } from "./IntersectionWatcherDemo";
-import { ScrollAreaDemo } from "./ScrollAreaDemo";
-import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
-import { UndoDemo } from "./UndoDemo";
-import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
 import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
+import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
+import { IntersectionWatcherDemo } from "./IntersectionWatcherDemo";
+import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
+import { ObservableArray } from "@anderjason/observable";
+import { ScrollAreaAnchorDemo } from "./ScrollAreaAnchorDemo";
+import { ScrollAreaDemo } from "./ScrollAreaDemo";
 import { TransitionDemo } from "./TransitionDemo";
+import { UndoDemo } from "./UndoDemo";
 import { VerticalExpanderDemo } from "./VerticalExpanderDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
-  {
-    title: "Scroll area",
-    actor: new ScrollAreaDemo(),
-  },
-  {
-    title: "Vertical expander",
-    actor: new VerticalExpanderDemo(),
-  },
-  {
-    title: "Transition",
-    actor: new TransitionDemo(),
-  },
   {
     title: "Element size watcher",
     actor: new ElementSizeWatcherDemo(),
@@ -30,12 +19,28 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new IntersectionWatcherDemo(),
   },
   {
+    title: "Keyboard watcher",
+    actor: new KeyboardWatcherDemo(),
+  },
+  {
+    title: "Scroll area",
+    actor: new ScrollAreaDemo(),
+  },
+  {
+    title: "Scroll area anchor",
+    actor: new ScrollAreaAnchorDemo(),
+  },
+  {
+    title: "Transition",
+    actor: new TransitionDemo(),
+  },
+  {
     title: "Undo",
     actor: new UndoDemo(),
   },
   {
-    title: "Keyboard watcher",
-    actor: new KeyboardWatcherDemo(),
+    title: "Vertical expander",
+    actor: new VerticalExpanderDemo(),
   },
 ]);
 

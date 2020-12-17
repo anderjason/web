@@ -64,6 +64,7 @@ class VerticalExpander extends skytree_1.Actor {
 }
 exports.VerticalExpander = VerticalExpander;
 const WrapperStyle = ElementStyle_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     transition: 0.4s cubic-bezier(.5,0,.3,1) height;
     position: relative;
@@ -72,6 +73,7 @@ const WrapperStyle = ElementStyle_1.ElementStyle.givenDefinition({
   `,
 });
 const ContentStyle = ElementStyle_1.ElementStyle.givenDefinition({
+    elementDescription: "Content",
     css: `
     left: 0;
     top: 0;

@@ -35,6 +35,11 @@ interface ManagedCanvasRenderer {
   renderOrder: number;
 }
 
+let devicePixelRatio: number = 1;
+if (typeof window !== "undefined") {
+  devicePixelRatio = window.devicePixelRatio || 1;
+}
+
 export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   private _canvas: ManagedElement<HTMLCanvasElement>;
 
@@ -133,8 +138,6 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
         }
       })
     );
-
-    const devicePixelRatio = window.devicePixelRatio || 1;
 
     this.cancelOnDeactivate(
       this._displaySize.didChange.subscribe((displaySize) => {

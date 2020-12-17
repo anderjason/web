@@ -16,8 +16,17 @@ export class DragHorizontal extends Actor<DragHorizontalProps> {
     let startScrollX: number = null;
     let speed: number;
 
+    
+    this.cancelOnDeactivate(
+      this.props.canvas.addManagedEventListener("touchmove", (e) => {
+        e.preventDefault();
+      }
+    ));
+
     this.cancelOnDeactivate(
       this.props.canvas.addManagedEventListener("pointerdown", (e) => {
+        e.preventDefault();
+
         startMouseX = e.offsetX;
         startScrollX = this.props.scrollElement.scrollLeft;
 
@@ -39,8 +48,6 @@ export class DragHorizontal extends Actor<DragHorizontalProps> {
           
           this.props.scrollElement.scrollLeft = startScrollX;
         }
-        
-        e.preventDefault();
       })
     );
 
@@ -50,6 +57,8 @@ export class DragHorizontal extends Actor<DragHorizontalProps> {
           return;
         }
         
+        e.preventDefault();
+
         const relativeMouseX = e.offsetX;
         const delta = relativeMouseX - startMouseX;
         

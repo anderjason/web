@@ -18,6 +18,10 @@ export class LocalStorageBinding extends Actor<LocalStorageBindingProps> {
   }
 
   onActivate() {
+    if (typeof window === "undefined") {
+      return;
+    }
+  
     try {
       this.observableValue.setValue(
         window.localStorage.getItem(this.props.localStorageKey)

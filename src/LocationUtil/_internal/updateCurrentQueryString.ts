@@ -15,9 +15,11 @@ export function updateCurrentQueryString(values: any): void {
 
   const newQueryString = queryStringGivenObject(allValues);
 
-  window.history.replaceState(
-    null,
-    "",
-    `${window.location.pathname}${newQueryString}`
-  );
+  if (typeof window !== "undefined") {
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${newQueryString}`
+    );
+  }
 }

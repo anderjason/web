@@ -19,9 +19,11 @@ class ScreenSize extends skytree_1.Actor {
             },
             duration: time_1.Duration.givenMilliseconds(250),
         });
-        window.addEventListener("resize", () => {
-            this.recalculateSize();
-        });
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", () => {
+                this.recalculateSize();
+            });
+        }
         this.recalculateSize();
         if (this._availableSize.value.isZero) {
             requestAnimationFrame(() => {
@@ -61,6 +63,9 @@ class ScreenSize extends skytree_1.Actor {
         document.body.removeChild(measureScrollbarOuter);
     }
     recalculateSize() {
+        if (typeof window === "undefined") {
+            return;
+        }
         this._availableSize.setValue(geometry_1.Size2.givenWidthHeight(Math.min(window.outerWidth, window.innerWidth), Math.min(window.innerHeight, window.outerHeight)));
         this._measureScrollbarLater.invoke();
     }

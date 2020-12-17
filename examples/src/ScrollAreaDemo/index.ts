@@ -31,13 +31,16 @@ export class ScrollAreaDemo extends DemoActor<void> {
 const OuterStyle = ElementStyle.givenDefinition({
   elementDescription: "Outer",
   css: `
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    border-radius: 15px;
     color: white;
+    height: 300px;
+    left: 50%;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
   `,
 });
 

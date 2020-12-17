@@ -7,6 +7,10 @@ const ManagedElement_1 = require("../ManagedElement");
 const observable_1 = require("@anderjason/observable");
 const EveryFrame_1 = require("../EveryFrame");
 const util_1 = require("@anderjason/util");
+let devicePixelRatio = 1;
+if (typeof window !== "undefined") {
+    devicePixelRatio = window.devicePixelRatio || 1;
+}
 class ManagedCanvas extends skytree_1.Actor {
     constructor(props) {
         super(props);
@@ -63,7 +67,6 @@ class ManagedCanvas extends skytree_1.Actor {
                 });
             }
         }));
-        const devicePixelRatio = window.devicePixelRatio || 1;
         this.cancelOnDeactivate(this._displaySize.didChange.subscribe((displaySize) => {
             if (displaySize == null) {
                 return;

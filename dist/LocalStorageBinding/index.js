@@ -10,6 +10,9 @@ class LocalStorageBinding extends skytree_1.Actor {
             this.props.value || observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
     }
     onActivate() {
+        if (typeof window === "undefined") {
+            return;
+        }
         try {
             this.observableValue.setValue(window.localStorage.getItem(this.props.localStorageKey));
         }

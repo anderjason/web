@@ -1,6 +1,7 @@
 import { Test } from "@anderjason/tests";
 import "./Corners/index.test";
 import "./ElementSizeWatcher/index.test";
+import "./LocationUtil/index.test";
 import "./ObservableState/index.test";
 import "./SequentialChoice/index.test";
 import "./StepDelayBinding/index.test";

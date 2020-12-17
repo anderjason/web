@@ -34,6 +34,9 @@ class KeyboardWatcher extends skytree_1.Actor {
         return this._instance;
     }
     onActivate() {
+        if (typeof window === "undefined") {
+            return;
+        }
         window.addEventListener("keydown", this.onKeyDown);
         window.addEventListener("keyup", this.onKeyUp);
         this.cancelOnDeactivate(new observable_1.Receipt(() => {

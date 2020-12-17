@@ -29,6 +29,10 @@ export class KeyboardWatcher extends Actor<void> {
   }
 
   onActivate() {
+    if (typeof window === "undefined") {
+      return;
+    }
+  
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("keyup", this.onKeyUp);
 

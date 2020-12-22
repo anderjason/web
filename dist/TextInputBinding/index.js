@@ -36,27 +36,37 @@ class TextInputBinding extends skytree_1.Actor {
         this._inputElement.addEventListener("input", (e) => {
             const displayText = this._inputElement.value;
             let value = this.props.valueGivenDisplayText(displayText);
-            let overrideText;
+            let overrideResult;
             if (this.props.overrideDisplayText != null) {
-                overrideText = this.props.overrideDisplayText({
+                const actualOverrideResult = this.props.overrideDisplayText({
                     displayText,
                     value,
                     previousDisplayText: this._previousDisplayText,
                     previousValue: this.output.value,
+                    caretPosition: this._caretPosition
                 });
-                if (overrideText == null) {
-                    this.onOverride(this._previousDisplayText, true);
+                if (typeof actualOverrideResult === "string") {
+                    overrideResult = {
+                        text: actualOverrideResult,
+                        caretPosition: undefined
+                    };
+                }
+                else {
+                    overrideResult = actualOverrideResult;
+                }
+                if (overrideResult == null) {
+                    this.onOverride(this._previousDisplayText, this._caretPosition);
                     return;
                 }
                 else {
-                    this.onOverride(overrideText, false);
-                    value = this.props.valueGivenDisplayText(overrideText);
+                    this.onOverride(overrideResult.text, overrideResult.caretPosition);
+                    value = this.props.valueGivenDisplayText(overrideResult.text);
                 }
             }
             this.output.setValue(value);
-            if (overrideText != null) {
+            if (overrideResult != null) {
                 requestAnimationFrame(() => {
-                    this._inputElement.value = overrideText;
+                    this._inputElement.value = overrideResult.text;
                     this._rawInputValue.setValue(this._inputElement.value);
                     this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
                 });
@@ -69,11 +79,11 @@ class TextInputBinding extends skytree_1.Actor {
             this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
         }, true));
     }
-    onOverride(text, setCaretPosition) {
+    onOverride(text, caretPosition) {
         this._previousDisplayText = text;
         this._inputElement.value = text;
-        if (setCaretPosition) {
-            this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+        if (caretPosition != null) {
+            this._inputElement.setSelectionRange(caretPosition, caretPosition);
         }
         this._rawInputValue.setValue(text);
         this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(text));

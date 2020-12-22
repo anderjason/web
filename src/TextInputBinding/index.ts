@@ -2,13 +2,19 @@ import { Actor } from "skytree";
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 
+export interface TextInputBindingOverrideResult {
+  text: string;
+
+  caretPosition?: number;
+}
+
 export interface TextInputBindingProps<T> {
   inputElement: HTMLElement;
   displayTextGivenValue: (value: T) => string;
   valueGivenDisplayText: (displayText: string) => T;
 
   value?: Observable<T>;
-  overrideDisplayText?: (e: TextInputChangingData<T>) => string;
+  overrideDisplayText?: (e: TextInputChangingData<T>) => string | TextInputBindingOverrideResult;
 }
 
 export interface TextInputChangingData<T> {
@@ -16,6 +22,7 @@ export interface TextInputChangingData<T> {
   value: T;
   previousDisplayText: string;
   previousValue: T;
+  caretPosition: number;
 }
 
 export class TextInputBinding<T = string> extends Actor<
@@ -75,29 +82,40 @@ export class TextInputBinding<T = string> extends Actor<
       const displayText = this._inputElement.value;
       let value = this.props.valueGivenDisplayText(displayText);
 
-      let overrideText: string;
+      let overrideResult: TextInputBindingOverrideResult;
 
       if (this.props.overrideDisplayText != null) {
-        overrideText = this.props.overrideDisplayText({
+        const actualOverrideResult: string | TextInputBindingOverrideResult = this.props.overrideDisplayText({
           displayText,
           value,
           previousDisplayText: this._previousDisplayText,
           previousValue: this.output.value,
+          caretPosition: this._caretPosition
         });
-        if (overrideText == null) {
-          this.onOverride(this._previousDisplayText, true);
+
+        if (typeof actualOverrideResult === "string") {
+          overrideResult = {
+            text: actualOverrideResult,
+            caretPosition: undefined
+          };
+        } else {
+          overrideResult = actualOverrideResult;
+        }
+
+        if (overrideResult == null) {
+          this.onOverride(this._previousDisplayText, this._caretPosition);
           return;
         } else {
-          this.onOverride(overrideText, false);
-          value = this.props.valueGivenDisplayText(overrideText);
+          this.onOverride(overrideResult.text, overrideResult.caretPosition);
+          value = this.props.valueGivenDisplayText(overrideResult.text);
         }
       }
 
       this.output.setValue(value);
 
-      if (overrideText != null) {
+      if (overrideResult != null) {
         requestAnimationFrame(() => {
-          this._inputElement.value = overrideText;
+          this._inputElement.value = overrideResult.text;
           this._rawInputValue.setValue(this._inputElement.value);
           this._isEmpty.setValue(
             StringUtil.stringIsEmpty(this._inputElement.value)
@@ -119,14 +137,14 @@ export class TextInputBinding<T = string> extends Actor<
     );
   }
 
-  private onOverride(text: string, setCaretPosition: boolean) {
+  private onOverride(text: string, caretPosition?: number) {
     this._previousDisplayText = text;
     this._inputElement.value = text;
 
-    if (setCaretPosition) {
+    if (caretPosition != null) {
       this._inputElement.setSelectionRange(
-        this._caretPosition,
-        this._caretPosition
+        caretPosition,
+        caretPosition
       );
     }
 

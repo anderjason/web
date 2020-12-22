@@ -26,9 +26,7 @@ class TextInputBinding extends skytree_1.Actor {
     }
     onActivate() {
         this._previousDisplayText = this._inputElement.value;
-        this._caretPosition = this._inputElement.selectionStart;
         this._inputElement.addEventListener("keydown", (e) => {
-            this._caretPosition = this._inputElement.selectionStart;
             this._previousDisplayText = this._inputElement.value;
             this._rawInputValue.setValue(this._inputElement.value);
             this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
@@ -43,7 +41,7 @@ class TextInputBinding extends skytree_1.Actor {
                     value,
                     previousDisplayText: this._previousDisplayText,
                     previousValue: this.output.value,
-                    caretPosition: this._caretPosition
+                    caretPosition: this._inputElement.selectionStart
                 });
                 if (typeof actualOverrideResult === "string") {
                     overrideResult = {
@@ -67,6 +65,10 @@ class TextInputBinding extends skytree_1.Actor {
             if (overrideResult != null) {
                 requestAnimationFrame(() => {
                     this._inputElement.value = overrideResult.text;
+                    if (this._caretPosition != null) {
+                        this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+                        this._caretPosition = null;
+                    }
                     this._rawInputValue.setValue(this._inputElement.value);
                     this._isEmpty.setValue(util_1.StringUtil.stringIsEmpty(this._inputElement.value));
                 });
@@ -83,6 +85,7 @@ class TextInputBinding extends skytree_1.Actor {
         this._previousDisplayText = text;
         this._inputElement.value = text;
         if (caretPosition != null) {
+            this._caretPosition = caretPosition;
             this._inputElement.setSelectionRange(caretPosition, caretPosition);
         }
         this._rawInputValue.setValue(text);

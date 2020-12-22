@@ -67,10 +67,8 @@ export class TextInputBinding<T = string> extends Actor<
 
   onActivate() {
     this._previousDisplayText = this._inputElement.value;
-    this._caretPosition = this._inputElement.selectionStart;
 
     this._inputElement.addEventListener("keydown", (e) => {
-      this._caretPosition = this._inputElement.selectionStart;
       this._previousDisplayText = this._inputElement.value;
       this._rawInputValue.setValue(this._inputElement.value);
       this._isEmpty.setValue(
@@ -90,7 +88,7 @@ export class TextInputBinding<T = string> extends Actor<
           value,
           previousDisplayText: this._previousDisplayText,
           previousValue: this.output.value,
-          caretPosition: this._caretPosition
+          caretPosition: this._inputElement.selectionStart
         });
 
         if (typeof actualOverrideResult === "string") {
@@ -116,6 +114,12 @@ export class TextInputBinding<T = string> extends Actor<
       if (overrideResult != null) {
         requestAnimationFrame(() => {
           this._inputElement.value = overrideResult.text;
+
+          if (this._caretPosition != null) {
+            this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+            this._caretPosition = null;
+        }
+
           this._rawInputValue.setValue(this._inputElement.value);
           this._isEmpty.setValue(
             StringUtil.stringIsEmpty(this._inputElement.value)
@@ -142,6 +146,7 @@ export class TextInputBinding<T = string> extends Actor<
     this._inputElement.value = text;
 
     if (caretPosition != null) {
+      this._caretPosition = caretPosition;
       this._inputElement.setSelectionRange(
         caretPosition,
         caretPosition

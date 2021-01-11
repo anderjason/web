@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScrollArea = void 0;
 const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
+const time_1 = require("@anderjason/time");
 const skytree_1 = require("skytree");
 const __1 = require("..");
 const ElementStyle_1 = require("../ElementStyle");
@@ -72,7 +73,14 @@ class ScrollArea extends skytree_1.Actor {
         const verticalTrackSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         const horizontalThumb = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
         const verticalThumb = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
+        const areScrollTracksVisible = observable_1.Observable.givenValue(true, observable_1.Observable.isStrictEqual);
         const isHovered = observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+        const showScrollTracksLater = new time_1.Debounce({
+            duration: time_1.Duration.givenSeconds(0.075),
+            fn: () => {
+                areScrollTracksVisible.setValue(true);
+            }
+        });
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
@@ -152,11 +160,13 @@ class ScrollArea extends skytree_1.Actor {
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
             const wrapperSize = wrapperSizeWatcher.output.value;
             const contentSize = this._contentSizeWatcher.output.value;
+            areScrollTracksVisible.setValue(false);
+            showScrollTracksLater.invoke();
             if (wrapperSize == null || contentSize == null) {
                 return;
             }
-            const isHorizontalVisible = contentSize.width > wrapperSize.width;
-            const isVerticalVisible = contentSize.height > wrapperSize.height;
+            const isHorizontalVisible = (contentSize.width - wrapperSize.width) > 3;
+            const isVerticalVisible = (contentSize.height - wrapperSize.height) > 3;
             const isBothVisible = isHorizontalVisible && isVerticalVisible;
             if (isBothVisible) {
                 this._overflowDirection.setValue("both");
@@ -254,10 +264,21 @@ class ScrollArea extends skytree_1.Actor {
             trackSize: verticalTrackSize,
             thumb: verticalThumb,
         }));
-        this.cancelOnDeactivate(isHovered.didChange.subscribe((value) => {
-            trackArea.setModifier("isHovered", value);
-            horizontalScrollbarCanvas.needsRender();
-            verticalScrollbarCanvas.needsRender();
+        const trackAreaBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            isHovered,
+            areScrollTracksVisible
+        ]));
+        this.cancelOnDeactivate(trackAreaBinding.didInvalidate.subscribe(() => {
+            if (areScrollTracksVisible.value == true) {
+                trackArea.setModifier("isVisible", true);
+                trackArea.setModifier("isHovered", isHovered.value);
+                horizontalScrollbarCanvas.needsRender();
+                verticalScrollbarCanvas.needsRender();
+            }
+            else {
+                trackArea.setModifier("isVisible", false);
+                trackArea.setModifier("isHovered", false);
+            }
         }, true));
     }
 }
@@ -300,15 +321,18 @@ const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
     css: `
     bottom: 0;
     left: 0;
-    opacity: 0.25;
+    opacity: 0;
     pointer-events: none;
     position: absolute;
-    transition: 0.2s ease opacity;
     right: 0;
     top: 0;
     z-index: 10000;
   `,
     modifiers: {
+        isVisible: `
+      opacity: 0.25;
+      transition: 0.3s ease opacity;
+    `,
         isHovered: `
       opacity: 0.9;
     `,

@@ -6,6 +6,7 @@ import {
   ReadOnlyObservable,
   TypedEvent,
 } from "@anderjason/observable";
+import { Debounce, Duration } from "@anderjason/time";
 import { Actor, MultiBinding } from "skytree";
 import {
   DynamicStyleElement,
@@ -129,8 +130,15 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     const verticalTrackSize = Observable.ofEmpty<Size2>(Size2.isEqual);
     const horizontalThumb = Observable.ofEmpty<Box2>(Box2.isEqual);
     const verticalThumb = Observable.ofEmpty<Box2>(Box2.isEqual);
-
+    const areScrollTracksVisible = Observable.givenValue<boolean>(true, Observable.isStrictEqual);
     const isHovered = Observable.givenValue(false, Observable.isStrictEqual);
+
+    const showScrollTracksLater = new Debounce({
+      duration: Duration.givenSeconds(0.075),
+      fn: () => {
+        areScrollTracksVisible.setValue(true);
+      }
+    });
 
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
@@ -249,17 +257,22 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       );
     }
 
+
+
     this.cancelOnDeactivate(
       sizeBinding.didInvalidate.subscribe(() => {
         const wrapperSize = wrapperSizeWatcher.output.value;
         const contentSize = this._contentSizeWatcher.output.value;
 
+        areScrollTracksVisible.setValue(false);
+        showScrollTracksLater.invoke();
+
         if (wrapperSize == null || contentSize == null) {
           return;
         }
 
-        const isHorizontalVisible = contentSize.width > wrapperSize.width;
-        const isVerticalVisible = contentSize.height > wrapperSize.height;
+        const isHorizontalVisible = (contentSize.width - wrapperSize.width) > 3;
+        const isVerticalVisible = (contentSize.height - wrapperSize.height) > 3;
         const isBothVisible = isHorizontalVisible && isVerticalVisible;
 
         if (isBothVisible) {
@@ -441,11 +454,25 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
+    const trackAreaBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        isHovered,
+        areScrollTracksVisible
+      ])
+    );
+
     this.cancelOnDeactivate(
-      isHovered.didChange.subscribe((value) => {
-        trackArea.setModifier("isHovered", value);
-        horizontalScrollbarCanvas.needsRender();
-        verticalScrollbarCanvas.needsRender();
+      trackAreaBinding.didInvalidate.subscribe(() => {
+        if (areScrollTracksVisible.value == true) {
+          trackArea.setModifier("isVisible", true);
+          trackArea.setModifier("isHovered", isHovered.value);
+          horizontalScrollbarCanvas.needsRender();
+          verticalScrollbarCanvas.needsRender();
+
+        } else {
+          trackArea.setModifier("isVisible", false);
+          trackArea.setModifier("isHovered", false);
+        }
       }, true)
     );
   }
@@ -491,15 +518,18 @@ const TrackAreaStyle = ElementStyle.givenDefinition({
   css: `
     bottom: 0;
     left: 0;
-    opacity: 0.25;
+    opacity: 0;
     pointer-events: none;
     position: absolute;
-    transition: 0.2s ease opacity;
     right: 0;
     top: 0;
     z-index: 10000;
   `,
   modifiers: {
+    isVisible: `
+      opacity: 0.25;
+      transition: 0.3s ease opacity;
+    `,
     isHovered: `
       opacity: 0.9;
     `,

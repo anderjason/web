@@ -43,6 +43,7 @@ class ScrollArea extends skytree_1.Actor {
         this.overflowDirection = observable_1.ReadOnlyObservable.givenObservable(this._overflowDirection);
         const totalThickness = scrollbarThickness + scrollbarAreaEdgePadding * 2;
         this._scrollPositionColor = observable_1.Observable.givenValueOrObservable(this.props.scrollPositionColor);
+        this._anchorBottom = observable_1.Observable.givenValueOrObservable(this.props.anchorBottom || false);
         this._direction = observable_1.Observable.givenValueOrObservable(this.props.direction);
         switch (props.direction) {
             case "none":
@@ -144,19 +145,20 @@ class ScrollArea extends skytree_1.Actor {
             wrapperSizeWatcher.output,
             this._contentSizeWatcher.output,
         ]));
-        if (this.props.anchorBottom == true) {
-            this.cancelOnDeactivate(this._contentSizeWatcher.output.didChange.subscribe((newContentSize, oldContentSize) => {
-                if (oldContentSize == null) {
-                    return;
-                }
-                const remainingContentBelow = oldContentSize.height -
-                    scrollPositionWatcher.position.value.y -
-                    this._scroller.element.offsetHeight;
-                if (remainingContentBelow < anchorThreshold) {
-                    this._scroller.element.scrollTo(0, newContentSize.height);
-                }
-            }));
-        }
+        this.cancelOnDeactivate(this._contentSizeWatcher.output.didChange.subscribe((newContentSize, oldContentSize) => {
+            if (oldContentSize == null) {
+                return;
+            }
+            if (this._anchorBottom.value == false) {
+                return;
+            }
+            const remainingContentBelow = oldContentSize.height -
+                scrollPositionWatcher.position.value.y -
+                this._scroller.element.offsetHeight;
+            if (remainingContentBelow < anchorThreshold) {
+                this._scroller.element.scrollTo(0, newContentSize.height);
+            }
+        }));
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
             const wrapperSize = wrapperSizeWatcher.output.value;
             const contentSize = this._contentSizeWatcher.output.value;

@@ -7,7 +7,7 @@ export interface ScrollAreaProps {
     parentElement: HTMLElement | Observable<HTMLElement>;
     direction: ScrollDirection | ObservableBase<ScrollDirection>;
     scrollPositionColor: Color | ObservableBase<Color>;
-    anchorBottom?: boolean;
+    anchorBottom?: boolean | ObservableBase<boolean>;
 }
 export declare class ScrollArea extends Actor<ScrollAreaProps> {
     static readonly willScroll: TypedEvent<ScrollArea>;
@@ -18,6 +18,7 @@ export declare class ScrollArea extends Actor<ScrollAreaProps> {
     private _scroller;
     private _content;
     private _scrollPositionColor;
+    private _anchorBottom;
     private _direction;
     private _contentSizeWatcher;
     get contentSize(): ReadOnlyObservable<Size2>;

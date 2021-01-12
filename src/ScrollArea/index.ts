@@ -60,7 +60,7 @@ export interface ScrollAreaProps {
   direction: ScrollDirection | ObservableBase<ScrollDirection>;
   scrollPositionColor: Color | ObservableBase<Color>;
 
-  anchorBottom?: boolean;
+  anchorBottom?: boolean | ObservableBase<boolean>;
 }
 
 export class ScrollArea extends Actor<ScrollAreaProps> {
@@ -81,6 +81,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
   private _scroller: DynamicStyleElement<HTMLDivElement>;
   private _content: DynamicStyleElement<HTMLDivElement>;
   private _scrollPositionColor: ObservableBase<Color>;
+  private _anchorBottom: ObservableBase<boolean>;
   private _direction: ObservableBase<ScrollDirection>;
   private _contentSizeWatcher: ElementSizeWatcher;
 
@@ -97,6 +98,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       this.props.scrollPositionColor
     );
 
+    this._anchorBottom = Observable.givenValueOrObservable(this.props.anchorBottom || false);
     this._direction = Observable.givenValueOrObservable(this.props.direction);
 
     switch (props.direction) {
@@ -236,28 +238,28 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       ])
     );
 
-    if (this.props.anchorBottom == true) {
-      this.cancelOnDeactivate(
-        this._contentSizeWatcher.output.didChange.subscribe(
-          (newContentSize, oldContentSize) => {
-            if (oldContentSize == null) {
-              return;
-            }
-
-            const remainingContentBelow =
-              oldContentSize.height -
-              scrollPositionWatcher.position.value.y -
-              this._scroller.element.offsetHeight;
-
-            if (remainingContentBelow < anchorThreshold) {
-              this._scroller.element.scrollTo(0, newContentSize.height);
-            }
+    this.cancelOnDeactivate(
+      this._contentSizeWatcher.output.didChange.subscribe(
+        (newContentSize, oldContentSize) => {
+          if (oldContentSize == null) {
+            return;
           }
-        )
-      );
-    }
 
+          if (this._anchorBottom.value == false) {
+            return;
+          }
+          
+          const remainingContentBelow =
+            oldContentSize.height -
+            scrollPositionWatcher.position.value.y -
+            this._scroller.element.offsetHeight;
 
+          if (remainingContentBelow < anchorThreshold) {
+            this._scroller.element.scrollTo(0, newContentSize.height);
+          }
+        }
+      )
+    );
 
     this.cancelOnDeactivate(
       sizeBinding.didInvalidate.subscribe(() => {

@@ -5,7 +5,7 @@ export function urlGivenUrlLike(input: string, assumeHttps?: boolean): string {
     return undefined;
   }
 
-  if (input.startsWith("http://") || input.startsWith("https://")) {
+  if (input.startsWith("http://") || input.startsWith("https://") || input.startsWith("mailto:")) {
     return input;
   }
 

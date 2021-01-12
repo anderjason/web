@@ -6,7 +6,7 @@ function urlGivenUrlLike(input, assumeHttps) {
     if (util_1.StringUtil.stringIsEmpty(input)) {
         return undefined;
     }
-    if (input.startsWith("http://") || input.startsWith("https://")) {
+    if (input.startsWith("http://") || input.startsWith("https://") || input.startsWith("mailto:")) {
         return input;
     }
     if (assumeHttps == true) {

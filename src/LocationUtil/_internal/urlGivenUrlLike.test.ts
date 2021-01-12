@@ -11,6 +11,7 @@ Test.define("urlGivenUrlLike returns the expected result", () => {
     ["user:pwd@test.com:9000/something?param=1#hash", "http://user:pwd@test.com:9000/something?param=1#hash"],
     ["http://user:pwd@test.com:9000/something?param=1#hash", "http://user:pwd@test.com:9000/something?param=1#hash"],
     ["https://user:pwd@test.com:9000/something?param=1#hash", "https://user:pwd@test.com:9000/something?param=1#hash"],
+    ["mailto:name@email.com", "mailto:name@email.com"],
     ["", null],
     [null, null],
     [undefined, null],

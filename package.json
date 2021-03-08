@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "7.2.3",
+  "version": "7.2.4",
   "description": "",
   "main": "./dist/index.js",
   "repository": {

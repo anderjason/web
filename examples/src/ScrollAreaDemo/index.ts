@@ -15,7 +15,7 @@ export class ScrollAreaDemo extends DemoActor<void> {
       new ScrollArea({
         parentElement: outer.element,
         direction: "both",
-        scrollPositionColor: Color.givenHexString("#FFFFFF"),
+        scrollPositionColor: Color.givenHexString("#FFFFFF")
       })
     );
 

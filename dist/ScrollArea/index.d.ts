@@ -3,11 +3,20 @@ import { Size2 } from "@anderjason/geometry";
 import { Observable, ObservableBase, ReadOnlyObservable, TypedEvent } from "@anderjason/observable";
 import { Actor } from "skytree";
 export declare type ScrollDirection = "none" | "vertical" | "horizontal" | "both";
+export interface ScrollAreaTrackSize {
+    leadingPadding?: number;
+    trailingPadding?: number;
+    innerPadding?: number;
+    outerPadding?: number;
+}
 export interface ScrollAreaProps {
     parentElement: HTMLElement | Observable<HTMLElement>;
     direction: ScrollDirection | ObservableBase<ScrollDirection>;
     scrollPositionColor: Color | ObservableBase<Color>;
     anchorBottom?: boolean | ObservableBase<boolean>;
+    horizontalTrackSize?: ScrollAreaTrackSize;
+    verticalTrackSize?: ScrollAreaTrackSize;
+    thumbWidth?: number;
 }
 export declare class ScrollArea extends Actor<ScrollAreaProps> {
     static readonly willScroll: TypedEvent<ScrollArea>;
@@ -21,6 +30,9 @@ export declare class ScrollArea extends Actor<ScrollAreaProps> {
     private _anchorBottom;
     private _direction;
     private _contentSizeWatcher;
+    private _verticalTrackSize;
+    private _horizontalTrackSize;
+    private _thumbWidth;
     get contentSize(): ReadOnlyObservable<Size2>;
     constructor(props: ScrollAreaProps);
     get element(): HTMLElement;

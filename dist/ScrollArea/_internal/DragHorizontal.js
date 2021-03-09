@@ -12,13 +12,16 @@ class DragHorizontal extends skytree_1.Actor {
         }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointerdown", (e) => {
             e.preventDefault();
+            const thumb = this.props.thumb.value;
+            if (thumb == null) {
+                return;
+            }
             startMouseX = e.offsetX;
             startScrollX = this.props.scrollElement.scrollLeft;
             this.props.canvas.element.setPointerCapture(e.pointerId);
             const scrollWidth = this.props.scrollElement.scrollWidth;
             const trackLength = this.props.trackSize.value.width;
             speed = scrollWidth / trackLength;
-            const thumb = this.props.thumb.value;
             const thumbLeft = thumb.toLeft();
             const thumbRight = thumb.toRight();
             const isThumbHit = (startMouseX > thumbLeft && startMouseX < thumbRight);

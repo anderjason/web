@@ -27,6 +27,11 @@ export class DragHorizontal extends Actor<DragHorizontalProps> {
       this.props.canvas.addManagedEventListener("pointerdown", (e) => {
         e.preventDefault();
 
+        const thumb = this.props.thumb.value;
+        if (thumb == null) {
+          return;
+        }
+
         startMouseX = e.offsetX;
         startScrollX = this.props.scrollElement.scrollLeft;
 
@@ -36,7 +41,6 @@ export class DragHorizontal extends Actor<DragHorizontalProps> {
         const trackLength = this.props.trackSize.value.width;
         speed = scrollWidth / trackLength;
         
-        const thumb = this.props.thumb.value;
         const thumbLeft = thumb.toLeft();
         const thumbRight = thumb.toRight();
         const isThumbHit = (startMouseX > thumbLeft && startMouseX < thumbRight);

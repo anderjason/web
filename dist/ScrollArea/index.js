@@ -9,9 +9,6 @@ const __1 = require("..");
 const ElementStyle_1 = require("../ElementStyle");
 const DragHorizontal_1 = require("./_internal/DragHorizontal");
 const DragVertical_1 = require("./_internal/DragVertical");
-const scrollbarThickness = 4;
-const scrollbarAreaEdgePadding = 8;
-const scrollbarAreaEndPadding = 14;
 const anchorThreshold = 5;
 let devicePixelRatio = 1;
 if (typeof window !== "undefined") {
@@ -36,12 +33,31 @@ function drawRoundRect(context, box, radius) {
 }
 class ScrollArea extends skytree_1.Actor {
     constructor(props) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         super(props);
         this._scrollbarSize = observable_1.Observable.ofEmpty();
         this.scrollbarSize = observable_1.ReadOnlyObservable.givenObservable(this._scrollbarSize);
         this._overflowDirection = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.overflowDirection = observable_1.ReadOnlyObservable.givenObservable(this._overflowDirection);
-        const totalThickness = scrollbarThickness + scrollbarAreaEdgePadding * 2;
+        this._thumbWidth = props.thumbWidth || 4;
+        this._verticalTrackSize = {
+            leadingPadding: (_b = (_a = props.verticalTrackSize) === null || _a === void 0 ? void 0 : _a.leadingPadding) !== null && _b !== void 0 ? _b : this._thumbWidth * 3,
+            trailingPadding: (_d = (_c = props.verticalTrackSize) === null || _c === void 0 ? void 0 : _c.trailingPadding) !== null && _d !== void 0 ? _d : this._thumbWidth * 3,
+            innerPadding: (_f = (_e = props.verticalTrackSize) === null || _e === void 0 ? void 0 : _e.innerPadding) !== null && _f !== void 0 ? _f : this._thumbWidth * 2,
+            outerPadding: (_h = (_g = props.verticalTrackSize) === null || _g === void 0 ? void 0 : _g.outerPadding) !== null && _h !== void 0 ? _h : this._thumbWidth * 2
+        };
+        this._horizontalTrackSize = {
+            leadingPadding: (_k = (_j = props.horizontalTrackSize) === null || _j === void 0 ? void 0 : _j.leadingPadding) !== null && _k !== void 0 ? _k : this._thumbWidth * 3,
+            trailingPadding: (_m = (_l = props.horizontalTrackSize) === null || _l === void 0 ? void 0 : _l.trailingPadding) !== null && _m !== void 0 ? _m : this._thumbWidth * 3,
+            innerPadding: (_p = (_o = props.horizontalTrackSize) === null || _o === void 0 ? void 0 : _o.innerPadding) !== null && _p !== void 0 ? _p : this._thumbWidth * 2,
+            outerPadding: (_r = (_q = props.horizontalTrackSize) === null || _q === void 0 ? void 0 : _q.outerPadding) !== null && _r !== void 0 ? _r : this._thumbWidth * 2
+        };
+        const totalVerticalThickness = this._verticalTrackSize.innerPadding +
+            this._verticalTrackSize.outerPadding +
+            this._thumbWidth;
+        const totalHorizontalThickness = this._horizontalTrackSize.innerPadding +
+            this._horizontalTrackSize.outerPadding +
+            this._thumbWidth;
         this._scrollPositionColor = observable_1.Observable.givenValueOrObservable(this.props.scrollPositionColor);
         this._anchorBottom = observable_1.Observable.givenValueOrObservable(this.props.anchorBottom || false);
         this._direction = observable_1.Observable.givenValueOrObservable(this.props.direction);
@@ -50,13 +66,13 @@ class ScrollArea extends skytree_1.Actor {
                 this._scrollbarSize.setValue(geometry_1.Size2.ofZero());
                 break;
             case "horizontal":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(0, totalThickness));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(0, totalHorizontalThickness));
                 break;
             case "vertical":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalThickness, 0));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalVerticalThickness, 0));
                 break;
             case "both":
-                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalThickness, totalThickness));
+                this._scrollbarSize.setValue(geometry_1.Size2.givenWidthHeight(totalVerticalThickness, totalHorizontalThickness));
                 break;
         }
     }
@@ -80,7 +96,7 @@ class ScrollArea extends skytree_1.Actor {
             duration: time_1.Duration.givenSeconds(0.075),
             fn: () => {
                 areScrollTracksVisible.setValue(true);
-            }
+            },
         });
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
@@ -167,8 +183,8 @@ class ScrollArea extends skytree_1.Actor {
             if (wrapperSize == null || contentSize == null) {
                 return;
             }
-            const isHorizontalVisible = (contentSize.width - wrapperSize.width) > 3;
-            const isVerticalVisible = (contentSize.height - wrapperSize.height) > 3;
+            const isHorizontalVisible = contentSize.width - wrapperSize.width > 3;
+            const isVerticalVisible = contentSize.height - wrapperSize.height > 3;
             const isBothVisible = isHorizontalVisible && isVerticalVisible;
             if (isBothVisible) {
                 this._overflowDirection.setValue("both");
@@ -193,7 +209,7 @@ class ScrollArea extends skytree_1.Actor {
             if (horizontalThumb.value == null) {
                 return;
             }
-            drawRoundRect(context, horizontalThumb.value, scrollbarThickness / 2);
+            drawRoundRect(context, horizontalThumb.value, this._thumbWidth / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
@@ -202,7 +218,7 @@ class ScrollArea extends skytree_1.Actor {
             if (verticalThumb.value == null) {
                 return;
             }
-            drawRoundRect(context, verticalThumb.value, scrollbarThickness / 2);
+            drawRoundRect(context, verticalThumb.value, this._thumbWidth / 2);
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
@@ -219,18 +235,20 @@ class ScrollArea extends skytree_1.Actor {
             const contentLengthX = this._contentSizeWatcher.output.value.width;
             const contentLengthY = this._contentSizeWatcher.output.value.height;
             if (visibleLengthX < contentLengthX) {
-                const trackLengthX = horizontalTrackSize.value.width - scrollbarAreaEndPadding * 2;
+                const trackLengthX = horizontalTrackSize.value.width -
+                    this._horizontalTrackSize.leadingPadding -
+                    this._horizontalTrackSize.trailingPadding;
                 const scrollPositionX = scrollPositionWatcher.position.value.x;
                 const visibleStartPercent = scrollPositionX / contentLengthX;
                 const visibleEndPercent = (scrollPositionX + visibleLengthX) / contentLengthX;
-                horizontalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaEndPadding + visibleStartPercent * trackLengthX, scrollbarAreaEdgePadding), geometry_1.Point2.givenXY(scrollbarAreaEndPadding + visibleEndPercent * trackLengthX, scrollbarAreaEdgePadding + scrollbarThickness)));
+                horizontalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(this._horizontalTrackSize.leadingPadding + visibleStartPercent * trackLengthX, this._horizontalTrackSize.innerPadding), geometry_1.Point2.givenXY(this._horizontalTrackSize.leadingPadding + visibleEndPercent * trackLengthX, this._horizontalTrackSize.innerPadding + this._thumbWidth)));
             }
             if (visibleLengthY < contentLengthY) {
-                const trackLengthY = verticalTrackSize.value.height - scrollbarAreaEndPadding * 2;
+                const trackLengthY = verticalTrackSize.value.height - this._verticalTrackSize.leadingPadding - this._verticalTrackSize.trailingPadding;
                 const scrollPositionY = scrollPositionWatcher.position.value.y;
                 const visibleStartPercentY = scrollPositionY / contentLengthY;
                 const visibleEndPercentY = (scrollPositionY + visibleLengthY) / contentLengthY;
-                verticalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(scrollbarAreaEdgePadding, scrollbarAreaEndPadding + visibleStartPercentY * trackLengthY), geometry_1.Point2.givenXY(scrollbarAreaEdgePadding + scrollbarThickness, scrollbarAreaEndPadding + visibleEndPercentY * trackLengthY)));
+                verticalThumb.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(this._verticalTrackSize.innerPadding, this._verticalTrackSize.leadingPadding + visibleStartPercentY * trackLengthY), geometry_1.Point2.givenXY(this._verticalTrackSize.innerPadding + this._thumbWidth, this._verticalTrackSize.leadingPadding + visibleEndPercentY * trackLengthY)));
             }
             else {
                 verticalThumb.setValue(undefined);
@@ -266,10 +284,7 @@ class ScrollArea extends skytree_1.Actor {
             trackSize: verticalTrackSize,
             thumb: verticalThumb,
         }));
-        const trackAreaBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            isHovered,
-            areScrollTracksVisible
-        ]));
+        const trackAreaBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([isHovered, areScrollTracksVisible]));
         this.cancelOnDeactivate(trackAreaBinding.didInvalidate.subscribe(() => {
             if (areScrollTracksVisible.value == true) {
                 trackArea.setModifier("isVisible", true);

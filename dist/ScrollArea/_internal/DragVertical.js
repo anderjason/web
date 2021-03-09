@@ -12,13 +12,16 @@ class DragVertical extends skytree_1.Actor {
         }));
         this.cancelOnDeactivate(this.props.canvas.addManagedEventListener("pointerdown", (e) => {
             e.preventDefault();
+            const thumb = this.props.thumb.value;
+            if (thumb == null) {
+                return;
+            }
             startMouseY = e.offsetY;
             startScrollY = this.props.scrollElement.scrollTop;
             this.props.canvas.element.setPointerCapture(e.pointerId);
             const trackHeight = this.props.trackSize.value.height;
             const scrollHeight = this.props.scrollElement.scrollHeight;
             speed = scrollHeight / trackHeight;
-            const thumb = this.props.thumb.value;
             const thumbTop = thumb.toTop();
             const thumbBottom = thumb.toBottom();
             const isThumbHit = (startMouseY > thumbTop && startMouseY < thumbBottom);

@@ -26,6 +26,11 @@ export class DragVertical extends Actor<DragVerticalProps> {
       this.props.canvas.addManagedEventListener("pointerdown", (e) => {
         e.preventDefault();
 
+        const thumb = this.props.thumb.value;
+        if (thumb == null) {
+          return;
+        }
+
         startMouseY = e.offsetY;
         startScrollY = this.props.scrollElement.scrollTop;
 
@@ -35,7 +40,6 @@ export class DragVertical extends Actor<DragVerticalProps> {
         const scrollHeight = this.props.scrollElement.scrollHeight;
         speed = scrollHeight / trackHeight;
         
-        const thumb = this.props.thumb.value;
         const thumbTop = thumb.toTop();
         const thumbBottom = thumb.toBottom();
         const isThumbHit = (startMouseY > thumbTop && startMouseY < thumbBottom);

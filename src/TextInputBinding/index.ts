@@ -113,12 +113,13 @@ export class TextInputBinding<T = string> extends Actor<
 
       if (overrideResult != null) {
         requestAnimationFrame(() => {
-          console.log("raf override", overrideResult.text);
           this._inputElement.value = overrideResult.text;
 
           if (this._caretPosition != null) {
-            console.log("raf caretPosition", this._caretPosition);
-            this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+            if (this._inputElement == document.activeElement) {
+              this._inputElement.setSelectionRange(this._caretPosition, this._caretPosition);
+            }
+
             this._caretPosition = null;
         }
 
@@ -137,7 +138,9 @@ export class TextInputBinding<T = string> extends Actor<
         const endPos = this._inputElement.selectionEnd;
         this._inputElement.value = displayText || "";
 
-        this._inputElement.setSelectionRange(startPos, endPos);
+        if (this._inputElement == document.activeElement) {
+          this._inputElement.setSelectionRange(startPos, endPos);
+        }
 
         this._rawInputValue.setValue(this._inputElement.value);
         this._isEmpty.setValue(
@@ -152,12 +155,13 @@ export class TextInputBinding<T = string> extends Actor<
     this._inputElement.value = text;
 
     if (caretPosition != null) {
-      console.log("onOverride caretPosition", caretPosition);
       this._caretPosition = caretPosition;
-      this._inputElement.setSelectionRange(
-        caretPosition,
-        caretPosition
-      );
+      if (this._inputElement == document.activeElement) {
+        this._inputElement.setSelectionRange(
+          caretPosition,
+          caretPosition
+        );
+      }
     }
 
     this._rawInputValue.setValue(text);

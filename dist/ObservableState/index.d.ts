@@ -12,7 +12,7 @@ export interface ObservableStateChange {
     newValue: any;
 }
 export interface ObservableStateBindingDefinition<T> {
-    valuePath: ValuePath;
+    valuePath: ValuePath<T>;
     output?: Observable<T>;
     partialStateGivenOutputValue?: (outputValue: T) => any;
     outputValueGivenPartialState?: (partialState: any) => T;

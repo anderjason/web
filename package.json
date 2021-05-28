@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/web",
-  "version": "7.3.2",
+  "version": "7.3.3",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -23,10 +23,10 @@
   "dependencies": {
     "@anderjason/color": "^2.0.0",
     "@anderjason/geometry": "^3.0.0",
-    "@anderjason/observable": "^3.2.0",
+    "@anderjason/observable": "^3.2.1",
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
-    "@anderjason/util": "^2.0.3",
+    "@anderjason/util": "^2.0.6",
     "fontfaceobserver": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "skytree": "^9.3.1",

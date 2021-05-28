@@ -5,7 +5,7 @@ import { ObservableState } from "../..";
 
 export interface ObservableStateBindingProps<T> {
   observableState: ObservableState;
-  valuePath: ValuePath;
+  valuePath: ValuePath<T>;
 
   output?: Observable<T>;
   partialStateGivenOutputValue?: (outputValue: T) => any;

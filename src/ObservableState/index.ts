@@ -22,7 +22,7 @@ export interface ObservableStateBindingDefinition<T> {
   outputValueGivenPartialState?: (partialState: any) => T;
 }
 
-function clone(input: unknown): unknown {
+function clone<T = unknown>(input: T): T {
   if (input == null) {
     return input;
   }
@@ -78,7 +78,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     });
   }
 
-  toOptionalValueGivenPath(path: ValuePath): any {
+  toOptionalValueGivenPath<T>(path: ValuePath<T>): T {
     return clone(
       ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path)
     );

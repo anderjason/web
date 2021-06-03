@@ -31,7 +31,7 @@ function cornersGivenContainedPoints(points) {
         minimum[0],
         minimum[3],
         minimum[2],
-        minimum[1],
+        minimum[1], // left bottom
     ]);
 }
 exports.cornersGivenContainedPoints = cornersGivenContainedPoints;

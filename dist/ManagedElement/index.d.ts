@@ -1,8 +1,8 @@
-import { Observable, ObservableSet, Receipt } from "@anderjason/observable";
+import { ObservableBase, ObservableSet, Receipt } from "@anderjason/observable";
 import { Actor } from "skytree";
 export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap> {
     tagName: K;
-    parentElement?: HTMLElement | Observable<HTMLElement>;
+    parentElement?: HTMLElement | ObservableBase<HTMLElement>;
     classNames?: string[] | ObservableSet<string>;
     transitionIn?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => void;
     transitionOut?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => Promise<void>;
@@ -10,7 +10,7 @@ export interface ManagedElementDefinition<K extends keyof HTMLElementTagNameMap>
 }
 export declare class ManagedElement<T extends HTMLElement> extends Actor {
     readonly element: T;
-    readonly parentElement: Observable<HTMLElement>;
+    readonly parentElement: ObservableBase<HTMLElement>;
     readonly classes: ObservableSet<string>;
     static givenDefinition<K extends keyof HTMLElementTagNameMap>(definition: ManagedElementDefinition<K>): ManagedElement<HTMLElementTagNameMap[K]>;
     private _transitionIn?;

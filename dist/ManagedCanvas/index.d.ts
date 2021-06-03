@@ -3,7 +3,7 @@ import { Actor } from "skytree";
 import { ManagedElement } from "../ManagedElement";
 import { Observable, ObservableBase, ReadOnlyObservable, Receipt } from "@anderjason/observable";
 export interface ManagedCanvasProps {
-    parentElement: HTMLElement | Observable<HTMLElement>;
+    parentElement: HTMLElement | ObservableBase<HTMLElement>;
     displaySize: Size2 | ObservableBase<Size2>;
     renderEveryFrame: boolean | Observable<boolean>;
     className?: string;

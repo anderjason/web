@@ -12,7 +12,7 @@ import { EveryFrame } from "../EveryFrame";
 import { ArrayUtil } from "@anderjason/util";
 
 export interface ManagedCanvasProps {
-  parentElement: HTMLElement | Observable<HTMLElement>;
+  parentElement: HTMLElement | ObservableBase<HTMLElement>;
   displaySize: Size2 | ObservableBase<Size2>;
   renderEveryFrame: boolean | Observable<boolean>;
 

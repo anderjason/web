@@ -12,7 +12,7 @@ export interface ObservableStateChange {
     newValue: any;
 }
 export interface ObservableStateBindingDefinition<T> {
-    valuePath: ValuePath;
+    valuePath: ValuePath<T>;
     output?: Observable<T>;
     partialStateGivenOutputValue?: (outputValue: T) => any;
     outputValueGivenPartialState?: (partialState: any) => T;
@@ -26,6 +26,6 @@ export declare class ObservableState extends Actor<ObservableStateProps> {
     get undoContext(): UndoContext;
     pushCurrentState(): void;
     toBinding<T>(definition: ObservableStateBindingDefinition<T>): ObservableStateBinding<T>;
-    toOptionalValueGivenPath(path: ValuePath): any;
+    toOptionalValueGivenPath<T>(path: ValuePath<T>): T;
     update(path: string | string[] | ValuePath, inputValue: any): boolean;
 }

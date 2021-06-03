@@ -1,4 +1,4 @@
-import { Observable, ObservableSet, Receipt } from "@anderjason/observable";
+import { Observable, ObservableBase, ObservableSet, Receipt } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { ElementMountWatcher } from "../ElementMountWatcher";
 
@@ -7,7 +7,7 @@ export interface ManagedElementDefinition<
 > {
   tagName: K;
 
-  parentElement?: HTMLElement | Observable<HTMLElement>;
+  parentElement?: HTMLElement | ObservableBase<HTMLElement>;
   classNames?: string[] | ObservableSet<string>;
   transitionIn?: (element: ManagedElement<HTMLElementTagNameMap[K]>) => void;
   transitionOut?: (
@@ -18,7 +18,7 @@ export interface ManagedElementDefinition<
 
 export class ManagedElement<T extends HTMLElement> extends Actor {
   readonly element: T;
-  readonly parentElement: Observable<HTMLElement>;
+  readonly parentElement: ObservableBase<HTMLElement>;
   readonly classes: ObservableSet<string>;
 
   static givenDefinition<K extends keyof HTMLElementTagNameMap>(

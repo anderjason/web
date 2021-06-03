@@ -26,7 +26,7 @@
     "@anderjason/observable": "^3.2.2",
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
-    "@anderjason/util": "^2.0.7",
+    "@anderjason/util": "^2.0.8",
     "fontfaceobserver": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "skytree": "^9.4.0",

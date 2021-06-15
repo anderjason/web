@@ -1,7 +1,6 @@
-import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { ElementStyle, ManagedElement, ScrollArea, TextInputBinding } from "../../../src";
+import { ElementStyle, ManagedElement, TextInputBinding } from "../../../src";
 
 export class TextInputBindingDemo extends DemoActor<void> {
   onActivate() {

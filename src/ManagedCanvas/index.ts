@@ -16,6 +16,7 @@ export interface ManagedCanvasProps {
   displaySize: Size2 | ObservableBase<Size2>;
   renderEveryFrame: boolean | Observable<boolean>;
 
+  keepPreviousRenders?: boolean | Observable<boolean>
   className?: string;
 }
 
@@ -58,6 +59,7 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   private _pixelSize = Observable.ofEmpty<Size2>(Size2.isEqual);
   private _renderers = ObservableArray.ofEmpty<ManagedCanvasRenderer>();
   private _needsRender = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _keepPreviousRenders: ObservableBase<boolean>;
   private _parentElement: ObservableBase<HTMLElement>;
   private _displaySize: ObservableBase<Size2>;
 
@@ -70,6 +72,8 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     this._displaySize = Observable.givenValueOrObservable(
       this.props.displaySize
     );
+
+    this._keepPreviousRenders = Observable.givenValueOrObservable(this.props.keepPreviousRenders || false);
 
     this.displaySize = ReadOnlyObservable.givenObservable(this._displaySize);
     this.pixelSize = ReadOnlyObservable.givenObservable(this._pixelSize);
@@ -193,7 +197,9 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     const pixelSize = this.pixelSize.value;
     const displaySize = this.displaySize.value;
 
-    context.clearRect(0, 0, pixelSize.width, pixelSize.height);
+    if (this._keepPreviousRenders.value == false) {
+      context.clearRect(0, 0, pixelSize.width, pixelSize.height);
+    }
 
     const renderParams = {
       context,

@@ -6,6 +6,7 @@ export interface ManagedCanvasProps {
     parentElement: HTMLElement | ObservableBase<HTMLElement>;
     displaySize: Size2 | ObservableBase<Size2>;
     renderEveryFrame: boolean | Observable<boolean>;
+    keepPreviousRenders?: boolean | Observable<boolean>;
     className?: string;
 }
 export interface ManagedCanvasRenderParams {
@@ -23,6 +24,7 @@ export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     private _pixelSize;
     private _renderers;
     private _needsRender;
+    private _keepPreviousRenders;
     private _parentElement;
     private _displaySize;
     readonly displaySize: ReadOnlyObservable<Size2>;

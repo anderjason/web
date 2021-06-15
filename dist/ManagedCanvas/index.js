@@ -18,6 +18,7 @@ class ManagedCanvas extends skytree_1.Actor {
         this._renderers = observable_1.ObservableArray.ofEmpty();
         this._needsRender = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._displaySize = observable_1.Observable.givenValueOrObservable(this.props.displaySize);
+        this._keepPreviousRenders = observable_1.Observable.givenValueOrObservable(this.props.keepPreviousRenders || false);
         this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this._displaySize);
         this.pixelSize = observable_1.ReadOnlyObservable.givenObservable(this._pixelSize);
         this._parentElement = observable_1.Observable.givenValueOrObservable(this.props.parentElement);
@@ -101,7 +102,9 @@ class ManagedCanvas extends skytree_1.Actor {
         const context = this._canvas.element.getContext("2d");
         const pixelSize = this.pixelSize.value;
         const displaySize = this.displaySize.value;
-        context.clearRect(0, 0, pixelSize.width, pixelSize.height);
+        if (this._keepPreviousRenders.value == false) {
+            context.clearRect(0, 0, pixelSize.width, pixelSize.height);
+        }
         const renderParams = {
             context,
             pixelSize,

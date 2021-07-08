@@ -216,21 +216,23 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
+    const horizontalScrollbarClassName = Observable.givenValue(HorizontalTrackStyle.toCombinedClassName());
     const horizontalScrollbarCanvas = this.addActor(
       new ManagedCanvas({
         parentElement: trackArea.element,
         displaySize: horizontalTrackSize,
         renderEveryFrame: false,
-        className: HorizontalTrackStyle.toCombinedClassName(),
+        className: horizontalScrollbarClassName,
       })
     );
 
+    const verticalScrollbarClassName = Observable.givenValue(VerticalTrackStyle.toCombinedClassName());
     const verticalScrollbarCanvas = this.addActor(
       new ManagedCanvas({
         parentElement: trackArea.element,
         displaySize: verticalTrackSize,
         renderEveryFrame: false,
-        className: VerticalTrackStyle.toCombinedClassName(),
+        className: verticalScrollbarClassName,
       })
     );
 
@@ -332,6 +334,11 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         } else {
           this._overflowDirection.setValue("none");
         }
+
+        console.log("ivv", isVerticalVisible);
+
+        horizontalScrollbarClassName.setValue(HorizontalTrackStyle.toCombinedClassName(isHorizontalVisible ? "isVisible" : ""));
+        verticalScrollbarClassName.setValue(VerticalTrackStyle.toCombinedClassName(isVerticalVisible ? "isVisible" : ""));
 
         const sizeOffset = isBothVisible ? 6 : 0;
 
@@ -600,8 +607,15 @@ const HorizontalTrackStyle = ElementStyle.givenDefinition({
     right: 0;
     bottom: 0;
     z-index: 10000;
-    pointer-events: auto;
+    pointer-events: none;
+    opacity: 0;
   `,
+  modifiers: {
+    isVisible: `
+      opacity: 1;
+      pointer-events: auto;
+    `
+  }
 });
 
 const VerticalTrackStyle = ElementStyle.givenDefinition({
@@ -611,6 +625,13 @@ const VerticalTrackStyle = ElementStyle.givenDefinition({
     right: 0;
     top: 0;
     bottom: 0;
-    pointer-events: auto;
+    opacity: 0;
+    pointer-events: none;
   `,
+  modifiers: {
+    isVisible: `
+      pointer-events: auto;
+      opacity: 1;
+    `
+  }
 });

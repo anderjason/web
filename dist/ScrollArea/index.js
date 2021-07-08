@@ -114,17 +114,19 @@ class ScrollArea extends skytree_1.Actor {
             tagName: "div",
             parentElement: wrapper.element,
         }));
+        const horizontalScrollbarClassName = observable_1.Observable.givenValue(HorizontalTrackStyle.toCombinedClassName());
         const horizontalScrollbarCanvas = this.addActor(new __1.ManagedCanvas({
             parentElement: trackArea.element,
             displaySize: horizontalTrackSize,
             renderEveryFrame: false,
-            className: HorizontalTrackStyle.toCombinedClassName(),
+            className: horizontalScrollbarClassName,
         }));
+        const verticalScrollbarClassName = observable_1.Observable.givenValue(VerticalTrackStyle.toCombinedClassName());
         const verticalScrollbarCanvas = this.addActor(new __1.ManagedCanvas({
             parentElement: trackArea.element,
             displaySize: verticalTrackSize,
             renderEveryFrame: false,
-            className: VerticalTrackStyle.toCombinedClassName(),
+            className: verticalScrollbarClassName,
         }));
         this.cancelOnDeactivate(this._direction.didChange.subscribe((direction) => {
             switch (direction) {
@@ -198,6 +200,9 @@ class ScrollArea extends skytree_1.Actor {
             else {
                 this._overflowDirection.setValue("none");
             }
+            console.log("ivv", isVerticalVisible);
+            horizontalScrollbarClassName.setValue(HorizontalTrackStyle.toCombinedClassName(isHorizontalVisible ? "isVisible" : ""));
+            verticalScrollbarClassName.setValue(VerticalTrackStyle.toCombinedClassName(isVerticalVisible ? "isVisible" : ""));
             const sizeOffset = isBothVisible ? 6 : 0;
             horizontalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(wrapperSize.width - sizeOffset, this._scrollbarSize.value.height));
             verticalTrackSize.setValue(geometry_1.Size2.givenWidthHeight(this._scrollbarSize.value.width, wrapperSize.height - sizeOffset));
@@ -363,8 +368,15 @@ const HorizontalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     right: 0;
     bottom: 0;
     z-index: 10000;
-    pointer-events: auto;
+    pointer-events: none;
+    opacity: 0;
   `,
+    modifiers: {
+        isVisible: `
+      opacity: 1;
+      pointer-events: auto;
+    `
+    }
 });
 const VerticalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     elementDescription: "VerticalTrack",
@@ -373,7 +385,14 @@ const VerticalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     right: 0;
     top: 0;
     bottom: 0;
-    pointer-events: auto;
+    opacity: 0;
+    pointer-events: none;
   `,
+    modifiers: {
+        isVisible: `
+      pointer-events: auto;
+      opacity: 1;
+    `
+    }
 });
 //# sourceMappingURL=index.js.map

@@ -7,7 +7,7 @@ export interface ManagedCanvasProps {
     displaySize: Size2 | ObservableBase<Size2>;
     renderEveryFrame: boolean | Observable<boolean>;
     keepPreviousRenders?: boolean | Observable<boolean>;
-    className?: string;
+    className?: string | ObservableBase<string>;
 }
 export interface ManagedCanvasRenderParams {
     context: CanvasRenderingContext2D;
@@ -18,6 +18,7 @@ export interface ManagedCanvasRenderParams {
 export declare type ManagedCanvasRenderFunction = (params: ManagedCanvasRenderParams) => void;
 export declare class ManagedCanvas extends Actor<ManagedCanvasProps> {
     private _canvas;
+    private _className;
     get context(): CanvasRenderingContext2D;
     get managedElement(): ManagedElement<HTMLCanvasElement>;
     get element(): HTMLCanvasElement;

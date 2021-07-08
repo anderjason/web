@@ -17,7 +17,7 @@ export interface ManagedCanvasProps {
   renderEveryFrame: boolean | Observable<boolean>;
 
   keepPreviousRenders?: boolean | Observable<boolean>
-  className?: string;
+  className?: string | ObservableBase<string>;
 }
 
 export interface ManagedCanvasRenderParams {
@@ -43,6 +43,7 @@ if (typeof window !== "undefined") {
 
 export class ManagedCanvas extends Actor<ManagedCanvasProps> {
   private _canvas: ManagedElement<HTMLCanvasElement>;
+  private _className: ObservableBase<string>;
 
   get context(): CanvasRenderingContext2D {
     return this.element.getContext("2d");
@@ -74,6 +75,7 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
     );
 
     this._keepPreviousRenders = Observable.givenValueOrObservable(this.props.keepPreviousRenders || false);
+    this._className = Observable.givenValueOrObservable(this.props.className);
 
     this.displaySize = ReadOnlyObservable.givenObservable(this._displaySize);
     this.pixelSize = ReadOnlyObservable.givenObservable(this._pixelSize);
@@ -117,9 +119,11 @@ export class ManagedCanvas extends Actor<ManagedCanvasProps> {
       })
     );
 
-    if (this.props.className != null) {
-      this._canvas.element.className = this.props.className;
-    }
+    this.cancelOnDeactivate(
+      this._className.didChange.subscribe(className => {
+        this._canvas.element.className = className || "";
+      }, true)
+    );
 
     this.cancelOnDeactivate(
       new Receipt(() => {

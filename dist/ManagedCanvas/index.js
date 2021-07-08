@@ -19,6 +19,7 @@ class ManagedCanvas extends skytree_1.Actor {
         this._needsRender = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._displaySize = observable_1.Observable.givenValueOrObservable(this.props.displaySize);
         this._keepPreviousRenders = observable_1.Observable.givenValueOrObservable(this.props.keepPreviousRenders || false);
+        this._className = observable_1.Observable.givenValueOrObservable(this.props.className);
         this.displaySize = observable_1.ReadOnlyObservable.givenObservable(this._displaySize);
         this.pixelSize = observable_1.ReadOnlyObservable.givenObservable(this._pixelSize);
         this._parentElement = observable_1.Observable.givenValueOrObservable(this.props.parentElement);
@@ -52,9 +53,9 @@ class ManagedCanvas extends skytree_1.Actor {
             tagName: "canvas",
             parentElement: this.props.parentElement,
         }));
-        if (this.props.className != null) {
-            this._canvas.element.className = this.props.className;
-        }
+        this.cancelOnDeactivate(this._className.didChange.subscribe(className => {
+            this._canvas.element.className = className || "";
+        }, true));
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             this._renderers.clear();
         }));

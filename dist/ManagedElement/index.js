@@ -100,7 +100,7 @@ class ManagedElement extends skytree_1.Actor {
         }));
         this.cancelOnDeactivate(elementMountWatcher.isElementMounted.didChange.subscribe((isMounted) => {
             requestAnimationFrame(() => {
-                if (!this.isActive.value) {
+                if (this.isActive == false) {
                     return;
                 }
                 try {

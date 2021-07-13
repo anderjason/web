@@ -47,7 +47,7 @@ export class PendingClick extends Actor<void> {
   }
 
   pressButton(newPoint: Point2): void {
-    if (this.isActive.value == false) {
+    if (this.isActive == false) {
       return;
     }
 
@@ -76,7 +76,7 @@ export class PendingClick extends Actor<void> {
   }
 
   releaseButton(newPoint: Point2): void {
-    if (this.isActive.value == false) {
+    if (this.isActive == false) {
       return;
     }
 

@@ -40,7 +40,7 @@ Test.define("ObservableState stores a deep copy of the input value", () => {
     })
   );
 
-  Test.assert(colorsBinding.isActive.value == true);
+  Test.assert(colorsBinding.isActive == true);
 
   colorsBinding.output.setValue(colors);
 

@@ -123,17 +123,14 @@ export class ElementStyle {
       classNamesByModifierName.set(modifierName, classNames);
     });
 
-    return Actor.withDescription(
-      this._elementDescription,
-      DynamicStyleElement.givenDefinition({
-        tagName: definition.tagName,
-        parentElement: definition.parentElement,
-        transitionIn: definition.transitionIn,
-        transitionOut: definition.transitionOut,
-        innerHTML: definition.innerHTML,
-        classNamesByModifierName,
-        constantClassNames: this.toClassNames(),
-      })
-    );
+    return DynamicStyleElement.givenDefinition({
+      tagName: definition.tagName,
+      parentElement: definition.parentElement,
+      transitionIn: definition.transitionIn,
+      transitionOut: definition.transitionOut,
+      innerHTML: definition.innerHTML,
+      classNamesByModifierName,
+      constantClassNames: this.toClassNames(),
+    });
   }
 }

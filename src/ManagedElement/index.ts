@@ -155,7 +155,7 @@ export class ManagedElement<T extends HTMLElement> extends Actor {
     this.cancelOnDeactivate(
       elementMountWatcher.isElementMounted.didChange.subscribe((isMounted) => {
         requestAnimationFrame(() => {
-          if (!this.isActive.value) {
+          if (this.isActive == false) {
             return;
           }
 

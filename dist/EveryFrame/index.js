@@ -9,7 +9,7 @@ class EveryFrame extends skytree_1.Actor {
     }
     onActivate() {
         const nextFrame = () => {
-            if (this.isActive.value === false) {
+            if (this.isActive === false) {
                 return;
             }
             this.frameNumber += 1;

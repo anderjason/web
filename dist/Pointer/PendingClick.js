@@ -30,7 +30,7 @@ class PendingClick extends skytree_1.Actor {
         }));
     }
     pressButton(newPoint) {
-        if (this.isActive.value == false) {
+        if (this.isActive == false) {
             return;
         }
         if (!pointIsNearPoint(newPoint, this._targetPoint)) {
@@ -55,7 +55,7 @@ class PendingClick extends skytree_1.Actor {
         }
     }
     releaseButton(newPoint) {
-        if (this.isActive.value == false) {
+        if (this.isActive == false) {
             return;
         }
         if (!pointIsNearPoint(newPoint, this._targetPoint)) {

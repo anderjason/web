@@ -4,7 +4,6 @@ exports.ElementStyle = void 0;
 const componentStyleToPreparedDomAction_1 = require("./_internal/componentStyleToPreparedDomAction");
 const DynamicStyleElement_1 = require("../DynamicStyleElement");
 const util_1 = require("@anderjason/util");
-const skytree_1 = require("skytree");
 class ElementStyle {
     constructor(definition) {
         this.css = definition.css;
@@ -61,7 +60,7 @@ class ElementStyle {
             const classNames = this.toClassNames(modifierName);
             classNamesByModifierName.set(modifierName, classNames);
         });
-        return skytree_1.Actor.withDescription(this._elementDescription, DynamicStyleElement_1.DynamicStyleElement.givenDefinition({
+        return DynamicStyleElement_1.DynamicStyleElement.givenDefinition({
             tagName: definition.tagName,
             parentElement: definition.parentElement,
             transitionIn: definition.transitionIn,
@@ -69,7 +68,7 @@ class ElementStyle {
             innerHTML: definition.innerHTML,
             classNamesByModifierName,
             constantClassNames: this.toClassNames(),
-        }));
+        });
     }
 }
 exports.ElementStyle = ElementStyle;

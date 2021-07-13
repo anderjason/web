@@ -9,7 +9,7 @@ export class EveryFrame extends Actor<EveryFrameProps> {
 
   onActivate() {
     const nextFrame = () => {
-      if (this.isActive.value === false) {
+      if (this.isActive === false) {
         return;
       }
 

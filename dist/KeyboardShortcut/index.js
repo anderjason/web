@@ -68,7 +68,7 @@ class KeyboardShortcut extends skytree_1.Actor {
             else {
                 this._isPressed.setValue(false);
             }
-        }, true));
+        }));
         this.cancelOnDeactivate(this._isPressed.didChange.subscribe((isPressed) => {
             if (isPressed) {
                 this.props.onPress();

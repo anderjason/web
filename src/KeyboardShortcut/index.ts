@@ -108,7 +108,7 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
         } else {
           this._isPressed.setValue(false);
         }
-      }, true)
+      })
     );
 
     this.cancelOnDeactivate(

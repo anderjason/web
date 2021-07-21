@@ -200,7 +200,6 @@ class ScrollArea extends skytree_1.Actor {
             else {
                 this._overflowDirection.setValue("none");
             }
-            console.log("ivv", isVerticalVisible);
             horizontalScrollbarClassName.setValue(HorizontalTrackStyle.toCombinedClassName(isHorizontalVisible ? "isVisible" : ""));
             verticalScrollbarClassName.setValue(VerticalTrackStyle.toCombinedClassName(isVerticalVisible ? "isVisible" : ""));
             const sizeOffset = isBothVisible ? 6 : 0;

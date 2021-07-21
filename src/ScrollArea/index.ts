@@ -335,8 +335,6 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           this._overflowDirection.setValue("none");
         }
 
-        console.log("ivv", isVerticalVisible);
-
         horizontalScrollbarClassName.setValue(HorizontalTrackStyle.toCombinedClassName(isHorizontalVisible ? "isVisible" : ""));
         verticalScrollbarClassName.setValue(VerticalTrackStyle.toCombinedClassName(isVerticalVisible ? "isVisible" : ""));
 

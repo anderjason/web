@@ -19,6 +19,7 @@ import { DragHorizontal } from "./_internal/DragHorizontal";
 import { DragVertical } from "./_internal/DragVertical";
 
 export type ScrollDirection = "none" | "vertical" | "horizontal" | "both";
+export type ContentArea = "full" | "inset";
 
 const anchorThreshold = 5;
 
@@ -57,6 +58,7 @@ export interface ScrollAreaTrackSize {
   trailingPadding?: number;
   innerPadding?: number;
   outerPadding?: number;
+  thumbRadius?: number;
 }
 
 export interface ScrollAreaProps {
@@ -65,6 +67,7 @@ export interface ScrollAreaProps {
   scrollPositionColor: Color | ObservableBase<Color>;
 
   anchorBottom?: boolean | ObservableBase<boolean>;
+  contentArea?: ContentArea | ObservableBase<ContentArea>;
   horizontalTrackSize?: ScrollAreaTrackSize;
   verticalTrackSize?: ScrollAreaTrackSize;
   thumbWidth?: number;
@@ -88,6 +91,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
   private _scroller: DynamicStyleElement<HTMLDivElement>;
   private _content: DynamicStyleElement<HTMLDivElement>;
   private _scrollPositionColor: ObservableBase<Color>;
+  private _contentArea: ObservableBase<ContentArea>;
   private _anchorBottom: ObservableBase<boolean>;
   private _direction: ObservableBase<ScrollDirection>;
   private _contentSizeWatcher: ElementSizeWatcher;
@@ -105,17 +109,29 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     this._thumbWidth = props.thumbWidth || 4;
 
     this._verticalTrackSize = {
-      leadingPadding: props.verticalTrackSize?.leadingPadding ?? this._thumbWidth * 3,
-      trailingPadding: props.verticalTrackSize?.trailingPadding ?? this._thumbWidth * 3,
-      innerPadding: props.verticalTrackSize?.innerPadding ?? this._thumbWidth * 2,
-      outerPadding: props.verticalTrackSize?.outerPadding ?? this._thumbWidth * 2
+      leadingPadding:
+        props.verticalTrackSize?.leadingPadding ?? this._thumbWidth * 3,
+      trailingPadding:
+        props.verticalTrackSize?.trailingPadding ?? this._thumbWidth * 3,
+      innerPadding:
+        props.verticalTrackSize?.innerPadding ?? this._thumbWidth * 2,
+      outerPadding:
+        props.verticalTrackSize?.outerPadding ?? this._thumbWidth * 2,
+      thumbRadius:
+        props.verticalTrackSize?.thumbRadius ?? this._thumbWidth / 2,
     };
-    
+
     this._horizontalTrackSize = {
-      leadingPadding: props.horizontalTrackSize?.leadingPadding ?? this._thumbWidth * 3,
-      trailingPadding: props.horizontalTrackSize?.trailingPadding ?? this._thumbWidth * 3,
-      innerPadding: props.horizontalTrackSize?.innerPadding ?? this._thumbWidth * 2,
-      outerPadding: props.horizontalTrackSize?.outerPadding ?? this._thumbWidth * 2
+      leadingPadding:
+        props.horizontalTrackSize?.leadingPadding ?? this._thumbWidth * 3,
+      trailingPadding:
+        props.horizontalTrackSize?.trailingPadding ?? this._thumbWidth * 3,
+      innerPadding:
+        props.horizontalTrackSize?.innerPadding ?? this._thumbWidth * 2,
+      outerPadding:
+        props.horizontalTrackSize?.outerPadding ?? this._thumbWidth * 2,
+      thumbRadius:
+        props.horizontalTrackSize?.thumbRadius ?? this._thumbWidth / 2,
     };
 
     const totalVerticalThickness =
@@ -130,6 +146,10 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 
     this._scrollPositionColor = Observable.givenValueOrObservable(
       this.props.scrollPositionColor
+    );
+
+    this._contentArea = Observable.givenValueOrObservable(
+      this.props.contentArea || "full"
     );
 
     this._anchorBottom = Observable.givenValueOrObservable(
@@ -216,7 +236,9 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
-    const horizontalScrollbarClassName = Observable.givenValue(HorizontalTrackStyle.toCombinedClassName());
+    const horizontalScrollbarClassName = Observable.givenValue(
+      HorizontalTrackStyle.toCombinedClassName()
+    );
     const horizontalScrollbarCanvas = this.addActor(
       new ManagedCanvas({
         parentElement: trackArea.element,
@@ -226,7 +248,9 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
-    const verticalScrollbarClassName = Observable.givenValue(VerticalTrackStyle.toCombinedClassName());
+    const verticalScrollbarClassName = Observable.givenValue(
+      VerticalTrackStyle.toCombinedClassName()
+    );
     const verticalScrollbarCanvas = this.addActor(
       new ManagedCanvas({
         parentElement: trackArea.element,
@@ -335,8 +359,16 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           this._overflowDirection.setValue("none");
         }
 
-        horizontalScrollbarClassName.setValue(HorizontalTrackStyle.toCombinedClassName(isHorizontalVisible ? "isVisible" : ""));
-        verticalScrollbarClassName.setValue(VerticalTrackStyle.toCombinedClassName(isVerticalVisible ? "isVisible" : ""));
+        horizontalScrollbarClassName.setValue(
+          HorizontalTrackStyle.toCombinedClassName(
+            isHorizontalVisible ? "isVisible" : ""
+          )
+        );
+        verticalScrollbarClassName.setValue(
+          VerticalTrackStyle.toCombinedClassName(
+            isVerticalVisible ? "isVisible" : ""
+          )
+        );
 
         const sizeOffset = isBothVisible ? 6 : 0;
 
@@ -367,11 +399,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(
-          context,
-          horizontalThumb.value,
-          this._thumbWidth / 2
-        );
+        drawRoundRect(context, horizontalThumb.value, this._horizontalTrackSize.thumbRadius);
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
@@ -386,15 +414,59 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(
-          context,
-          verticalThumb.value,
-          this._thumbWidth / 2
-        );
+        drawRoundRect(context, verticalThumb.value, this._verticalTrackSize.thumbRadius);
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
       })
+    );
+
+    const contentSizeBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        this._contentArea,
+        this._overflowDirection
+      ])
+    );
+
+    this.cancelOnDeactivate(
+      contentSizeBinding.didInvalidate.subscribe(() => {
+        const contentArea = this._contentArea.value;
+        const overflowDirection = this._overflowDirection.value;
+
+        if (contentArea == null || overflowDirection == null) {
+          return;
+        }
+
+        if (contentArea == "full" || overflowDirection == "none") {
+          this._scroller.style.width = `100%`;
+          this._scroller.style.height = `100%`;
+          this._content.style.minHeight = "100%";
+          this._content.style.minWidth = "100%";
+          return;
+        }
+
+        const trackHeight = horizontalTrackSize.value.height;
+        const trackWidth = verticalTrackSize.value.width;
+          
+        if (overflowDirection == "both") {
+          this._scroller.style.height = `calc(100% - ${trackHeight}px)`;
+          this._scroller.style.width = `calc(100% - ${trackWidth}px)`;
+          return;
+        }
+
+        this._content.style.minWidth = "auto";
+        this._content.style.minHeight = "auto";
+
+        if (overflowDirection == "horizontal") {
+          this._scroller.style.height = `calc(100% - ${trackHeight}px)`;
+          this._content.style.height = "100%";
+        }
+
+        if (overflowDirection == "vertical") {
+          this._scroller.style.width = `calc(100% - ${trackWidth}px)`;
+          this._content.style.width = "100%";
+        }
+      }, true)
     );
 
     const thumbBinding = this.addActor(
@@ -429,11 +501,13 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           horizontalThumb.setValue(
             Box2.givenOppositeCorners(
               Point2.givenXY(
-                this._horizontalTrackSize.leadingPadding + visibleStartPercent * trackLengthX,
+                this._horizontalTrackSize.leadingPadding +
+                  visibleStartPercent * trackLengthX,
                 this._horizontalTrackSize.innerPadding
               ),
               Point2.givenXY(
-                this._horizontalTrackSize.leadingPadding + visibleEndPercent * trackLengthX,
+                this._horizontalTrackSize.leadingPadding +
+                  visibleEndPercent * trackLengthX,
                 this._horizontalTrackSize.innerPadding + this._thumbWidth
               )
             )
@@ -442,8 +516,10 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 
         if (visibleLengthY < contentLengthY) {
           const trackLengthY =
-            verticalTrackSize.value.height - this._verticalTrackSize.leadingPadding - this._verticalTrackSize.trailingPadding;
-            
+            verticalTrackSize.value.height -
+            this._verticalTrackSize.leadingPadding -
+            this._verticalTrackSize.trailingPadding;
+
           const scrollPositionY = scrollPositionWatcher.position.value.y;
           const visibleStartPercentY = scrollPositionY / contentLengthY;
           const visibleEndPercentY =
@@ -453,11 +529,13 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
             Box2.givenOppositeCorners(
               Point2.givenXY(
                 this._verticalTrackSize.innerPadding,
-                this._verticalTrackSize.leadingPadding + visibleStartPercentY * trackLengthY
+                this._verticalTrackSize.leadingPadding +
+                  visibleStartPercentY * trackLengthY
               ),
               Point2.givenXY(
                 this._verticalTrackSize.innerPadding + this._thumbWidth,
-                this._verticalTrackSize.leadingPadding + visibleEndPercentY * trackLengthY
+                this._verticalTrackSize.leadingPadding +
+                  visibleEndPercentY * trackLengthY
               )
             )
           );
@@ -542,22 +620,22 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
-    bottom: 0;
     left: 0;
     position: absolute;
-    right: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
   `,
 });
 
 const Scroller = ElementStyle.givenDefinition({
-  elementDescription: "ContentArea",
+  elementDescription: "Scroller",
   css: `
-    bottom: 0;
     left: 0;
     position: absolute;
-    right: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
     -ms-overflow-style: none;
 
     &::-webkit-scrollbar {
@@ -570,20 +648,20 @@ const ContentStyle = ElementStyle.givenDefinition({
   elementDescription: "Content",
   css: `
     position: absolute;
-    min-width: 100%;
+    display: flex;
   `,
 });
 
 const TrackAreaStyle = ElementStyle.givenDefinition({
-  elementDescription: "HorizontalTrackArea",
+  elementDescription: "TrackArea",
   css: `
-    bottom: 0;
+    height: 100%;
     left: 0;
     opacity: 0;
     pointer-events: none;
     position: absolute;
-    right: 0;
     top: 0;
+    width: 100%;
     z-index: 10000;
   `,
   modifiers: {
@@ -612,8 +690,8 @@ const HorizontalTrackStyle = ElementStyle.givenDefinition({
     isVisible: `
       opacity: 1;
       pointer-events: auto;
-    `
-  }
+    `,
+  },
 });
 
 const VerticalTrackStyle = ElementStyle.givenDefinition({
@@ -630,6 +708,6 @@ const VerticalTrackStyle = ElementStyle.givenDefinition({
     isVisible: `
       pointer-events: auto;
       opacity: 1;
-    `
-  }
+    `,
+  },
 });

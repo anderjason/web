@@ -1,14 +1,18 @@
-import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
 import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
+import { ObservableArray } from "@anderjason/observable";
+import { ScrollAreaDemo } from "./ScrollAreaDemo";
+import { ScrollAreaInsetBothDemo } from "./ScrollAreaInsetBothDemo";
+import { ScrollAreaInsetHorizontalDemo } from "./ScrollAreaInsetHorizontalDemo";
+import { ScrollAreaInsetSmallDemo } from "./ScrollAreaInsetSmallDemo";
+import { ScrollAreaInsetVerticalDemo } from "./ScrollAreaInsetVerticalDemo";
+import { ElementSizeWatcherDemo } from "./ElementSizeWatcherDemo";
 import { IntersectionWatcherDemo } from "./IntersectionWatcherDemo";
 import { KeyboardWatcherDemo } from "./KeyboardWatcherDemo";
-import { ObservableArray } from "@anderjason/observable";
 import { ScrollAreaAnchorDemo } from "./ScrollAreaAnchorDemo";
-import { ScrollAreaDemo } from "./ScrollAreaDemo";
+import { TextInputBindingDemo } from "./TextInputBindingDemo";
 import { TransitionDemo } from "./TransitionDemo";
 import { UndoDemo } from "./UndoDemo";
 import { VerticalExpanderDemo } from "./VerticalExpanderDemo";
-import { TextInputBindingDemo } from "./TextInputBindingDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
@@ -22,6 +26,22 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Keyboard watcher",
     actor: new KeyboardWatcherDemo(),
+  },
+  {
+    title: "Scroll area inset vertical",
+    actor: new ScrollAreaInsetVerticalDemo(),
+  },
+  {
+    title: "Scroll area inset horizontal",
+    actor: new ScrollAreaInsetHorizontalDemo(),
+  },
+  {
+    title: "Scroll area inset both",
+    actor: new ScrollAreaInsetBothDemo(),
+  },
+  {
+    title: "Scroll area inset small",
+    actor: new ScrollAreaInsetSmallDemo(),
   },
   {
     title: "Scroll area",

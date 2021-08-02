@@ -136,18 +136,22 @@ class ScrollArea extends skytree_1.Actor {
                 case "none":
                     this._scroller.style.overflowX = "hidden";
                     this._scroller.style.overflowY = "hidden";
+                    this._content.style.flexDirection = "column";
                     break;
                 case "vertical":
                     this._scroller.style.overflowX = "hidden";
                     this._scroller.style.overflowY = "scroll";
+                    this._content.style.flexDirection = "column";
                     break;
                 case "horizontal":
                     this._scroller.style.overflowX = "scroll";
                     this._scroller.style.overflowY = "hidden";
+                    this._content.style.flexDirection = "row";
                     break;
                 case "both":
                     this._scroller.style.overflowX = "scroll";
                     this._scroller.style.overflowY = "scroll";
+                    this._content.style.flexDirection = "column";
                     break;
                 default:
                     throw new Error("Unsupported direction");

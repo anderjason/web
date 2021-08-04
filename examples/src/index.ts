@@ -13,6 +13,7 @@ import { TextInputBindingDemo } from "./TextInputBindingDemo";
 import { TransitionDemo } from "./TransitionDemo";
 import { UndoDemo } from "./UndoDemo";
 import { VerticalExpanderDemo } from "./VerticalExpanderDemo";
+import { KeyboardShortcutDemo } from "./KeyboardShortcutDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
@@ -22,6 +23,10 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Intersection watcher",
     actor: new IntersectionWatcherDemo(),
+  },
+  {
+    title: "Keyboard shortcut",
+    actor: new KeyboardShortcutDemo(),
   },
   {
     title: "Keyboard watcher",

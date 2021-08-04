@@ -5,13 +5,14 @@ import {
   Receipt,
 } from "@anderjason/observable";
 import { Actor } from "skytree";
-import { KeyboardWatcher } from "../KeyboardWatcher";
+import { KeyboardKey, KeyboardWatcher } from "../KeyboardWatcher";
 
-export type KeyCombination = string[];
+export type KeyCombination = KeyboardKey[];
 
 export interface KeyboardShortcutProps {
-  keyCombinations: KeyCombination[];
-  onPress: () => void;
+  keyCombination: KeyCombination;
+
+  onPress?: () => void;
 }
 
 export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
@@ -38,73 +39,35 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
     return shortcuts;
   }
 
-  static givenKey(key: string, onPress: () => void): KeyboardShortcut {
-    const keyCombination: KeyCombination = [key];
-    return KeyboardShortcut.givenKeyCombination(keyCombination, onPress);
-  }
-
-  static givenKeyCombination(
-    keyCombination: KeyCombination,
-    onPress: () => void
-  ): KeyboardShortcut {
-    return new KeyboardShortcut({
-      keyCombinations: [keyCombination],
-      onPress,
-    });
-  }
-
-  static givenAnyKeyCombination(
-    keyCombinations: KeyCombination[],
-    onPress: () => void
-  ): KeyboardShortcut {
-    return new KeyboardShortcut({ keyCombinations, onPress });
-  }
-
   private _isPressed = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isPressed = ReadOnlyObservable.givenObservable(this._isPressed);
 
   onActivate() {
-    const keyCombinations = this.props.keyCombinations.map((keyCombination) => {
-      return keyCombination.map((key) => {
-        if (key.length === 1) {
-          return key.toLowerCase();
-        } else {
-          return key;
-        }
-      });
-    });
-
-    keyCombinations.forEach((combination) => {
-      KeyboardShortcut.getShortcutsArray(combination).addValue(this);
-    });
+    KeyboardShortcut.getShortcutsArray(this.props.keyCombination).addValue(this);
 
     this.cancelOnDeactivate(
       new Receipt(() => {
-        keyCombinations.forEach((combination) => {
-          KeyboardShortcut.getShortcutsArray(combination).removeValue(this);
-        });
+        KeyboardShortcut.getShortcutsArray(this.props.keyCombination).removeValue(this);
       })
     );
 
     this.cancelOnDeactivate(
       KeyboardWatcher.instance.keys.didChange.subscribe(() => {
-        const activeKeyCombination = keyCombinations.find((keyCombination) => {
-          return keyCombination.every((key) => {
-            return KeyboardWatcher.instance.keys.hasValue(key);
-          });
+        const isActive = this.props.keyCombination.every((key) => {
+          return KeyboardWatcher.instance.keys.hasValue(key);
         });
 
-        if (activeKeyCombination == null) {
+        if (isActive == false) {
           this._isPressed.setValue(false);
           return;
         }
 
         const shortcuts = KeyboardShortcut.getShortcutsArray(
-          activeKeyCombination
+          this.props.keyCombination
         );
 
         if (shortcuts.toOptionalValueGivenIndex(shortcuts.count - 1) == this) {
-          this._isPressed.setValue(activeKeyCombination != null);
+          this._isPressed.setValue(isActive == true);
         } else {
           this._isPressed.setValue(false);
         }
@@ -113,7 +76,7 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
 
     this.cancelOnDeactivate(
       this._isPressed.didChange.subscribe((isPressed) => {
-        if (isPressed) {
+        if (isPressed && this.props.onPress != null) {
           this.props.onPress();
         }
       }, true)

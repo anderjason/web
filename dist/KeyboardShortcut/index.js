@@ -19,58 +19,29 @@ class KeyboardShortcut extends skytree_1.Actor {
         }
         return shortcuts;
     }
-    static givenKey(key, onPress) {
-        const keyCombination = [key];
-        return KeyboardShortcut.givenKeyCombination(keyCombination, onPress);
-    }
-    static givenKeyCombination(keyCombination, onPress) {
-        return new KeyboardShortcut({
-            keyCombinations: [keyCombination],
-            onPress,
-        });
-    }
-    static givenAnyKeyCombination(keyCombinations, onPress) {
-        return new KeyboardShortcut({ keyCombinations, onPress });
-    }
     onActivate() {
-        const keyCombinations = this.props.keyCombinations.map((keyCombination) => {
-            return keyCombination.map((key) => {
-                if (key.length === 1) {
-                    return key.toLowerCase();
-                }
-                else {
-                    return key;
-                }
-            });
-        });
-        keyCombinations.forEach((combination) => {
-            KeyboardShortcut.getShortcutsArray(combination).addValue(this);
-        });
+        KeyboardShortcut.getShortcutsArray(this.props.keyCombination).addValue(this);
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
-            keyCombinations.forEach((combination) => {
-                KeyboardShortcut.getShortcutsArray(combination).removeValue(this);
-            });
+            KeyboardShortcut.getShortcutsArray(this.props.keyCombination).removeValue(this);
         }));
         this.cancelOnDeactivate(KeyboardWatcher_1.KeyboardWatcher.instance.keys.didChange.subscribe(() => {
-            const activeKeyCombination = keyCombinations.find((keyCombination) => {
-                return keyCombination.every((key) => {
-                    return KeyboardWatcher_1.KeyboardWatcher.instance.keys.hasValue(key);
-                });
+            const isActive = this.props.keyCombination.every((key) => {
+                return KeyboardWatcher_1.KeyboardWatcher.instance.keys.hasValue(key);
             });
-            if (activeKeyCombination == null) {
+            if (isActive == false) {
                 this._isPressed.setValue(false);
                 return;
             }
-            const shortcuts = KeyboardShortcut.getShortcutsArray(activeKeyCombination);
+            const shortcuts = KeyboardShortcut.getShortcutsArray(this.props.keyCombination);
             if (shortcuts.toOptionalValueGivenIndex(shortcuts.count - 1) == this) {
-                this._isPressed.setValue(activeKeyCombination != null);
+                this._isPressed.setValue(isActive == true);
             }
             else {
                 this._isPressed.setValue(false);
             }
         }));
         this.cancelOnDeactivate(this._isPressed.didChange.subscribe((isPressed) => {
-            if (isPressed) {
+            if (isPressed && this.props.onPress != null) {
                 this.props.onPress();
             }
         }, true));

@@ -84,7 +84,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
     );
   }
 
-  update(path: string | string[] | ValuePath, inputValue: any): boolean {
+  update<T>(path: string | string[] | ValuePath<T>, inputValue: T): boolean {
     let valuePath: ValuePath;
     if (typeof path === "string") {
       valuePath = ValuePath.givenString(path);

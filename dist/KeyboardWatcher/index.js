@@ -3,6 +3,69 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KeyboardWatcher = void 0;
 const skytree_1 = require("skytree");
 const observable_1 = require("@anderjason/observable");
+const exactMatches = new Set([
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "Period",
+    "Comma",
+    "Semicolon",
+    "Quote",
+    "BracketLeft",
+    "BracketRight",
+    "Slash",
+    "Backslash",
+    "Backquote",
+    "Tab",
+    "Minus",
+    "Equal",
+    "Escape",
+    "Enter",
+    "Space",
+    "Delete",
+    "Shift",
+    "Alt",
+    "Control"
+]);
+function keyboardKeyGivenKeyboardEventCode(code) {
+    let match = /^Key([A-Z])$/.exec(code);
+    if (match != null) {
+        // like KeyW -> W
+        return match[1];
+    }
+    match = /^Digit([0-9])$/.exec(code);
+    if (match != null) {
+        // like Digit2 -> 2
+        return match[1];
+    }
+    match = /^(Shift|Alt|Control)(Left|Right)$/.exec(code);
+    if (match != null) {
+        // like ControlLeft -> Control
+        return match[1];
+    }
+    match = /^Arrow(Left|Right|Up|Down)$/.exec(code);
+    if (match != null) {
+        // like ArrowDown -> Down
+        return match[1];
+    }
+    if (exactMatches.has(code)) {
+        return code;
+    }
+    if (code === "Backspace") {
+        return "Delete";
+    }
+    // console.log(`Unsupported key code '${code}'`);
+    return undefined;
+}
 class KeyboardWatcher extends skytree_1.Actor {
     constructor() {
         super();
@@ -12,18 +75,12 @@ class KeyboardWatcher extends skytree_1.Actor {
             if (e.repeat == true) {
                 return;
             }
-            let key = e.key;
-            if (key.length === 1) {
-                key = key.toLowerCase();
-            }
-            this._keys.addValue(key);
+            const keyboardKey = keyboardKeyGivenKeyboardEventCode(e.code);
+            this._keys.addValue(keyboardKey);
         };
         this.onKeyUp = (e) => {
-            let key = e.key;
-            if (key.length === 1) {
-                key = key.toLowerCase();
-            }
-            this._keys.removeValue(key);
+            const keyboardKey = keyboardKeyGivenKeyboardEventCode(e.code);
+            this._keys.removeValue(keyboardKey);
         };
     }
     static get instance() {

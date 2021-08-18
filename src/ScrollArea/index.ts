@@ -641,7 +641,8 @@ const Scroller = ElementStyle.givenDefinition({
     width: 100%;
     height: 100%;
     -ms-overflow-style: none;
-
+    scrollbar-width: none;
+    
     &::-webkit-scrollbar {
       display: none;
     }

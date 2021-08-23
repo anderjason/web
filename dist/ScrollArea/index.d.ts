@@ -19,6 +19,8 @@ export interface ScrollAreaProps {
     contentArea?: ContentArea | ObservableBase<ContentArea>;
     horizontalTrackSize?: ScrollAreaTrackSize;
     verticalTrackSize?: ScrollAreaTrackSize;
+    trackIdleOpacity?: number;
+    trackHoverOpacity?: number;
     thumbWidth?: number;
 }
 export declare class ScrollArea extends Actor<ScrollAreaProps> {

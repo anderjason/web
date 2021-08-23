@@ -70,6 +70,8 @@ export interface ScrollAreaProps {
   contentArea?: ContentArea | ObservableBase<ContentArea>;
   horizontalTrackSize?: ScrollAreaTrackSize;
   verticalTrackSize?: ScrollAreaTrackSize;
+  trackIdleOpacity?: number;
+  trackHoverOpacity?: number;
   thumbWidth?: number;
 }
 
@@ -229,6 +231,29 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
       })
     );
 
+    const TrackAreaStyle = ElementStyle.givenDefinition({
+      elementDescription: "TrackArea",
+      css: `
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 10000;
+      `,
+      modifiers: {
+        isVisible: `
+          opacity: ${this.props.trackIdleOpacity ?? 0.25};
+          transition: 0.3s ease opacity;
+        `,
+        isHovered: `
+          opacity: ${this.props.trackHoverOpacity ?? 0.9};
+        `,
+      },
+    });
+    
     const trackArea = this.addActor(
       TrackAreaStyle.toManagedElement({
         tagName: "div",
@@ -657,28 +682,6 @@ const ContentStyle = ElementStyle.givenDefinition({
   `,
 });
 
-const TrackAreaStyle = ElementStyle.givenDefinition({
-  elementDescription: "TrackArea",
-  css: `
-    height: 100%;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 10000;
-  `,
-  modifiers: {
-    isVisible: `
-      opacity: 0.25;
-      transition: 0.3s ease opacity;
-    `,
-    isHovered: `
-      opacity: 0.9;
-    `,
-  },
-});
 
 const HorizontalTrackStyle = ElementStyle.givenDefinition({
   elementDescription: "HorizontalTrack",

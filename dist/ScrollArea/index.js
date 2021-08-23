@@ -89,6 +89,7 @@ class ScrollArea extends skytree_1.Actor {
         return this._scroller.element;
     }
     onActivate() {
+        var _a, _b;
         const horizontalTrackSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         const verticalTrackSize = observable_1.Observable.ofEmpty(geometry_1.Size2.isEqual);
         const horizontalThumb = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
@@ -113,6 +114,28 @@ class ScrollArea extends skytree_1.Actor {
             tagName: "div",
             parentElement: this._scroller.element,
         }));
+        const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
+            elementDescription: "TrackArea",
+            css: `
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 10000;
+      `,
+            modifiers: {
+                isVisible: `
+          opacity: ${(_a = this.props.trackIdleOpacity) !== null && _a !== void 0 ? _a : 0.25};
+          transition: 0.3s ease opacity;
+        `,
+                isHovered: `
+          opacity: ${(_b = this.props.trackHoverOpacity) !== null && _b !== void 0 ? _b : 0.9};
+        `,
+            },
+        });
         const trackArea = this.addActor(TrackAreaStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
@@ -385,28 +408,6 @@ const ContentStyle = ElementStyle_1.ElementStyle.givenDefinition({
     position: absolute;
     display: flex;
   `,
-});
-const TrackAreaStyle = ElementStyle_1.ElementStyle.givenDefinition({
-    elementDescription: "TrackArea",
-    css: `
-    height: 100%;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 10000;
-  `,
-    modifiers: {
-        isVisible: `
-      opacity: 0.25;
-      transition: 0.3s ease opacity;
-    `,
-        isHovered: `
-      opacity: 0.9;
-    `,
-    },
 });
 const HorizontalTrackStyle = ElementStyle_1.ElementStyle.givenDefinition({
     elementDescription: "HorizontalTrack",

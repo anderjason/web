@@ -20,6 +20,7 @@ class KeyboardShortcut extends skytree_1.Actor {
         return shortcuts;
     }
     onActivate() {
+        this._isPressed.setValue(false);
         KeyboardShortcut.getShortcutsArray(this.props.keyCombination).addValue(this);
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             KeyboardShortcut.getShortcutsArray(this.props.keyCombination).removeValue(this);

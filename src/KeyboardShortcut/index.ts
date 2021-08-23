@@ -43,6 +43,8 @@ export class KeyboardShortcut extends Actor<KeyboardShortcutProps> {
   readonly isPressed = ReadOnlyObservable.givenObservable(this._isPressed);
 
   onActivate() {
+    this._isPressed.setValue(false);
+    
     KeyboardShortcut.getShortcutsArray(this.props.keyCombination).addValue(this);
 
     this.cancelOnDeactivate(

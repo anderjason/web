@@ -189,10 +189,9 @@ class ScrollArea extends skytree_1.Actor {
         const scrollPositionWatcher = this.addActor(new __1.ScrollWatcher({
             element: this._scroller.element,
         }));
-        const sizeBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            wrapperSizeWatcher.output,
-            this._contentSizeWatcher.output,
-        ]));
+        const sizeBinding = this.addActor(new skytree_1.MultiBinding({
+            inputs: [wrapperSizeWatcher.output, this._contentSizeWatcher.output],
+        }));
         this.cancelOnDeactivate(this._contentSizeWatcher.output.didChange.subscribe((newContentSize, oldContentSize) => {
             if (oldContentSize == null) {
                 return;
@@ -256,10 +255,7 @@ class ScrollArea extends skytree_1.Actor {
             context.fillStyle = this._scrollPositionColor.value.toHexString();
             context.fill();
         }));
-        const contentSizeBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            this._contentArea,
-            this._overflowDirection
-        ]));
+        const contentSizeBinding = this.addActor(new skytree_1.MultiBinding({ inputs: [this._contentArea, this._overflowDirection] }));
         this.cancelOnDeactivate(contentSizeBinding.didInvalidate.subscribe(() => {
             const contentArea = this._contentArea.value;
             const overflowDirection = this._overflowDirection.value;
@@ -291,13 +287,13 @@ class ScrollArea extends skytree_1.Actor {
                 this._content.style.width = "100%";
             }
         }, true));
-        const thumbBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            scrollPositionWatcher.position,
-            wrapperSizeWatcher.output,
-            this._contentSizeWatcher.output,
-            horizontalTrackSize,
-            verticalTrackSize,
-        ]));
+        const thumbBinding = this.addActor(new skytree_1.MultiBinding({ inputs: [
+                scrollPositionWatcher.position,
+                wrapperSizeWatcher.output,
+                this._contentSizeWatcher.output,
+                horizontalTrackSize,
+                verticalTrackSize,
+            ] }));
         this.cancelOnDeactivate(thumbBinding.didInvalidate.subscribe(() => {
             const visibleLengthX = wrapperSizeWatcher.output.value.width;
             const visibleLengthY = wrapperSizeWatcher.output.value.height;
@@ -359,7 +355,7 @@ class ScrollArea extends skytree_1.Actor {
             trackSize: verticalTrackSize,
             thumb: verticalThumb,
         }));
-        const trackAreaBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([isHovered, areScrollTracksVisible]));
+        const trackAreaBinding = this.addActor(new skytree_1.MultiBinding({ inputs: [isHovered, areScrollTracksVisible] }));
         this.cancelOnDeactivate(trackAreaBinding.didInvalidate.subscribe(() => {
             if (areScrollTracksVisible.value == true) {
                 trackArea.setModifier("isVisible", true);

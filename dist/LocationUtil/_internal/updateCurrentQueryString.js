@@ -7,9 +7,9 @@ function updateCurrentQueryString(values) {
     if (values == null || Object.keys(values).length === 0) {
         return;
     }
-    const previousValue = objectOfCurrentQueryString_1.objectOfCurrentQueryString();
+    const previousValue = (0, objectOfCurrentQueryString_1.objectOfCurrentQueryString)();
     const allValues = Object.assign(Object.assign({}, previousValue), values);
-    const newQueryString = queryStringGivenObject_1.queryStringGivenObject(allValues);
+    const newQueryString = (0, queryStringGivenObject_1.queryStringGivenObject)(allValues);
     if (typeof window !== "undefined") {
         window.history.replaceState(null, "", `${window.location.pathname}${newQueryString}`);
     }

@@ -16,19 +16,19 @@ Test.define("StepDelayBinding returns the expected result", () => {
     })
   );
 
-  Test.assert(stepDelay.output.value == null);
+  Test.assert(stepDelay.output.value == null, "value is null");
 
   input.setValue("orange");
-  Test.assert(stepDelay.output.value == null);
+  Test.assert(stepDelay.output.value == null, "value is still null");
 
   input.setValue("yellow");
-  Test.assert(stepDelay.output.value == null);
+  Test.assert(stepDelay.output.value == null, "value is still null");
 
   input.setValue("green");
-  Test.assert(stepDelay.output.value === "red");
+  Test.assert(stepDelay.output.value === "red", "value is red");
 
   input.setValue("blue");
-  Test.assert(stepDelay.output.value == "orange");
+  Test.assert(stepDelay.output.value == "orange", "value is orange");
 
   mo.deactivate();
 });

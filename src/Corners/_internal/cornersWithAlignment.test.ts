@@ -26,5 +26,5 @@ Test.define("cornersWithAlignment returns the expected result", () => {
     Point2.givenXY(110, 290), // bottom left
   ]);
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });

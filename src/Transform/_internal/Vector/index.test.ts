@@ -8,7 +8,7 @@ Test.define("Vector can be created", () => {
   const actual = vec.elements;
   const expected = [1, 2, 3, 4, 5];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });
 
 Test.define("Vector can multiply by a matrix", () => {
@@ -73,5 +73,5 @@ Test.define("Vector can multiply by a matrix", () => {
   const actual = vector.withMultipliedMatrix(matrix).elements;
   const expected = [1, 0, -100, 0, 1, -150, 0, 0];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });

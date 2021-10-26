@@ -21,7 +21,7 @@ class ElementStyle {
             throw new Error(`A style with class name '${this._className}' has already been created`);
         }
         ElementStyle.allClassNames.add(this._className);
-        componentStyleToPreparedDomAction_1.componentStyleToPreparedDomAction(this);
+        (0, componentStyleToPreparedDomAction_1.componentStyleToPreparedDomAction)(this);
     }
     static givenDefinition(definition) {
         return new ElementStyle(definition);

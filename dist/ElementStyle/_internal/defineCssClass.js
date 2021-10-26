@@ -14,7 +14,7 @@ function defineCssClass(classNames, css) {
         return;
     }
     const modifiedClassName = classNames.map((name) => `.${name}`).join("");
-    const styleContent = stylis_1.serialize(stylis_1.compile(`${modifiedClassName}{${css}}`), stylis_1.stringify);
+    const styleContent = (0, stylis_1.serialize)((0, stylis_1.compile)(`${modifiedClassName}{${css}}`), stylis_1.stringify);
     if (styleElement != null) {
         styleElement.appendChild(document.createTextNode(styleContent));
     }

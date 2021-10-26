@@ -32,11 +32,11 @@ class VerticalExpander extends skytree_1.Actor {
         const contentSize = this.addActor(new __1.ElementSizeWatcher({
             element: this._content.element,
         }));
-        const heightBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            contentSize.output,
-            this.props.isExpanded,
-            this._maxHeight,
-        ]));
+        const heightBinding = this.addActor(new skytree_1.MultiBinding({ inputs: [
+                contentSize.output,
+                this.props.isExpanded,
+                this._maxHeight,
+            ] }));
         this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
             const size = contentSize.output.value;
             const isExpanded = this.props.isExpanded.value;

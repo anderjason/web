@@ -58,11 +58,11 @@ export class VerticalExpander extends Actor<VerticalExpanderProps> {
     );
 
     const heightBinding = this.addActor(
-      MultiBinding.givenAnyChange([
+      new MultiBinding({ inputs: [
         contentSize.output,
         this.props.isExpanded,
         this._maxHeight,
-      ])
+      ]})
     );
 
     this.cancelOnDeactivate(

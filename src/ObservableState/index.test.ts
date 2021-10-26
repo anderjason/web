@@ -6,7 +6,7 @@ Test.define("ObservableState can be created without an initial state", () => {
   const os = new ObservableState({});
   os.activate();
 
-  Test.assertIsDeepEqual(os.state.value, {});
+  Test.assertIsDeepEqual(os.state.value, {}, "actual is equal to expected");
 
   os.deactivate();
 });
@@ -25,8 +25,8 @@ Test.define("ObservableState stores a deep copy of the input value", () => {
   });
   os.activate();
 
-  Test.assertIsDeepEqual(os.state.value, original);
-  Test.assert(os.state.value !== original);
+  Test.assertIsDeepEqual(os.state.value, original, "observablestate is deep equal to original");
+  Test.assert(os.state.value !== original, "observablestate is not equal to original");
 
   const colorsPath = ValuePath.givenString("design.colors");
   const colors = {
@@ -40,19 +40,19 @@ Test.define("ObservableState stores a deep copy of the input value", () => {
     })
   );
 
-  Test.assert(colorsBinding.isActive == true);
+  Test.assert(colorsBinding.isActive == true, "binding is active");
 
   colorsBinding.output.setValue(colors);
 
   const actual = os.toOptionalValueGivenPath(colorsPath);
-  Test.assertIsDeepEqual(actual, colors);
+  Test.assertIsDeepEqual(actual, colors, "actual is deep equal to expected");
 
   colors.background = "orange"; // should have no effect in the observable state
 
   Test.assertIsDeepEqual(os.toOptionalValueGivenPath(colorsPath), {
     background: "blue",
     foreground: "green",
-  });
+  }, "actual is deep equal to expected");
 
   os.deactivate();
 });
@@ -71,14 +71,16 @@ Test.define("ObservableState can include arrays", () => {
 
   Test.assertIsDeepEqual(
     os.toOptionalValueGivenPath(ValuePath.givenString("design.colors")),
-    ["red", "orange", "yellow"]
+    ["red", "orange", "yellow"],
+    "actual is deep equal to expected"
   );
 
   colors.push("green"); // should have no effect in the observable state
 
   Test.assertIsDeepEqual(
     os.toOptionalValueGivenPath(ValuePath.givenString("design.colors")),
-    ["red", "orange", "yellow"]
+    ["red", "orange", "yellow"],
+    "actual is deep equal to expected"
   );
 
   os.deactivate();
@@ -110,7 +112,7 @@ Test.define("ObservableState can set primitive values", () => {
         background: "blue",
       },
     },
-  });
+  }, "actual is deep equal to expected");
 
   os.deactivate();
 });
@@ -141,7 +143,7 @@ Test.define("ObservableState can set undefined", () => {
         background: undefined,
       },
     },
-  });
+  }, "actual is deep equal to expected");
 
   os.deactivate();
 });
@@ -168,7 +170,7 @@ Test.define("ObservableState can set arrays", () => {
     design: {
       colors: ["green", "blue"],
     },
-  });
+  }, "actual is deep equal to expected");
 
   os.deactivate();
 });

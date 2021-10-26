@@ -17,7 +17,7 @@ Test.define("Matrix can be created", () => {
     [13, 14, 15, 16],
   ];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });
 
 Test.define("Matrix can create an identity", () => {
@@ -31,7 +31,7 @@ Test.define("Matrix can create an identity", () => {
     [0, 0, 0, 1],
   ];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });
 
 Test.define("Matrix can calculate right triangular", () => {
@@ -50,7 +50,7 @@ Test.define("Matrix can calculate right triangular", () => {
     [0, 0, 0, 0],
   ];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });
 
 Test.define("Matrix can calculate determinant", () => {
@@ -63,7 +63,7 @@ Test.define("Matrix can calculate determinant", () => {
   const actual = Math.round(matrix.toDeterminant());
   const expected = -306;
 
-  Test.assert(actual === expected);
+  Test.assert(actual === expected, "actual is equal to expected");
 });
 
 // Test.define("Matrix can calculate inverse", () => {
@@ -97,5 +97,5 @@ Test.define("Matrix can get a column", () => {
   const actual = matrix.toColumnVector(0).elements;
   const expected = [1, 5, 9, 13];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is equal to expected");
 });

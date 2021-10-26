@@ -73,7 +73,7 @@ class Transform {
         return new Transform(input);
     }
     static givenCornersAndSize(corners, size) {
-        const matrix3d = matrix3dGivenNumbers(matrixTransformGivenCorners_1.matrixTransformGivenCorners(corners, size));
+        const matrix3d = matrix3dGivenNumbers((0, matrixTransformGivenCorners_1.matrixTransformGivenCorners)(corners, size));
         if (matrix3d == null) {
             return undefined;
         }

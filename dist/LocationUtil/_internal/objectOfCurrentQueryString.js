@@ -6,7 +6,7 @@ function objectOfCurrentQueryString() {
     if (typeof window === "undefined") {
         return {};
     }
-    return objectGivenQueryString_1.objectGivenQueryString(window.location.search);
+    return (0, objectGivenQueryString_1.objectGivenQueryString)(window.location.search);
 }
 exports.objectOfCurrentQueryString = objectOfCurrentQueryString;
 //# sourceMappingURL=objectOfCurrentQueryString.js.map

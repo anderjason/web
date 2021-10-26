@@ -145,15 +145,15 @@ class Preload extends skytree_1.Actor {
                 credentials: "include",
             };
         }
-        const blob = await blobGivenUrl_1.blobGivenUrl(url, init);
-        const dataUrl = await dataUrlGivenBlob_1.dataUrlGivenBlob(blob);
+        const blob = await (0, blobGivenUrl_1.blobGivenUrl)(url, init);
+        const dataUrl = await (0, dataUrlGivenBlob_1.dataUrlGivenBlob)(blob);
         this._imageDataUrlByUrl.get(url).setValue(dataUrl);
         this._loadingImageSet.delete(url);
         this.didLoadImage.emit(url);
         this.checkReady();
     }
     async loadVideo(url) {
-        const metadata = await videoMetadataGivenUrl_1.videoMetadataGivenUrl(url);
+        const metadata = await (0, videoMetadataGivenUrl_1.videoMetadataGivenUrl)(url);
         this._videoMetadataByUrl.get(url).setValue(metadata);
         this._loadingVideoSet.delete(url);
         this.didLoadVideo.emit(url);

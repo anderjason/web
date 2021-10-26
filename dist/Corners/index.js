@@ -15,7 +15,7 @@ class Corners {
         return new Corners(box.toLeftTop(), box.toRightTop(), box.toRightBottom(), box.toLeftBottom());
     }
     static givenContainedPoints(points) {
-        return cornersGivenContainedPoints_1.cornersGivenContainedPoints(points);
+        return (0, cornersGivenContainedPoints_1.cornersGivenContainedPoints)(points);
     }
     static givenPoints(points) {
         if (points == null) {
@@ -79,7 +79,7 @@ class Corners {
         return new Corners(transform.toTransformedPoint(this.leftTop), transform.toTransformedPoint(this.rightTop), transform.toTransformedPoint(this.rightBottom), transform.toTransformedPoint(this.leftBottom));
     }
     withAlignment(alignToCorners) {
-        return cornersWithAlignment_1.cornersWithAlignment(this, alignToCorners);
+        return (0, cornersWithAlignment_1.cornersWithAlignment)(this, alignToCorners);
     }
 }
 exports.Corners = Corners;

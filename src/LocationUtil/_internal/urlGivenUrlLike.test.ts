@@ -25,7 +25,7 @@ Test.define("urlGivenUrlLike returns the expected result", () => {
       console.log(`${idx} - Actual: '${actual}', expected: '${expected}'`);
     }
 
-    Test.assert(actual == expected);
+    Test.assert(actual == expected, "actual is equal to expected");
   });
 });
 
@@ -52,6 +52,6 @@ Test.define("urlGivenUrlLike returns the expected result when assuming https", (
       console.log(`${idx} - Actual: '${actual}', expected: '${expected}'`);
     }
 
-    Test.assert(actual == expected);
+    Test.assert(actual == expected, "actual is equal to expected");
   });
 });

@@ -33,5 +33,5 @@ Test.define("matrixTransformGivenCorners returns the expected result", () => {
     1,
   ];
 
-  Test.assertIsDeepEqual(actual, expected);
+  Test.assertIsDeepEqual(actual, expected, "actual is expected");
 });

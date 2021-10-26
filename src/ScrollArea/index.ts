@@ -4,7 +4,7 @@ import {
   Observable,
   ObservableBase,
   ReadOnlyObservable,
-  TypedEvent,
+  TypedEvent
 } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { Actor, MultiBinding } from "skytree";
@@ -12,7 +12,7 @@ import {
   DynamicStyleElement,
   ElementSizeWatcher,
   ManagedCanvas,
-  ScrollWatcher,
+  ScrollWatcher
 } from "..";
 import { ElementStyle } from "../ElementStyle";
 import { DragHorizontal } from "./_internal/DragHorizontal";
@@ -119,8 +119,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
         props.verticalTrackSize?.innerPadding ?? this._thumbWidth * 2,
       outerPadding:
         props.verticalTrackSize?.outerPadding ?? this._thumbWidth * 2,
-      thumbRadius:
-        props.verticalTrackSize?.thumbRadius ?? this._thumbWidth / 2,
+      thumbRadius: props.verticalTrackSize?.thumbRadius ?? this._thumbWidth / 2,
     };
 
     this._horizontalTrackSize = {
@@ -333,10 +332,9 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     );
 
     const sizeBinding = this.addActor(
-      MultiBinding.givenAnyChange([
-        wrapperSizeWatcher.output,
-        this._contentSizeWatcher.output,
-      ])
+      new MultiBinding({
+        inputs: [wrapperSizeWatcher.output, this._contentSizeWatcher.output],
+      })
     );
 
     this.cancelOnDeactivate(
@@ -428,7 +426,11 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(context, horizontalThumb.value, this._horizontalTrackSize.thumbRadius);
+        drawRoundRect(
+          context,
+          horizontalThumb.value,
+          this._horizontalTrackSize.thumbRadius
+        );
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
@@ -443,7 +445,11 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
           return;
         }
 
-        drawRoundRect(context, verticalThumb.value, this._verticalTrackSize.thumbRadius);
+        drawRoundRect(
+          context,
+          verticalThumb.value,
+          this._verticalTrackSize.thumbRadius
+        );
 
         context.fillStyle = this._scrollPositionColor.value.toHexString();
         context.fill();
@@ -451,10 +457,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     );
 
     const contentSizeBinding = this.addActor(
-      MultiBinding.givenAnyChange([
-        this._contentArea,
-        this._overflowDirection
-      ])
+      new MultiBinding({ inputs: [this._contentArea, this._overflowDirection] })
     );
 
     this.cancelOnDeactivate(
@@ -476,7 +479,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
 
         const trackHeight = horizontalTrackSize.value.height;
         const trackWidth = verticalTrackSize.value.width;
-          
+
         if (overflowDirection == "both") {
           this._scroller.style.height = `calc(100% - ${trackHeight}px)`;
           this._scroller.style.width = `calc(100% - ${trackWidth}px)`;
@@ -499,13 +502,13 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     );
 
     const thumbBinding = this.addActor(
-      MultiBinding.givenAnyChange([
+      new MultiBinding({inputs: [
         scrollPositionWatcher.position,
         wrapperSizeWatcher.output,
         this._contentSizeWatcher.output,
         horizontalTrackSize,
         verticalTrackSize,
-      ])
+      ]})
     );
 
     this.cancelOnDeactivate(
@@ -627,7 +630,7 @@ export class ScrollArea extends Actor<ScrollAreaProps> {
     );
 
     const trackAreaBinding = this.addActor(
-      MultiBinding.givenAnyChange([isHovered, areScrollTracksVisible])
+      new MultiBinding({ inputs: [isHovered, areScrollTracksVisible] })
     );
 
     this.cancelOnDeactivate(

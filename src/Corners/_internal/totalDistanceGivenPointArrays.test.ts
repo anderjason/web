@@ -18,5 +18,5 @@ Test.define("totalDistanceGivenPointArrays returns the expected result", () => {
   const actual = totalDistanceGivenPointArrays(a, b);
   const expected = 400;
 
-  Test.assert(actual === expected);
+  Test.assert(actual === expected, "actual is equal to expected");
 });

@@ -27,7 +27,7 @@ function cornersWithAlignment(input, alignment) {
     const arraysWithDistance = candidateArrays.map((candidateArray) => {
         return {
             candidateArray,
-            totalDistance: totalDistanceGivenPointArrays_1.totalDistanceGivenPointArrays(candidateArray, targetArray),
+            totalDistance: (0, totalDistanceGivenPointArrays_1.totalDistanceGivenPointArrays)(candidateArray, targetArray),
         };
     });
     const sorted = util_1.ArrayUtil.arrayWithOrderFromValue(arraysWithDistance, (arrayWithDistance) => {

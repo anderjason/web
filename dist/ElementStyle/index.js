@@ -35,6 +35,9 @@ class ElementStyle {
     toCombinedClassName(modifierKeys) {
         return this.toClassNames(modifierKeys).join(" ");
     }
+    toCssSelector(modifierKeys) {
+        return "." + this.toClassNames(modifierKeys).join(".");
+    }
     toClassNames(modifierKeys) {
         const result = [this._className];
         if (modifierKeys != null) {

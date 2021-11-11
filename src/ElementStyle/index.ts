@@ -78,6 +78,10 @@ export class ElementStyle {
     return this.toClassNames(modifierKeys).join(" ");
   }
 
+  toCssSelector(modifierKeys?: string | string[]): string {
+    return "." + this.toClassNames(modifierKeys).join(".");
+  }
+
   toClassNames(modifierKeys?: string | string[]): string[] {
     const result = [this._className];
 

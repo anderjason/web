@@ -23,6 +23,7 @@ export declare class ElementStyle {
     toOptionalModifiers(): Dict<string> | undefined;
     toModifierKeys(): string[];
     toCombinedClassName(modifierKeys?: string | string[]): string;
+    toCssSelector(modifierKeys?: string | string[]): string;
     toClassNames(modifierKeys?: string | string[]): string[];
     toDomElement<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K];
     toManagedElement<K extends keyof HTMLElementTagNameMap>(definition: StyleToElementDefinition<K>): DynamicStyleElement<HTMLElementTagNameMap[K]>;

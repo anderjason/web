@@ -24,25 +24,7 @@ class DynamicStyleElement extends skytree_1.Actor {
         this._classNamesByModifierName =
             definition.classNamesByModifierName || new Map();
         this._constantClassNames = definition.constantClassNames || [];
-    }
-    static givenDefinition(definition) {
-        return new DynamicStyleElement(definition);
-    }
-    get element() {
-        const managed = this.managedElement;
-        if (managed == null) {
-            return undefined;
-        }
-        return managed.element;
-    }
-    get style() {
-        return this.element.style;
-    }
-    get managedElement() {
-        return this._managedElement;
-    }
-    onActivate() {
-        this._managedElement = this.addActor(ManagedElement_1.ManagedElement.givenDefinition({
+        this._managedElement = ManagedElement_1.ManagedElement.givenDefinition({
             tagName: this.tagName,
             parentElement: this.parentElement,
             classNames: Array.from(this.activeClassNames()),
@@ -57,7 +39,22 @@ class DynamicStyleElement extends skytree_1.Actor {
                     await this._transitionOut(this);
                 }
             },
-        }));
+        });
+    }
+    static givenDefinition(definition) {
+        return new DynamicStyleElement(definition);
+    }
+    get element() {
+        return this._managedElement.element;
+    }
+    get style() {
+        return this.element.style;
+    }
+    get managedElement() {
+        return this._managedElement;
+    }
+    onActivate() {
+        this.addActor(this._managedElement);
         this.updateClassNames();
     }
     addManagedEventListener(type, listener, options) {

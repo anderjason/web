@@ -22,9 +22,9 @@ export declare class DynamicStyleElement<T extends HTMLElement> extends Actor {
     private _transitionOut?;
     private _innerHTML?;
     private constructor();
-    get element(): T | undefined;
+    get element(): T;
     get style(): CSSStyleDeclaration;
-    get managedElement(): ManagedElement<T> | undefined;
+    get managedElement(): ManagedElement<T>;
     onActivate(): void;
     addManagedEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): Receipt;
     toggleModifier(modifierName: string): void;

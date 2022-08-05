@@ -58,44 +58,39 @@ export class DynamicStyleElement<T extends HTMLElement> extends Actor {
     this._classNamesByModifierName =
       definition.classNamesByModifierName || new Map();
     this._constantClassNames = definition.constantClassNames || [];
+
+    this._managedElement = ManagedElement.givenDefinition({
+      tagName: this.tagName,
+      parentElement: this.parentElement,
+      classNames: Array.from(this.activeClassNames()),
+      innerHTML: this._innerHTML,
+      transitionIn: () => {
+        if (this._transitionIn != null) {
+          this._transitionIn(this);
+        }
+      },
+      transitionOut: async () => {
+        if (this._transitionOut != null) {
+          await this._transitionOut(this);
+        }
+      },
+    }) as ManagedElement<any>;
   }
 
-  get element(): T | undefined {
-    const managed = this.managedElement;
-    if (managed == null) {
-      return undefined;
-    }
-
-    return managed.element;
+  get element(): T {
+    return this._managedElement.element;
   }
 
   get style(): CSSStyleDeclaration {
     return this.element.style;
   }
 
-  get managedElement(): ManagedElement<T> | undefined {
+  get managedElement(): ManagedElement<T> {
     return this._managedElement;
   }
 
   onActivate() {
-    this._managedElement = this.addActor(
-      ManagedElement.givenDefinition({
-        tagName: this.tagName,
-        parentElement: this.parentElement,
-        classNames: Array.from(this.activeClassNames()),
-        innerHTML: this._innerHTML,
-        transitionIn: () => {
-          if (this._transitionIn != null) {
-            this._transitionIn(this);
-          }
-        },
-        transitionOut: async () => {
-          if (this._transitionOut != null) {
-            await this._transitionOut(this);
-          }
-        },
-      }) as ManagedElement<any>
-    );
+    this.addActor(this._managedElement);
 
     this.updateClassNames();
   }
